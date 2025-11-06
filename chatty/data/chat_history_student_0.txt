@@ -1,0 +1,35 @@
+*********     NEW EXPERIMNET           ********* 
+Student 0*********     NEW EXPERIMNET           ********* 
+Student 0*********     NEW EXPERIMNET           ********* 
+Student 0*********     NEW EXPERIMNET           ********* 
+Student 0[Time: Hours: 00, Minutes: 00, Seconds: 15] Human: hi
+*********     NEW EXPERIMNET           ********* 
+Student 0[Time: Hours: 00, Minutes: 00, Seconds: 04] Human: hi
+*********     NEW EXPERIMNET           ********* 
+Student 0*********     NEW EXPERIMNET           ********* 
+Student 0[Time: Hours: 00, Minutes: 00, Seconds: 02] Human: hu
+[Time: Hours: 00, Minutes: 00, Seconds: 37] Human: hi
+*********     NEW EXPERIMNET           ********* 
+Student 0[Time: Hours: 00, Minutes: 00, Seconds: 04] Human: hi
+*********     NEW EXPERIMNET           ********* 
+Student 0[Time: Hours: 00, Minutes: 00, Seconds: 20] Human: hi
+*********     NEW EXPERIMNET           ********* 
+Student 0[Time: Hours: 00, Minutes: 00, Seconds: 04] Human: hi
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Task Manager:
+Hello! How can I assist you today?
+*********     NEW EXPERIMNET           ********* 
+Student 0[Time: Hours: 00, Minutes: 00, Seconds: 03] Human: hi
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Task Manager:
+Hello! How can I assist you today?
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Human: how are you ?
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
+I'm here to help you! How can I assist you today?
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Human: howdy ?
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Hello! How can I assist you today?
+[Time: Hours: 00, Minutes: 03, Seconds: 50] Lerobot1 (msg): [EVENT} i got the ball
+[Time: Hours: 00, Minutes: 03, Seconds: 57] Task Manager:
+Independent Tasks:
+Lerobot1 tasks: show the ball
+multirobot_list: []
+singlerobot_list: [Lerobot1]
