@@ -1,0 +1,4 @@
+Lerobot1 (status) :  : NO CURRENT TASK
+Lerobot1 (status) : pick green gear : TASK IN PROGRESS
+Lerobot1 (status) : pick green object : TASK INTERRUPTED
+Lerobot1 (status) : pick green gear : TASK COMPLETED
