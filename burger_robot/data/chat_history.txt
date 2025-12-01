@@ -1,12 +1,16 @@
-*********     NEW EXPERIMNET           ********* 
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
 [Time: Hours: 00, Minutes: 00, Seconds: 09] Human: gimme plan pick the ball and after picking it someone goto the door and check whther its locked or not
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Task Manager:
 [Time: Hours: 00, Minutes: 00, Seconds: 11] Task Manager:
 Plan:
 1. Lerobot: Pick the ball
 2. Burger: Go to the door and check whether it is locked or not
 multirobot_list: [Lerobot, Burger]
 singlerobot_list: []
+Lerobot (status): ALL TASKS COMPLETED
+[Time: Hours: 00, Minutes: 00, Seconds: 34] Task Manager:
 [Time: Hours: 00, Minutes: 00, Seconds: 34] Human: picking failed
+[Time: Hours: 00, Minutes: 00, Seconds: 36] Task Manager:
 [Time: Hours: 00, Minutes: 00, Seconds: 36] Task Manager:
 Plan:
 1. Lerobot: STOP
@@ -14,6 +18,10 @@ Plan:
 3. User: Pick the ball
 multirobot_list: [Lerobot, Burger]
 singlerobot_list: []
+Lerobot (status): STOP TASKS COMPLETED
+Burger (status): STOP TASKS COMPLETED
+Burger (status): ALL TASKS COMPLETED
+[Time: Hours: 00, Minutes: 00, Seconds: 37] Task Manager:
 [Time: Hours: 00, Minutes: 00, Seconds: 37] Task Manager:
  !! Multi-Robot Task Completed Successfully !!.
 

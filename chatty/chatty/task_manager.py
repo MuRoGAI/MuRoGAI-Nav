@@ -12,10 +12,9 @@ from queue import Queue
 # import requests
 import openai
 from openai import OpenAI
-# from google.genai import types
-# from ollama import chat, ChatResponse
-# from google import genai
-
+from google.genai import types
+from ollama import chat, ChatResponse
+from google import genai
 
 
 openai.api_key = os.environ.get("OPENAI_API_KEY", "")
@@ -68,6 +67,7 @@ class TaskManager(Node):
         history_current_file = "chat_history_current.txt"
         self.history_current = os.path.join(package_share, "data", history_current_file)
 
+        self.robot_state_pub = self.create_publisher(String,'/robot_states',10)
         self.set_robot_states()
         # self.system_prompt = self.build_system_prompt()
         self.system_prompt = None
@@ -97,7 +97,6 @@ class TaskManager(Node):
 
         self.create_dynamic_subscribers()
 
-        self.robot_state_pub = self.create_publisher(String,'/robot_states',10)
         self.pub_tasks_json = self.create_publisher(String, "/task_manager/tasks_json", 10)
         self.pub_chat_input = self.create_publisher(String, "/chat/input", 10)
 
@@ -108,6 +107,12 @@ class TaskManager(Node):
     def set_robot_states(self):
         for name in self.robot_config["robot_names"]:
             setattr(self, f"{name}_state", "Starting position")
+        robot_states = self.robot_config['robot_states']
+        robot_states = {"robot_states": robot_states}
+        msg = String()
+        msg.data = json.dumps(robot_states)
+        self.robot_state_pub.publish(msg)
+        self.get_logger().info(f"[TaskManager] Initialized robot states for: {self.robot_config['robot_states']}")
 
     def create_dynamic_subscribers(self):
         print("Creating dynamic subscribers")
@@ -411,15 +416,16 @@ class TaskManager(Node):
         If it's a human line, parse new tasks (partial override).
         If it has 'Event:', we do a full re-plan.
         """
-        line = msg.data
-        self.conversation_log.append(line)
-        robot_names = self.robot_config["robot_names"]
+        self.current_message = msg.data
+        self.conversation_log.append(self.current_message)
+        # robot_names = self.robot_config["robot_names"]
 
         # if "] Human:" in line or any(f"{name} (msg)" in line for name in robot_names):
-        if "] Human:" in line or "(msg)" in line:
+        if "Human:" in self.current_message or "(msg)" in self.current_message:
             self.get_logger().info("[TaskManager] Detected user message -> parse tasks for subset of robots.")
-            self.get_logger().info(f"Chat Output: {line}")
+            self.get_logger().info(f"Chat Output: {self.current_message}")
             self.parse_tasks_with_gpt()
+
 
     def on_status_callback(self, msg:String) :
         self.get_logger().info("[TaskManager] Status Callback.")

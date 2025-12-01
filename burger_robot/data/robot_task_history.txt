@@ -1,0 +1,5 @@
+Burger (status) :  : NO CURRENT TASK
+Burger (status) : Go to the door and check whether it is locked or not : TASK IN PROGRESS
+Burger (status) : STOP : TASK INTERRUPTED
+Burger (status) : goto door : TASK COMPLETED
+Burger (status) : Go to the door and check whether it is locked or not : TASK COMPLETED

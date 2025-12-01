@@ -34,3 +34,296 @@ Independent Tasks:
 Lerobot1 tasks: show the ball
 multirobot_list: []
 singlerobot_list: [Lerobot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Human: hi
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+Hello! How can I assist you today?
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Human: lerobot1 pick grey gear
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Task Manager:
+Independent Tasks:
+Lerobot2 tasks: pick grey gear
+multirobot_list: []
+singlerobot_list: [Lerobot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Human: lerobot1 pick grey gear
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Task Manager:
+Independent Tasks:
+Lerobot1 tasks: pick grey gear
+multirobot_list: []
+singlerobot_list: [Lerobot1]
+[Time: Hours: 00, Minutes: 02, Seconds: 25] Human: lerobot1 pick green gear
+[Time: Hours: 00, Minutes: 02, Seconds: 28] Task Manager:
+Independent Tasks:
+Lerobot1 tasks: pick green gear
+multirobot_list: []
+singlerobot_list: [Lerobot1]
+[Time: Hours: 00, Minutes: 04, Seconds: 17] Human: lerobot1 pick green gear
+[Time: Hours: 00, Minutes: 04, Seconds: 20] Task Manager:
+Independent Tasks:
+Lerobot1 tasks: pick green gear
+multirobot_list: []
+singlerobot_list: [Lerobot1]
+[Time: Hours: 00, Minutes: 05, Seconds: 57] Human: lerobot1 pick green gear
+[Time: Hours: 00, Minutes: 05, Seconds: 59] Task Manager:
+Independent Tasks:
+Lerobot1 tasks: pick green gear
+multirobot_list: []
+singlerobot_list: [Lerobot1]
+[Time: Hours: 00, Minutes: 06, Seconds: 08] Human: lerobot1 stop
+[Time: Hours: 00, Minutes: 06, Seconds: 10] Task Manager:
+Lerobot1: STOP
+[Time: Hours: 00, Minutes: 06, Seconds: 50] Human: pick green gear
+[Time: Hours: 00, Minutes: 06, Seconds: 51] Task Manager:
+Independent Tasks:
+Lerobot2 tasks: pick green gear
+multirobot_list: []
+singlerobot_list: [Lerobot2]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 02, Seconds: 40] Human: hi
+[Time: Hours: 00, Minutes: 02, Seconds: 41] Task Manager:
+Hello! How can I assist you today?
+[Time: Hours: 00, Minutes: 03, Seconds: 21] Human: navigate to the bottle
+[Time: Hours: 00, Minutes: 03, Seconds: 23] Task Manager:
+Independent Tasks:
+Burger tasks: navigate to the bottle
+multirobot_list: []
+singlerobot_list: [Burger]
+[Time: Hours: 00, Minutes: 05, Seconds: 39] Human: find teh bottle and goto it
+[Time: Hours: 00, Minutes: 05, Seconds: 43] Task Manager:
+Independent Tasks:
+Burger tasks: find the bottle, go to it
+multirobot_list: []
+singlerobot_list: [Burger]
+[Time: Hours: 00, Minutes: 07, Seconds: 10] Human: find the dog and goto it
+[Time: Hours: 00, Minutes: 07, Seconds: 13] Task Manager:
+Independent Tasks:
+Burger tasks: find the dog, go to it
+multirobot_list: []
+singlerobot_list: [Burger]
+[Time: Hours: 00, Minutes: 08, Seconds: 39] Human: find teh bad and goto it
+[Time: Hours: 00, Minutes: 08, Seconds: 41] Task Manager:
+Independent Tasks:
+Burger tasks: find the bad, go to it
+multirobot_list: []
+singlerobot_list: [Burger]
+[Time: Hours: 00, Minutes: 10, Seconds: 08] Human: find and goto bat
+[Time: Hours: 00, Minutes: 10, Seconds: 09] Task Manager:
+Independent Tasks:
+Burger tasks: find and go to bat
+multirobot_list: []
+singlerobot_list: [Burger]
+[Time: Hours: 00, Minutes: 14, Seconds: 19] Human: I have mounted lerobot on burger. bring me water bottle from the fridge.
+[Time: Hours: 00, Minutes: 14, Seconds: 21] Task Manager:
+Independent Tasks:
+Lerobot tasks: pick the water bottle from the fridge, place it on Burger
+Burger tasks: navigate to the user with the water bottle
+multirobot_list: []
+singlerobot_list: [Lerobot, Burger]
+[Time: Hours: 00, Minutes: 18, Seconds: 16] Human: pick bat
+[Time: Hours: 00, Minutes: 18, Seconds: 18] Task Manager:
+Plan:
+1. Lerobot: STOP
+2. Burger: STOP
+3. user: pick the bat
+multirobot_list: [Lerobot,Burger]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Human: pick  bottle
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+Independent Tasks:
+Lerobot tasks: pick bottle
+multirobot_list: []
+singlerobot_list: [Lerobot]
+[Time: Hours: 00, Minutes: 00, Seconds: 57] Human: pick bottle
+[Time: Hours: 00, Minutes: 00, Seconds: 58] Task Manager:
+Independent Tasks:
+Lerobot tasks: pick bottle
+multirobot_list: []
+singlerobot_list: [Lerobot]
+[Time: Hours: 00, Minutes: 03, Seconds: 36] Human: pick bll
+[Time: Hours: 00, Minutes: 03, Seconds: 37] Task Manager:
+Could you please clarify what you mean by "bll"?
+[Time: Hours: 00, Minutes: 03, Seconds: 44] Human: pickk ball
+[Time: Hours: 00, Minutes: 03, Seconds: 46] Task Manager:
+Independent Tasks:
+Lerobot tasks: pick ball
+multirobot_list: []
+singlerobot_list: [Lerobot]
+[Time: Hours: 00, Minutes: 04, Seconds: 00] Human: pick ball
+[Time: Hours: 00, Minutes: 04, Seconds: 03] Task Manager:
+Independent Tasks:
+Lerobot tasks: pick ball
+multirobot_list: []
+singlerobot_list: [Lerobot]
+[Time: Hours: 00, Minutes: 06, Seconds: 25] Human: PICK PEN
+[Time: Hours: 00, Minutes: 06, Seconds: 28] Task Manager:
+Independent Tasks:
+Lerobot tasks: pick pen
+multirobot_list: []
+singlerobot_list: [Lerobot]
+[Time: Hours: 00, Minutes: 07, Seconds: 55] Human: pick erser
+[Time: Hours: 00, Minutes: 07, Seconds: 58] Task Manager:
+Could you please clarify what you mean by "erser"?
+[Time: Hours: 00, Minutes: 08, Seconds: 10] Human: pick cup
+[Time: Hours: 00, Minutes: 08, Seconds: 11] Task Manager:
+Independent Tasks:
+Lerobot tasks: pick cup
+multirobot_list: []
+singlerobot_list: [Lerobot]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Human: hi
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Task Manager:
+Hello! How can I assist you today?
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Human: hi
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Task Manager:
+Hello! How can I assist you today?
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Human: hu
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Task Manager:
+Could you please clarify or provide more information?
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Human: hi
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Task Manager:
+Hello! How can I assist you today?
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Human: hi
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Task Manager:
+Hello! How can I assist you today?
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Human: hi
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Task Manager:
+Hello! How can I assist you today?
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Human: pick the brown ball
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Task Manager:
+Independent Tasks:
+Lerobot tasks: pick the brown ball
+multirobot_list: []
+singlerobot_list: [Lerobot]
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Human: tell me a small strory
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Task Manager:
+Once upon a time, in a lush green forest, there lived a curious little rabbit named Benny. Benny loved to explore the forest and make new friends. One sunny day, while hopping around, Benny stumbled upon a sparkling stream. As he approached, he saw his reflection in the water and was amazed by the shimmering colors. 
+
+Nearby, a wise old turtle named Tilly was resting under a tree. Benny hopped over and said, "Hello, Tilly! Have you seen the magical stream?" Tilly smiled and replied, "Ah, Benny, the stream isn't magical. It's your joy and curiosity that make everything around you seem magical."
+
+Benny pondered Tilly's words and realized that the true magic was in his heart and the friendships he made. From that day on, Benny explored the forest with a newfound appreciation, knowing that the world was full of wonders, as long as he kept his heart open.
+
+And so, Benny the rabbit continued his adventures, spreading joy and magic wherever he went. The end.
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Human: hi
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Task Manager:
+Hello! How can I assist you today?
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Human: pick green tes
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Task Manager:
+Could you please specify which robot you would like to assign this task to?
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Human: tea
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Task Manager:
+Independent Tasks:
+Lerobot tasks: pick green tea
+multirobot_list: []
+singlerobot_list: [Lerobot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 08] Human: First pick the ball and only then goto to the door
+[Time: Hours: 00, Minutes: 01, Seconds: 10] Task Manager:
+Plan:
+1. Lerobot: Pick the ball
+2. Burger: Go to the door
+multirobot_list: [Lerobot, Burger]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 32] Human: First pick ball and then goto door
+[Time: Hours: 00, Minutes: 00, Seconds: 34] Task Manager:
+Independent Tasks:
+Lerobot tasks: pick ball
+Burger tasks: goto door
+multirobot_list: []
+singlerobot_list: [Lerobot, Burger]
+[Time: Hours: 00, Minutes: 01, Seconds: 31] Human: come back to kitchen and pick the utensil
+[Time: Hours: 00, Minutes: 01, Seconds: 32] Task Manager:
+Independent Tasks:
+Burger tasks: come back to kitchen
+Lerobot tasks: pick the utensil
+multirobot_list: []
+singlerobot_list: [Burger, Lerobot]
+[Time: Hours: 00, Minutes: 02, Seconds: 53] Human: firsst pick bottle and only then go to the door
+[Time: Hours: 00, Minutes: 02, Seconds: 54] Task Manager:
+Independent Tasks:
+Lerobot tasks: pick bottle
+Burger tasks: goto door
+multirobot_list: []
+singlerobot_list: [Lerobot, Burger]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 18] Human: pick and show me the cloth, and only then bring it to table
+[Time: Hours: 00, Minutes: 01, Seconds: 19] Task Manager:
+Independent Tasks:
+Lerobot tasks: pick and show cloth, bring cloth to table
+multirobot_list: []
+singlerobot_list: [Lerobot]
+[Time: Hours: 00, Minutes: 01, Seconds: 51] Human: burger go to house after lerobot is done picking garbage
+[Time: Hours: 00, Minutes: 01, Seconds: 55] Task Manager:
+Independent Tasks:
+Burger tasks: go to house
+multirobot_list: []
+singlerobot_list: [Burger]
+[Time: Hours: 00, Minutes: 06, Seconds: 28] Human: why are u not giving plans ?
+[Time: Hours: 00, Minutes: 06, Seconds: 32] Task Manager:
+The tasks assigned so far have been independent and do not require coordination between multiple robots, which is why they were handled as independent tasks. If a task requires sequential steps or coordination between multiple robots, a plan will be provided.
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 08] Human: gimme plan pick the ball and keep it in the right side of your , and after placing it someone goto the door and check whther its locked or not
+[Time: Hours: 00, Minutes: 01, Seconds: 10] Task Manager:
+Plan:
+1. Lerobot: Pick the ball and place it on the right side.
+2. Burger: Go to the door and check whether it's locked or not.
+multirobot_list: [Lerobot, Burger]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Human: gimme plan pick the ball and keep it in the right side of your , and after placing it someone goto the door and check whther its locked or not
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Task Manager:
+Plan:
+1. Lerobot: Pick the ball and place it on the right side.
+2. Burger: Go to the door and check whether it's locked.
+
+multirobot_list: [Lerobot, Burger]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 41] Human: gimme plan pick the ball and after picking it someone goto the door and check whther its locked or not
+[Time: Hours: 00, Minutes: 00, Seconds: 43] Task Manager:
+Plan:
+1. Lerobot: Pick the ball
+2. Burger: Go to the door and check whether it's locked or not
+multirobot_list: [Lerobot, Burger]
+singlerobot_list: []
+[Time: Hours: 00, Minutes: 01, Seconds: 29] Human: not found door
+[Time: Hours: 00, Minutes: 01, Seconds: 31] Task Manager:
+Plan:
+1. Burger: STOP
+2. Human: Locate the door and inform the system
+multirobot_list: [Burger]
+singlerobot_list: []
+[Time: Hours: 00, Minutes: 01, Seconds: 33] Task Manager:
+Thank you for your assistance. Please let me know once the door is located.
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Human: gimme plan pick the ball and after picking it someone goto the door and check whther its locked or not
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Task Manager:
+Plan:
+1. Lerobot: Pick the ball
+2. Burger: Go to the door and check whether it is locked or not
+multirobot_list: [Lerobot, Burger]
+singlerobot_list: []
+[Time: Hours: 00, Minutes: 00, Seconds: 34] Human: picking failed
+[Time: Hours: 00, Minutes: 00, Seconds: 36] Task Manager:
+Plan:
+1. Lerobot: STOP
+2. Burger: STOP
+3. User: Pick the ball
+multirobot_list: [Lerobot, Burger]
+singlerobot_list: []
+[Time: Hours: 00, Minutes: 00, Seconds: 37] Task Manager:
+ !! Multi-Robot Task Completed Successfully !!.
+

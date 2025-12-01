@@ -23,7 +23,7 @@ from pick_object_interface.srv import StartPick
 from concurrent.futures import Future
 from typing import Optional
 
-ROBOT_TYPE = 'Robotic Arm'
+ROBOT_TYPE = 'Manipulator Robot'
 
 # Define available actions
 @dataclass
@@ -68,7 +68,7 @@ class RobotLLMNode(Node):
         super().__init__('robot_llm_node')
 
         # ---- Parameters ----
-        self.declare_parameter('robot_name', 'lerobot1')
+        self.declare_parameter('robot_name', 'maniplulator_robot')   ## robot name parameter
         self.robot_name: str = self.get_parameter('robot_name').value
         robot_task_topic = f'{self.robot_name}_task_status'
 
@@ -656,7 +656,6 @@ def execute_python_code(code: str, node=None):
     """
 
     print("Inside the execute python code function")
-    lerobot1 = node
     if node is None:
         # Fallback — but you should never hit this
         node = RobotLLMNode.get_instance()
@@ -664,11 +663,6 @@ def execute_python_code(code: str, node=None):
             print("CRITICAL: Could not get node instance!")
             return
         
-
-
-    lerobot1 = node  # remove this line later
-
-
     node.get_logger().info(f"Executing generated Python code:{code}")
     # node.get_logger().debug("Code to execute:\n%s", code)
 

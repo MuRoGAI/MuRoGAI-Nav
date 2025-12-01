@@ -23,7 +23,7 @@ from pick_object_interface.srv import StartPick
 from concurrent.futures import Future
 from typing import Optional
 
-ROBOT_TYPE = 'Robotic Arm'
+ROBOT_TYPE = 'Mobile Robot'
 
 # Define available actions
 @dataclass
@@ -35,23 +35,18 @@ class TestOption:
 
 option_list = [
     TestOption(
-        name="Pick green object",
+        name="Goto",
         id=0,
-        description="This is used pick or show the green object or gear",
-        example_code="node.pick_green_object()"
+        description="This is used to navigate to a location or object",
+        example_code="node.goto('charging station')"
     ),
     TestOption(
-        name="Pick brown object",
+        name="Find",
         id=1,
-        description="This is used pick or show the brown object or gear",
-        example_code="node.pick_brown_object()"
-    ),
-    TestOption(
-        name="Pick grey object",
-        id=2,
-        description="This is used pick or show the grey object or gear",
-        example_code="node.pick_grey_object()"
+        description="This is used to find an object in the environment",
+        example_code="node.find('ball')"
     )
+
 ]
 
 class RobotLLMNode(Node):
@@ -68,7 +63,7 @@ class RobotLLMNode(Node):
         super().__init__('robot_llm_node')
 
         # ---- Parameters ----
-        self.declare_parameter('robot_name', 'lerobot1')
+        self.declare_parameter('robot_name', 'mobile_robot')   ## robot name parameter
         self.robot_name: str = self.get_parameter('robot_name').value
         robot_task_topic = f'{self.robot_name}_task_status'
 
@@ -648,6 +643,27 @@ class RobotLLMNode(Node):
             self.robot_task_interrupted("pick grey object")
         return 
         
+    def goto(self, location: str = "default_location") -> bool:
+        self.get_logger().info(f"Navigating to '{location}'...")
+
+        success = self.goto_service(location)
+        if not success:
+            self.get_logger().info(f"Arrived at '{location}'.")
+            self.robot_task_completed(f"goto {location}")
+        else:
+            self.robot_task_interrupted(f"goto {location}")
+        return
+
+    def find(self, location: str) -> None:
+        self.get_logger().info(f"Finding object '{location}'...")
+
+        success = self.find_service(location)
+        if success:
+            self.get_logger().info(f"Object '{location}' found.")
+            self.robot_task_completed(f"find {location}")
+        else:
+            self.robot_task_interrupted(f"find {location}")
+        return
 
 def execute_python_code(code: str, node=None):
     """
@@ -656,7 +672,7 @@ def execute_python_code(code: str, node=None):
     """
 
     print("Inside the execute python code function")
-    lerobot1 = node
+
     if node is None:
         # Fallback — but you should never hit this
         node = RobotLLMNode.get_instance()
@@ -664,11 +680,6 @@ def execute_python_code(code: str, node=None):
             print("CRITICAL: Could not get node instance!")
             return
         
-
-
-    lerobot1 = node  # remove this line later
-
-
     node.get_logger().info(f"Executing generated Python code:{code}")
     # node.get_logger().debug("Code to execute:\n%s", code)
 

@@ -29,25 +29,25 @@ class DummyTaskPublisher(Node):
             self.get_logger().info('SENT → pick green gear')
             self.step += 1
 
-        # elif self.step == 1:
-        #     # Wait 5 seconds then send stop
-        #     time.sleep(7.0)
-        #     msg = String()
-        #     payload = {
-        #         "robot_tasks": {
-        #             "lerobot1": "stop",
-        #             "lerobot2": ""
-        #         },
-        #         "sequence": ""
-        #     }
-        #     msg.data = json.dumps(payload)
-        #     self.pub.publish(msg)
-        #     self.get_logger().info('SENT → stop')
-            
-        #     self.get_logger().info('Demo finished – shutting down in 2s')
-        #     self.step += 1
-
         elif self.step == 1:
+            # Wait 7 seconds then send stop
+            time.sleep(7.0)
+            msg = String()
+            payload = {
+                "robot_tasks": {
+                    "lerobot1": "stop",
+                    "lerobot2": ""
+                },
+                "sequence": ""
+            }
+            msg.data = json.dumps(payload)
+            self.pub.publish(msg)
+            self.get_logger().info('SENT → stop')
+            
+            self.get_logger().info('Demo finished – shutting down in 2s')
+            self.step += 1
+
+        elif self.step == 2:
             time.sleep(2.0)
             rclpy.shutdown()
 

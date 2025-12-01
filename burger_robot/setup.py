@@ -1,8 +1,8 @@
 from setuptools import find_packages, setup
-from glob   import glob
+from glob import glob
 import os
 
-package_name = 'robot_llm'
+package_name = 'burger_robot'
 
 setup(
     name=package_name,
@@ -13,12 +13,12 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name, 'data'), glob('data/*')),
-        
+
     ],
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='suraj',
-    maintainer_email='bhavishraib@gmail.com',
+    maintainer_email='surajb@iitgn.ac.in',
     description='TODO: Package description',
     license='TODO: License declaration',
     extras_require={
@@ -28,10 +28,9 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'robot_llm_node = robot_llm.robot_llm:main',
-
-            'mobile_robot = robot_llm.mobile_robot:main',
-            'manipulator_robot = robot_llm.manipulator_robot:main',
+            'burger_llm = burger_robot.burger_llm:main',
+            'find_server = burger_robot.find_server:main',
+            'goto_server = burger_robot.goto_server:main',
         ],
     },
 )

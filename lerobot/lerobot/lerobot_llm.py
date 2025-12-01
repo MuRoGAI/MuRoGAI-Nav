@@ -16,14 +16,13 @@ from rclpy.callback_groups import (
 )
 from ament_index_python.packages import get_package_share_directory
 from rclpy.action import ActionClient
-from pick_object_interface.action import PickObject
-from pick_object_interface.srv import StartPick
+from robot_interface.srv import StartPick
 
 
 from concurrent.futures import Future
 from typing import Optional
 
-ROBOT_TYPE = 'Robotic Arm'
+ROBOT_TYPE = 'Manipulator Robot'
 
 # Define available actions
 @dataclass
@@ -35,22 +34,10 @@ class TestOption:
 
 option_list = [
     TestOption(
-        name="Pick green object",
+        name="Pick object",
         id=0,
-        description="This is used pick or show the green object or gear",
-        example_code="node.pick_green_object()"
-    ),
-    TestOption(
-        name="Pick brown object",
-        id=1,
-        description="This is used pick or show the brown object or gear",
-        example_code="node.pick_brown_object()"
-    ),
-    TestOption(
-        name="Pick grey object",
-        id=2,
-        description="This is used pick or show the grey object or gear",
-        example_code="node.pick_grey_object()"
+        description="This is used pick the object with the robotic arm.",
+        example_code="node.pick('object')"
     )
 ]
 
@@ -65,10 +52,10 @@ class RobotLLMNode(Node):
     _instance = None
 
     def __init__(self) -> None:
-        super().__init__('robot_llm_node')
+        super().__init__('lerobot_llm_node')
 
         # ---- Parameters ----
-        self.declare_parameter('robot_name', 'lerobot1')
+        self.declare_parameter('robot_name', 'lerobot')   ## robot name parameter
         self.robot_name: str = self.get_parameter('robot_name').value
         robot_task_topic = f'{self.robot_name}_task_status'
 
@@ -92,8 +79,6 @@ class RobotLLMNode(Node):
         self.pub_robot_states = self.create_publisher(String, '/robot_states', 10)
         self.pub_robot_task = self.create_publisher(String, robot_task_topic, 10)
 
-        # self._action_client = ActionClient(self, PickObject, 'pick_object')
-        # self._pick_client = self.create_client(StartPick, '/start_pick')
         self._pick_client = self.create_client(StartPick, '/start_pick', callback_group=self.multi_group)
         self._cancel_pub = self.create_publisher(String, '/start_pick/cancel', 10)
 
@@ -134,7 +119,7 @@ class RobotLLMNode(Node):
             f'Publishing robot task status on "{robot_task_topic}".'
         )
 
-        package_name = "robot_llm"
+        package_name = "lerobot"
         directry = "data"
         package_path = get_package_share_directory(package_name)
 
@@ -557,6 +542,7 @@ class RobotLLMNode(Node):
                 f"Current States of All Robots: {self.robot_states} "
                 f"Available Actions: {available_actions} "
                 "Using the class reference name same as the example is important. "
+                "Use the name 'node' to refer to the RobotLLMNode instance. "
                 # f"Task to be performed: {task} "
             )
 
@@ -586,7 +572,7 @@ class RobotLLMNode(Node):
 
     def pick_object(self, object_name: str = "red_gear") -> bool:
         """Call StartPick service and wait without re-spinning the node."""
-        self.get_logger().info(f"Picking '{object_name}'...")
+        self.get_logger().debug(f"Picking '{object_name}'...")
 
         if not self._pick_client.wait_for_service(timeout_sec=5.0):
             self.get_logger().error("StartPick service not available!")
@@ -621,33 +607,15 @@ class RobotLLMNode(Node):
 
 
     # —————————————————————— YOUR LLM FUNCTIONS (now perfect) ——————————————————————
-    def pick_green_object(self) -> bool:
-        self.get_logger().info("Picking green object...")
-        success = self.pick_object("green object")
-        if success:
-            self.robot_task_completed("pick green object")
-        else:
-            self.robot_task_interrupted("pick green object")
-        return 
-
-    def pick_brown_object(self) -> bool:
-        self.get_logger().info("Picking brown object...")
-        success = self.pick_object("brown object")
-        if success:
-            self.robot_task_completed("pick brown object")
-        else:
-            self.robot_task_interrupted("pick brown object")
-        return 
-
-    def pick_grey_object(self) -> bool:
-        self.get_logger().info("Picking grey object...")
-        success = self.pick_object("grey object")
-        if success:
-            self.robot_task_completed("pick grey object")
-        else:
-            self.robot_task_interrupted("pick grey object")
-        return 
         
+    def pick(self, object_name: str) -> bool:
+        self.get_logger().info(f"Picking {object_name}...")
+        success = self.pick_object(object_name)
+        if success:
+            self.robot_task_completed(f"pick {object_name}")
+        else:
+            self.robot_task_interrupted(f"pick {object_name}")
+        return
 
 def execute_python_code(code: str, node=None):
     """
@@ -656,18 +624,14 @@ def execute_python_code(code: str, node=None):
     """
 
     print("Inside the execute python code function")
-    lerobot1 = node
     if node is None:
         # Fallback — but you should never hit this
         node = RobotLLMNode.get_instance()
         if node is None:
             print("CRITICAL: Could not get node instance!")
             return
-        
-
-
-    lerobot1 = node  # remove this line later
-
+    
+    lerobot = node
 
     node.get_logger().info(f"Executing generated Python code:{code}")
     # node.get_logger().debug("Code to execute:\n%s", code)
