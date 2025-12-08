@@ -16,14 +16,16 @@ from rclpy.callback_groups import (
 )
 from ament_index_python.packages import get_package_share_directory
 from rclpy.action import ActionClient
-from pick_object_interface.action import PickObject
-from pick_object_interface.srv import StartPick
+from robot_interface.action import PickObject
+from robot_interface.srv import StartPick
 
 
 from concurrent.futures import Future
 from typing import Optional
 
 ROBOT_TYPE = 'Robotic Arm'
+PACKAGE_NAME = 'robot_llm'
+NODE_NAME = 'robot_llm_node'
 
 # Define available actions
 @dataclass
@@ -65,7 +67,7 @@ class RobotLLMNode(Node):
     _instance = None
 
     def __init__(self) -> None:
-        super().__init__('robot_llm_node')
+        super().__init__(NODE_NAME)
 
         # ---- Parameters ----
         self.declare_parameter('robot_name', 'lerobot1')
@@ -118,9 +120,9 @@ class RobotLLMNode(Node):
         # self.sub_chat_history = self.create_subscription(
         #     String, '/chat/history', self.on_chat_history, 10
         # )
-        # self.sub_chat_task_status = self.create_subscription(
-        #     String, '/chat/task_status', self.on_chat_task_status, 10
-        # )
+        self.sub_chat_task_status = self.create_subscription(
+            String, '/chat/task_status', self.on_chat_task_status, 10
+        )
 
         # ---- Timer Callbacks ----
         # self.timer_period = 1.0  # seconds
@@ -134,9 +136,9 @@ class RobotLLMNode(Node):
             f'Publishing robot task status on "{robot_task_topic}".'
         )
 
-        package_name = "robot_llm"
+        # package_name = "robot_llm"
         directry = "data"
-        package_path = get_package_share_directory(package_name)
+        package_path = get_package_share_directory(PACKAGE_NAME)
 
         script_name = "chat_history.txt"
         self.history_file = os.path.join(package_path, directry, script_name)
@@ -261,9 +263,12 @@ class RobotLLMNode(Node):
     #     """Handle chat history stream."""
     #     # self.get_logger().debug(f'Received /chat/history len={len(msg.data)}')
 
-    # def on_chat_task_status(self, msg: String) -> None:
-    #     """Observe task status changes (external)."""
-    #     self.get_logger().debug(f'Observed /chat/task_status: {msg.data}')
+    def on_chat_task_status(self, msg: String) -> None:
+        """Observe task status changes (external)."""
+        self.get_logger().debug(f'Observed /chat/task_status: {msg.data}')
+        with open(self.history_file, "a") as file:
+            file.write(msg.data + "\n")
+        
 
     def on_current_time(self, msg: String) -> None:
         """Update current time from /current_time topic."""
@@ -557,6 +562,7 @@ class RobotLLMNode(Node):
                 f"Current States of All Robots: {self.robot_states} "
                 f"Available Actions: {available_actions} "
                 "Using the class reference name same as the example is important. "
+                "Use the name 'node' to refer to the RobotLLMNode instance. "
                 # f"Task to be performed: {task} "
             )
 
@@ -577,9 +583,14 @@ class RobotLLMNode(Node):
             # execute_python_code(code)
             execute_python_code(code, node=self)
 
+#########################************************************########################
+
             self.get_logger().info("Robot Task Completed.")
-            self.robot_task_completed(task)
-            self.tasks_completed(task)
+            self.robot_task_completed()
+            self.tasks_completed()
+
+#########################************************************########################
+        
         else:
             self.get_logger().error("Failed to generate valid code for the task.")
             self.robot_task_interrupted(task) ## Needs to be handled better If it became an EVENT it could be better
@@ -656,7 +667,7 @@ def execute_python_code(code: str, node=None):
     """
 
     print("Inside the execute python code function")
-    lerobot1 = node
+
     if node is None:
         # Fallback — but you should never hit this
         node = RobotLLMNode.get_instance()
@@ -665,10 +676,6 @@ def execute_python_code(code: str, node=None):
             return
         
 
-
-    lerobot1 = node  # remove this line later
-
-
     node.get_logger().info(f"Executing generated Python code:{code}")
     # node.get_logger().debug("Code to execute:\n%s", code)
 
@@ -676,6 +683,15 @@ def execute_python_code(code: str, node=None):
     try:
         exec(code, {"__builtins__": {}}, {"node": node})
         node.get_logger().info("Code executed successfully")
+
+#########################************************************########################
+
+        # node.get_logger().info("Robot Task Completed.")
+        # node.robot_task_completed()
+        # node.tasks_completed()
+
+#########################************************************########################
+
     except TypeError as e:
         pass
     except Exception as e:

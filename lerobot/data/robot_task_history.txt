@@ -1,5 +1,10 @@
 Lerobot (status) :  : NO CURRENT TASK
-Lerobot (status) : Pick the ball : TASK IN PROGRESS
-Lerobot (status) : pick ball : TASK COMPLETED
-Lerobot (status) : Pick the ball : TASK COMPLETED
+Lerobot (status) : pick towel : TASK IN PROGRESS
+Lerobot (status) : pick towel : TASK COMPLETED
+Lerobot (status) : pick towel : TASK COMPLETED
 Lerobot (status) : STOP : TASK INTERRUPTED
+Lerobot (status) : STOP : TASK INTERRUPTED
+Lerobot (status) : STOP : TASK INTERRUPTED
+Lerobot (status) : pick the ball from the back of Burger : TASK IN PROGRESS
+Lerobot (status) : pick ball : TASK COMPLETED
+Lerobot (status) : pick the ball from the back of Burger : TASK COMPLETED

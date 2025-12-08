@@ -694,7 +694,6 @@ def execute_python_code(code: str, node=None):
             return
 
 
-    burger = node
     node.get_logger().info(f"Executing generated Python code:{code}")
     # node.get_logger().debug("Code to execute:\n%s", code)
 
