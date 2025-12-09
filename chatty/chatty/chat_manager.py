@@ -85,10 +85,10 @@ class ChatManager(Node):
 
         if len(parts) == 2:
             role, content = parts[0].strip(), parts[1].strip()
-            self.chat_entry = f"[Time: {timestamp}] {role.capitalize()}: {content}"
         else:
-            role, content = "Task Manager", msg.data
-            self.chat_entry = f"[Time: {timestamp}] {role}:\n{content}"
+            role, content = "Task Manager (msg)", msg.data
+
+        self.chat_entry = f"[Time: {timestamp}] {role.capitalize()}: {content}"
 
         self.get_logger().info(f"[ChatManager] Received on /input-> {self.chat_entry}")
 

@@ -67,18 +67,11 @@ class TaskManager(Node):
         history_current_file = "chat_history_current.txt"
         self.history_current = os.path.join(package_share, "data", history_current_file)
 
-        self.robot_state_pub = self.create_publisher(String,'/robot_states',10)
-        self.set_robot_states()
-        # self.system_prompt = self.build_system_prompt()
         self.system_prompt = None
-        # print("SYSTEM PROMPT : \n")
-        # print(self.system_prompt)
-        
-        # Optional multi-step or overall plan
         self.sequence_of_tasks = ""
         self.task_status = "INIT"
         
-        self.conversation_log = [] # Full chat log
+        self.conversation_log = [] 
 
         self.multirobot_completion_status = False
         self.master_status = False 
@@ -89,12 +82,14 @@ class TaskManager(Node):
         self.single_tasks_dict = {}
         self.current_time = f"Hours: {00}, Minutes: {00}, Seconds: {00}"
 
+        self.time_sub = self.create_subscription(String, "/current_time", self.on_time_callback, 10)
         self.subscription = self.create_subscription(String, "/chat/output", self.on_chat_output, 10)
         self.input_sub = self.create_subscription(String, "/chat/input" , self.on_chat_input, 10)
         self.status_pub = self.create_subscription(String, "/chat/task_status", self.on_status_callback,10)   
         self.robot_state_sub = self.create_subscription(String, "/robot_states", self.on_robot_state_callback,10)
-        self.time_sub = self.create_subscription(String, "/current_time", self.on_time_callback, 10)
+        self.robot_state_pub = self.create_publisher(String,'/robot_states',10)
 
+        self.set_robot_states()
         self.create_dynamic_subscribers()
 
         self.pub_tasks_json = self.create_publisher(String, "/task_manager/tasks_json", 10)

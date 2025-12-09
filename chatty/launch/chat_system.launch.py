@@ -1,108 +1,118 @@
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument
 from launch.conditions import IfCondition
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
-from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-    # -------------------- Launch Arguments --------------------
-    model_arg = DeclareLaunchArgument(
-        'model', default_value='4', description='Model number'
-    )
 
-    student_arg = DeclareLaunchArgument(
-        'student', default_value='0', description='Student number'
+    # -------------------- Substitutions --------------------
+
+    model       = LaunchConfiguration('model')
+    config_file = LaunchConfiguration('config_file')
+    enable_audio_input  = LaunchConfiguration('enable_audio_input')
+    enable_audio_output = LaunchConfiguration('enable_audio_output')
+    
+    # -------------------- Launch Arguments --------------------
+
+    model_arg = DeclareLaunchArgument(
+        'model',default_value='4', description='Model number'
     )
 
     config_file_arg = DeclareLaunchArgument(
-        'config_file', default_value='robot_config_assmble_help', description='Config file name'
+        'config_file', default_value='robot_config_roscon_2025', description='Config file name'
     )
-    # use_audio_arg = DeclareLaunchArgument(
-    #     'use_audio',
-    #     default_value='false',
-    #     description="Whether to use audio input (true/false)"
-    # )
 
-    # -------------------- Substitutions --------------------
-    model = LaunchConfiguration('model')
-    student = LaunchConfiguration('student')
-    config_file = LaunchConfiguration('config_file')
-    # use_audio = LaunchConfiguration('use_audio')
+    enable_audio_input_arg = DeclareLaunchArgument(
+        'enable_audio_input',
+        default_value='false',
+        description='Enable microphone input and listening'
+    )
+
+    enable_audio_output_arg = DeclareLaunchArgument(
+        'enable_audio_output',
+        default_value='false',
+        description='Enable text-to-speech output'
+    )
 
     # -------------------- Node Definitions --------------------
-    chat_gui = Node(
+
+    chat_interface_node = Node(
         package='chatty',
         executable='chat_gui',
         name='chat_gui',
         output='screen'
     )
 
-    chat_manager = Node(
+    chat_manager_node = Node(
         package='chatty',
         executable='chat_manager',
         name='chat_manager',
-        parameters=[
-            {'config_file': config_file},
-            {'student': student}
-        ],
-
-        output='screen'
+        parameters=[{
+            'config_file': config_file
+        }],
+        output='screen',
     )
 
-    task_manager = Node(
+    task_manager_node = Node(
         package='chatty',
         executable='task_manager',
         name='task_manager',
-        parameters=[
-            {'model': model},
-            {'config_file': config_file}
-        ],
-        output='screen'
+        parameters=[{
+            'model': model,
+            'config_file': config_file,
+        }],
+        output='screen',
     )
 
-    speak_ = Node(
+    microphone_node = Node(
+        package='chatty',
+        executable='microphone',
+        name='microphone',
+        output='screen',
+        condition=IfCondition(enable_audio_input)
+    )
+
+    speaking_node = Node(
         package='chatty',
         executable='speak',
         name='tts_speaker',
-        output='screen'
+        output='screen',
+        condition=IfCondition(enable_audio_output)
     )
 
-    time_ = Node(
+    listening_node = Node(
+        package='chatty',
+        executable='listen',
+        name='whisper_listener',
+        output='screen',
+        condition=IfCondition(enable_audio_input)
+    )
+
+    time_pub_node = Node(
         package='chatty',
         executable='time',
         name='time_publisher',
-        output='screen'  
+        output='screen' 
     )
 
-    # -------------------- Nested Launch (audio, conditional) --------------------
-    # chatty_share = FindPackageShare('chatty')
-    # audio_whisper_launch = PathJoinSubstitution([
-    #     chatty_share, 'launch', 'audio_convertor.launch.py'
-    # ])
-
-    # include_audio_convertor = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource(audio_whisper_launch),
-    #     # Run only if use_audio == "true"
-    #     condition=IfCondition(
-    #         PythonExpression(["'", use_audio, "' == 'true'"])
-    #     )
-    # )
 
     # -------------------- Return LaunchDescription --------------------
     return LaunchDescription([
         model_arg,
-        student_arg,
         config_file_arg,
-        # use_audio_arg,
+        enable_audio_input_arg,
+        enable_audio_output_arg,
 
-        chat_gui,
-        chat_manager,
-        task_manager,
-        # speak_,
-        # include_audio_convertor,
-        time_
+        chat_interface_node,
+        chat_manager_node,
+        task_manager_node,
+
+        microphone_node,
+        speaking_node,
+        listening_node,
+
+        time_pub_node
     ])
 

@@ -12,7 +12,6 @@ import asyncio
 import threading
 import random
 from queue import Queue, Empty
-import xml.sax.saxutils 
 
 class TTSSpeaker(Node):
     def __init__(self):
@@ -22,18 +21,15 @@ class TTSSpeaker(Node):
         self.declare_parameter('voice_name', 'en-CA-ClaraNeural')
         self.declare_parameter('speech_rate', '-10%')
 
-        # ROS interfaces
         self.sub = self.create_subscription(String, '/chat/output', self.chat_output_callback, 10)
-        self.face_pub = self.create_publisher(Int32, '/face_mode', 10)
+        # self.face_pub = self.create_publisher(Int32, '/face_mode', 10)
 
         # --- Precompiled regex for speed
-        # self.task_regex = re.compile(r'Task Manager:\s*(.+)', re.IGNORECASE)
         self.task_regex = re.compile(r'Task Manager:\s*(.+)', re.IGNORECASE | re.DOTALL)
 
 
         # --- Filter keywords and fallback attention sentences
         self.skip_keywords = ["independent task", "plan", "insdependent"]
-        # self.never_speak_words = ["quota", "four", "multi-robot task completed successfully","excellent"]
         self.never_speak_words = ["all the helps are used", "multi-robot task completed successfully","excellent work"]
         
         self.attention_list = [
@@ -42,12 +38,10 @@ class TTSSpeaker(Node):
             # "Here's a little hint for you!",
             # "A small hint coming your way!",
             "Hey, You may try this!",
-            # ""
 
         ]
 
 
-        # --- Queue and worker thread
         self.tts_queue = Queue()
         self.stop_event = threading.Event()
         self.loop = asyncio.new_event_loop()
@@ -72,18 +66,10 @@ class TTSSpeaker(Node):
         if match:
             text = match.group(1).strip()
             lower_text = text.lower()
-            # Sanitize the text for TTS
-
-            # with open("sanitized_output.txt", "a", encoding="utf-8") as file:
-            #     file.write(lower_text + "\n")
 
             sanitized_text = sanitize_for_tts(lower_text)
             self.get_logger().info(f"Sanitized text: {repr(sanitized_text)}")  # Debug log with repr
-            
-            # Save sanitized text to a file
-            # with open("sanitized_output.txt", "a", encoding="utf-8") as file:
-            #     file.write(sanitized_text + "\n")
-            
+                     
             if any(nsw in sanitized_text for nsw in self.never_speak_words):
                 return
 
@@ -140,16 +126,16 @@ class TTSSpeaker(Node):
         except Exception as e:
             self.get_logger().error(f"TTS error: {e}")
         finally:
-            self.publish_face_mode(0)
+            # self.publish_face_mode(0)
             for f in [mp3_path, wav_path]:
                 if f and os.path.exists(f):
                     os.remove(f)
             self.get_logger().info("Speech complete.")
 
-    def publish_face_mode(self, value: int):
-        msg = Int32()
-        msg.data = value
-        self.face_pub.publish(msg)
+    # def publish_face_mode(self, value: int):
+    #     msg = Int32()
+    #     msg.data = value
+    #     self.face_pub.publish(msg)
 
     def destroy_node(self):
         """Shutdown cleanly."""

@@ -32,7 +32,9 @@ setup(
             'task_manager = chatty.task_manager:main',
 
             'speak = chatty.speak:main',
-            'time = chatty.time:main'
+            'time = chatty.time:main',
+
+            'microphone = chatty.microphone:main',
         ],
     },
 )

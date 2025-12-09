@@ -8,7 +8,7 @@ import scipy.signal
 
 class AudioPublisher(Node):
     def __init__(self):
-        super().__init__("audio_publisher")
+        super().__init__("microphone")
 
         # Declare ROS parameters
         self.declare_parameter("device_index", 5)
