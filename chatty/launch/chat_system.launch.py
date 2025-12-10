@@ -49,9 +49,9 @@ def generate_launch_description():
         package='chatty',
         executable='chat_manager',
         name='chat_manager',
-        parameters=[{
-            'config_file': config_file
-        }],
+        # parameters=[{
+        #     'config_file': config_file
+        # }],
         output='screen',
     )
 
@@ -97,8 +97,8 @@ def generate_launch_description():
         output='screen' 
     )
 
-
     # -------------------- Return LaunchDescription --------------------
+
     return LaunchDescription([
         model_arg,
         config_file_arg,

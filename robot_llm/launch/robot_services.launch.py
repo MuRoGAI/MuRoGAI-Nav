@@ -9,39 +9,42 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
 
-    yahboom_robot = Node(
+    holonomic_robot1 = Node(
         package='yahboom_llm',
-        executable='yahboom_llm',
-        name='yahboom_llm_node',
+        executable='holonomic_position_controller_service',
+        name='holonomic_position_controller_1',
         parameters=[{
-            'robot_name': 'cleaning_bot',
+            'namespace': 'r1',
         }],
         output='screen',
     )
 
-    burger_robot = Node(
-        package='turtlebot3_llm',
-        executable='burger_llm',
-        name='burger_llm_node',
+
+    holonomic_robot2 = Node(
+        package='yahboom_llm',
+        executable='holonomic_position_controller_service',
+        name='holonomic_position_controller_2',
         parameters=[{
-            'robot_name': 'delivery_bot',
+            'namespace': 'r2',
         }],
-        output='screen',
+        output='screen',        
     )
 
-    x3_uav_robot = Node(
+
+    drone_1 = Node(
         package='x3_uav_llm', 
-        executable='x3_uav_llm',
-        name='x3_uav_llm_node',
+        executable='drone_position_controller_service',
+        name='drone_position_controller_service',
         parameters=[{
-            'robot_name': 'drone',
+            'namespace': 'r3',
         }],
         output='screen',
     )
 
     return LaunchDescription([
-        burger_robot,
-        x3_uav_robot,
-        yahboom_robot,
+        holonomic_robot1,
+        holonomic_robot2,
+        drone_1,
+
 
     ])

@@ -1,37 +1,7 @@
 *********     NEW EXPERIMNET           ********* 
-[Time: Hours: 00, Minutes: 00, Seconds: 37] Human: go to the door and only then pick towel
-[Time: Hours: 00, Minutes: 00, Seconds: 38] Task Manager:
+[Time: Hours: 00, Minutes: 11, Seconds: 03] Human: Please clean the red curry that has spilled on the floor.
+[Time: Hours: 00, Minutes: 11, Seconds: 06] Task Manager:
 Independent Tasks:
-Burger tasks: go to the door
-Lerobot tasks: pick towel
+Cleaning Bot tasks: clean the red curry spilled on the floor
 multirobot_list: []
-singlerobot_list: [Burger, Lerobot]
-[Time: Hours: 00, Minutes: 01, Seconds: 39] Human: bring me cup from the table
-[Time: Hours: 00, Minutes: 01, Seconds: 41] Task Manager:
-Plan:
-1. Lerobot: STOP
-2. Burger: STOP
-3. User: Bring the cup from the table
-multirobot_list: [Lerobot, Burger]
-singlerobot_list: []
-[Time: Hours: 00, Minutes: 03, Seconds: 17] Human: burger carry the vegetable to lerobot. lerobot pick the vegetable once burger brings it to you.
-[Time: Hours: 00, Minutes: 03, Seconds: 19] Task Manager:
-Plan:
-1. Lerobot: STOP
-2. Burger: STOP
-3. Burger: carry the vegetable to Lerobot
-4. Lerobot: pick the vegetable from Burger
-multirobot_list: [Lerobot, Burger]
-singlerobot_list: []
-[Time: Hours: 00, Minutes: 07, Seconds: 24] Human: burger carry the ball placed on your back to the lerobot . Then lerobot you should pick the ball from the back of burger
-[Time: Hours: 00, Minutes: 07, Seconds: 26] Task Manager:
-Plan:
-1. Lerobot: STOP
-2. Burger: STOP
-3. Burger: carry the ball placed on your back to Lerobot
-4. Lerobot: pick the ball from the back of Burger
-multirobot_list: [Lerobot, Burger]
-singlerobot_list: []
-[Time: Hours: 00, Minutes: 08, Seconds: 14] Task Manager:
- !! Multi-Robot Task Completed Successfully !!.
-
+singlerobot_list: [Cleaning Bot]

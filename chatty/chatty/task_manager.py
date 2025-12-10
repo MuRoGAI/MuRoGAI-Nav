@@ -45,7 +45,7 @@ class TaskManager(Node):
 
         self.robot_state = None
 
-        self.declare_parameter("config_file", "robot_config_assmble_help")
+        self.declare_parameter("config_file", "robot_config_roscon_2025")
         cfg_file_name = self.get_parameter("config_file").get_parameter_value().string_value
         cfg_file = cfg_file_name + '.json'
         self.config_file = cfg_file
@@ -449,12 +449,12 @@ class TaskManager(Node):
         messages.insert(0, {"role": "system", "content": self.system_prompt})
         # ai_output = self.call_openai(messages, debug_label="Allocation")
 
-        try:
-            with open('prompts.txt', "a") as file:
-                file.write(json.dumps(messages, indent=2))
-                file.write("\n")  # optional: add newline for readability            # self.get_logger().info(f"[TaskManager] Loaded {len(self.chat_log)} previous messages.")
-        except Exception as e:
-            self.get_logger().error(f"[TaskManager] Failed to write prompts: {e}")
+        # try:
+        #     with open('prompts.txt', "a") as file:
+        #         file.write(json.dumps(messages, indent=2))
+        #         file.write("\n")  # optional: add newline for readability            # self.get_logger().info(f"[TaskManager] Loaded {len(self.chat_log)} previous messages.")
+        # except Exception as e:
+        #     self.get_logger().error(f"[TaskManager] Failed to write prompts: {e}")
 
         ######################### OPENAI MODELS #########################
 
