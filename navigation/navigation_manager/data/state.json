@@ -1,0 +1,46 @@
+{
+  "states": {
+    "robot1": {
+      "x": 4.0,
+      "y": 6.0,
+      "theta": 0.0
+    },
+    "robot2": {
+      "x": 4.0,
+      "y": 4.0,
+      "theta": 0.0
+    },
+    "robot3": {
+      "x": 5.0,
+      "y": 5.0,
+      "theta": 0.0
+    },
+    "robot4": {
+      "x": 16.0,
+      "y": 8.0,
+      "theta": 3.14
+    },
+    "robot5": {
+      "x": 16.0,
+      "y": 10.0,
+      "theta": 3.14
+    },
+    "robot6": {
+      "x": 15.0,
+      "y": 9.0,
+      "theta": 3.14
+    }
+  },
+  "formations": {
+    "Formation1": [
+      "robot1",
+      "robot2",
+      "robot3"
+    ],
+    "Formation2": [
+      "robot1",
+      "robot2",
+      "robot3"
+    ]
+  }
+}

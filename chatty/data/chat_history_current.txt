@@ -1,7 +1,9 @@
 *********     NEW EXPERIMNET           ********* 
-[Time: Hours: 00, Minutes: 11, Seconds: 03] Human: Please clean the red curry that has spilled on the floor.
-[Time: Hours: 00, Minutes: 11, Seconds: 06] Task Manager:
+[Time: Hours: 00, Minutes: 01, Seconds: 54] Human: robot1 goto juice stall, robot2 goto table3 and robot3 goto table2
+[Time: Hours: 00, Minutes: 01, Seconds: 56] Task Manager:
 Independent Tasks:
-Cleaning Bot tasks: clean the red curry spilled on the floor
+Robot1 tasks: go to juice stall
+Robot2 tasks: go to table3
+Robot3 tasks: go to table2
 multirobot_list: []
-singlerobot_list: [Cleaning Bot]
+singlerobot_list: [Robot1, Robot2, Robot3]

@@ -1,0 +1,198 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <world name="default">
+  <plugin
+    filename="gz-sim-physics-system"
+    name="gz::sim::systems::Physics">
+  </plugin>
+  <plugin
+    filename="gz-sim-user-commands-system"
+    name="gz::sim::systems::UserCommands">
+  </plugin>
+  <plugin
+    filename="gz-sim-scene-broadcaster-system"
+    name="gz::sim::systems::SceneBroadcaster">
+  </plugin>
+  <plugin
+    filename="gz-sim-sensors-system"
+    name="gz::sim::systems::Sensors">
+    <render_engine>ogre2</render_engine>
+  </plugin>
+  <plugin
+    filename="gz-sim-imu-system"
+    name="gz::sim::systems::Imu">
+  </plugin>
+
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <surface>
+            <friction>
+              <ode><mu>1.0</mu><mu2>1.0</mu2></ode>
+            </friction>
+          </surface>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <specular>0.8 0.8 0.8 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>1 1 1 1</diffuse>
+      <specular>0.5 0.5 0.5 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+
+    <physics name="default_physics" type="dart">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <dart>
+        <solver>
+          <solver_type>dantzig</solver_type>
+        </solver>
+        <collision_detector>bullet</collision_detector>
+      </dart>
+    </physics>
+
+
+    <!-- <model name="test_cube">
+      <pose>0.4 -0.11 0.05 0 0 0</pose>
+      <static>false</static>
+      <link name="test_cube_link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.05</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.05</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 0 0 1</ambient>
+            <diffuse>1 0 0 1</diffuse>
+          </material>
+        </visual>
+        <inertial>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.000042</ixx>
+            <iyy>0.000042</iyy>
+            <izz>0.000042</izz>
+          </inertia>
+        </inertial>
+      </link>
+    </model>
+      
+  <model name="test_cylinder">
+    <pose>0.3 0.315 0.025 0 0 0</pose>
+    <static>false</static>
+    <link name="test_cylinder_link">
+      <collision name="collision">
+        <geometry>
+          <cylinder>
+            <radius>0.025</radius>
+            <length>0.05</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <cylinder>
+            <radius>0.025</radius>
+            <length>0.05</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0 0 1 1</ambient>
+          <diffuse>0 0 1 1</diffuse>
+        </material>
+      </visual>
+      <inertial>
+        <mass>0.05</mass>
+        <inertia>
+          <ixx>0.00001302</ixx>
+          <iyy>0.00001302</iyy>
+          <izz>0.00001562</izz>
+        </inertia>
+      </inertial>
+    </link>
+  </model> -->
+
+
+  </world>
+</sdf>
+
+
+
+<!-- ign topic -t "/arm_cmds" -m ignition.msgs.JointTrajectory -p '
+joint_names: "ur_joint1"
+joint_names: "ur_joint2"
+joint_names: "ur_joint3"
+joint_names: "ur_joint4"
+joint_names: "ur_joint5"
+joint_names: "ur_joint6"
+points {
+  positions: -1.57
+  positions: -0.95
+  positions: 1.57
+  positions: 1.0
+  positions: 1.57
+  positions: 0.0
+  time_from_start {
+    sec: 15
+    nsec: 0
+  }
+}' -->
+
+
+<!-- ign topic -t "/arm_cmds" -m ignition.msgs.JointTrajectory -p '
+joint_names: "ur_joint1"
+joint_names: "ur_joint2"
+joint_names: "ur_joint3"
+joint_names: "ur_joint4"
+joint_names: "ur_joint5"
+joint_names: "ur_joint6"
+points {
+  positions: -0.5
+  positions: -0.85
+  positions: 1.57
+  positions: 1.0
+  positions: 1.57
+  positions: 0.0
+  time_from_start {
+    sec: 15
+    nsec: 0
+  }
+}' -->

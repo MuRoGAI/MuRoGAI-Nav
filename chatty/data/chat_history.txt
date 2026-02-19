@@ -1316,3 +1316,3599 @@ Independent Tasks:
 Cleaning Bot tasks: clean the red curry spilled on the floor
 multirobot_list: []
 singlerobot_list: [Cleaning Bot]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 45] Human: deluver the pepsi to the table wheere that chilld is sitting
+[Time: Hours: 00, Minutes: 00, Seconds: 48] Task Manager:
+Independent Tasks:
+Drone tasks: Identify the table where the child is sitting
+
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 01, Seconds: 17] Human: deliver the water bottle to table 1
+[Time: Hours: 00, Minutes: 01, Seconds: 20] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: Deliver the water bottle to table 1
+
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+[Time: Hours: 00, Minutes: 01, Seconds: 48] Human: clean the place
+[Time: Hours: 00, Minutes: 01, Seconds: 50] Task Manager:
+Independent Tasks:
+Cleaning Bot tasks: Clean the place
+
+multirobot_list: []
+singlerobot_list: [Cleaning Bot]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Human: deliver the nonveg food to the child
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 51] Human: serve non veg food to child
+[Time: Hours: 00, Minutes: 02, Seconds: 17] Task Manager:
+Error from GPT.
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Human: serve the child with chicken
+[Time: Hours: 00, Minutes: 01, Seconds: 26] Task Manager:
+Error from GPT.
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 52] Human: serve the child with nonveg food
+[Time: Hours: 00, Minutes: 01, Seconds: 54] Task Manager:
+Independent Tasks:
+Drone tasks: identify the location of the child who needs to be served, identify the location of non-vegetarian food stall
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 02, Seconds: 04] Drone (msg): The child who needs to be served is sitting at table 3 (from the left). The non-vegetarian food stall is stall 2 (middle stall from the left).
+[Time: Hours: 00, Minutes: 02, Seconds: 06] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: pick up non-vegetarian food from stall 2, deliver food to table 3
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+[Time: Hours: 00, Minutes: 05, Seconds: 54] Human: clear the table
+[Time: Hours: 00, Minutes: 05, Seconds: 56] Task Manager:
+Independent Tasks:
+Cleaning Bot tasks: clear the table
+multirobot_list: []
+singlerobot_list: [Cleaning Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 03, Seconds: 08] Human: serve the kid with chicken
+[Time: Hours: 00, Minutes: 03, Seconds: 11] Task Manager:
+Independent Tasks:
+Drone tasks: Identify the stall number for chicken
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 03, Seconds: 16] Drone (msg): The chicken is at stall number 1.
+[Time: Hours: 00, Minutes: 03, Seconds: 19] Task Manager:
+Plan:
+1. Delivery Bot: STOP
+2. Delivery Bot: Go to stall number 1
+3. Delivery Bot: Pick up chicken
+4. Delivery Bot: Serve the kid with chicken
+multirobot_list: [Delivery Bot]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Human: serve the kid with chicken
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Task Manager:
+Independent Tasks:
+Drone tasks: Identify the location of the kid and the stall number for chicken
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 28] Drone (msg): - The kid is located near table 1 (far left).
+- The chicken stall is stall number 1 (far left).
+[Time: Hours: 00, Minutes: 00, Seconds: 30] Task Manager:
+Plan:
+1. Delivery Bot: STOP
+2. Delivery Bot: Pick up chicken from stall number 1
+3. Delivery Bot: Deliver chicken to the kid at table 1
+multirobot_list: [Delivery Bot]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Human: serve the kid with chicken
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Task Manager:
+Independent Tasks:
+Drone tasks: identify the location of the kid and the stall number for chicken
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 28] Drone (msg): The kid is located near stall 1 (leftmost green figure). The chicken is at stall number 3 (rightmost, with a chicken image).
+[Time: Hours: 00, Minutes: 00, Seconds: 29] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: deliver chicken from stall number 3 to the kid near stall 1
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Human: serve the kid with chicken meal
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Task Manager:
+Independent Tasks:
+Drone tasks: identify the stall number for the chicken meal
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Drone (msg): The chicken meal is at stall number 2 (middle stall).
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: Pick up chicken meal from stall number 2, Deliver chicken meal to the kid
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Human: serve teh child with chiceken meal
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Task Manager:
+Independent Tasks:
+Drone tasks: identify the location of the child and the stall number for the chicken meal
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 25] Drone (msg): The child is seated at table 2 (second from the left). The chicken meal is at stall 2 (middle stall).
+[Time: Hours: 00, Minutes: 00, Seconds: 27] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: deliver the chicken meal from stall 2 to table 2
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+[Time: Hours: 00, Minutes: 02, Seconds: 58] Human: clear the table
+[Time: Hours: 00, Minutes: 03, Seconds: 00] Task Manager:
+Plan:
+1. Delivery Bot: STOP
+2. Cleaning Bot: clean the table at table 2
+multirobot_list: [Delivery Bot, Cleaning Bot]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 24] Human: serve the child with chicken meal
+[Time: Hours: 00, Minutes: 00, Seconds: 26] Task Manager:
+Independent Tasks:
+Drone tasks: Identify the location of the child and the stall number for chicken meal
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 36] Drone (msg): The child is located near the first table from the left. The chicken meal is at stall number 1 (the leftmost stall with a chicken icon).
+[Time: Hours: 00, Minutes: 00, Seconds: 39] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: Serve the child with chicken meal from stall number 1
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+[Time: Hours: 00, Minutes: 02, Seconds: 28] Human: clear the table
+[Time: Hours: 00, Minutes: 02, Seconds: 30] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: Clear the table
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 39] Human: serve the chicken to kid
+[Time: Hours: 00, Minutes: 00, Seconds: 41] Task Manager:
+Independent Tasks:
+Drone tasks: Identify the stall number for chicken serving
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 48] Drone (msg): The chicken is being served at stall number 1 (leftmost stall).
+[Time: Hours: 00, Minutes: 00, Seconds: 50] Task Manager:
+Plan:
+1. Delivery Bot: STOP
+2. Delivery Bot: Pick up chicken from stall number 1
+3. Delivery Bot: Deliver the chicken to the kid
+multirobot_list: [Delivery Bot]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 55] Human: serve the child with chicken
+[Time: Hours: 00, Minutes: 01, Seconds: 58] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: pick up chicken from Stall 2, deliver chicken to the child
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 27] Human: serve teh child with chicken
+[Time: Hours: 00, Minutes: 00, Seconds: 29] Task Manager:
+Independent Tasks:
+Drone tasks: provide information about the location of the child
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 35] Drone (msg): The child is sitting at table 2, in the left seat.
+[Time: Hours: 00, Minutes: 00, Seconds: 36] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: pick up chicken from Stall 2, deliver chicken to table 2, left seat
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Human: serve teh child with chicken
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Task Manager:
+Independent Tasks:
+Drone tasks: Identify table number where the child is seated
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 25] Drone (msg): The child is sitting at table 2.
+[Time: Hours: 00, Minutes: 00, Seconds: 27] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: Serve chicken to the child at table 2
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Human: serve child with chicken
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Task Manager:
+Independent Tasks:
+Drone tasks: identify table number where the child is seated
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Drone (msg): The child is sitting at table 2.
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: collect chicken from Stall 2, deliver chicken to table 2
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+[Time: Hours: 00, Minutes: 02, Seconds: 53] Human: clear the table
+[Time: Hours: 00, Minutes: 02, Seconds: 55] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: clear table 2
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+[Time: Hours: 00, Minutes: 06, Seconds: 21] Human: clear the table again
+[Time: Hours: 00, Minutes: 06, Seconds: 22] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: clear table 2
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+[Time: Hours: 00, Minutes: 20, Seconds: 09] Human: clear the table again
+[Time: Hours: 00, Minutes: 20, Seconds: 11] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: clear table 2
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+[Time: Hours: 00, Minutes: 24, Seconds: 02] Human: clear the table again
+[Time: Hours: 00, Minutes: 24, Seconds: 03] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: clear table 2
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Human: get some drinks to table 3
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Task Manager:
+Independent Tasks:
+Drone tasks: Provide stall number for drinks
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Drone (msg): There is no visible information in the image to determine the stall number for drinks.
+[Time: Hours: 00, Minutes: 00, Seconds: 23] Task Manager:
+Plan:
+1. Delivery Bot: STOP
+2. Drone: STOP
+3. User: Please provide the stall number for drinks as the drone couldn't determine it.
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Human: get the lemonade to table 3
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Task Manager:
+Independent Tasks:
+Drone: Identify the location of table 3
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Drone (msg): There is no table visible in the image.
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Task Manager:
+Independent Tasks:
+Drone: Identify the location of table 3 again
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 25] Drone (msg): The image is blank, so I cannot locate table 3.
+[Time: Hours: 00, Minutes: 00, Seconds: 27] Task Manager:
+Independent Tasks:
+Drone: Identify the location of table 3 once more
+multirobot_list: []
+singlerobot_list: [Drone]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Human: get the lemonade to table 3
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Task Manager:
+Independent Tasks:
+Drone tasks: identify the location of stall with lemonade
+multirobot_list: []
+singlerobot_list: [Drone]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Human: get the lemonade to table 3
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Task Manager:
+Independent Tasks:
+Drone tasks: Identify the location of table 3
+multirobot_list: []
+singlerobot_list: [Drone]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Human: get the lemonde to child
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Task Manager:
+Independent Tasks:
+Drone tasks: Identify the location of the child
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 23] Drone (msg): There is no child visible in the image.
+[Time: Hours: 00, Minutes: 00, Seconds: 24] Task Manager:
+Plan:
+1. Drone: STOP
+2. Delivery Bot: STOP
+3. User: Locate the child manually or provide further instructions. 
+
+multirobot_list: [Drone, Delivery Bot]
+singlerobot_list: []
+[Time: Hours: 00, Minutes: 00, Seconds: 31] Human: table 3
+[Time: Hours: 00, Minutes: 00, Seconds: 32] Task Manager:
+Plan:
+1. Drone: STOP
+2. Delivery Bot: STOP
+3. User: Locate the child manually or provide further instructions. 
+
+multirobot_list: [Drone, Delivery Bot]
+singlerobot_list: []
+[Time: Hours: 00, Minutes: 00, Seconds: 43] Human: child is in teh table3
+[Time: Hours: 00, Minutes: 00, Seconds: 44] Task Manager:
+Plan:
+1. Delivery Bot: STOP
+2. Drone: STOP
+3. User: Place the lemonade on the Delivery Bot at Stall 3
+4. Delivery Bot: Deliver the lemonade to Table 3
+
+multirobot_list: [Delivery Bot, Drone]
+singlerobot_list: []
+[Time: Hours: 00, Minutes: 00, Seconds: 51] Human: its a juice
+[Time: Hours: 00, Minutes: 00, Seconds: 52] Task Manager:
+Plan:
+1. Delivery Bot: STOP
+2. Drone: STOP
+3. User: Place the juice on the Delivery Bot at Stall 3
+4. Delivery Bot: Deliver the juice to Table 3
+
+multirobot_list: [Delivery Bot, Drone]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Human: get the lemonade to child
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Task Manager:
+Independent Tasks:
+Drone tasks: identify the location of the child
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Drone (msg): There is no child visible in the image. The image is blank.
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Task Manager:
+Independent Tasks:
+Drone tasks: Where is the child located?
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Drone (msg): There is no child visible in the image.
+[Time: Hours: 00, Minutes: 00, Seconds: 24] Task Manager:
+Independent Tasks:
+Drone tasks: continue searching for the child
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 29] Drone (msg): There is no child visible in the image.
+[Time: Hours: 00, Minutes: 00, Seconds: 30] Task Manager:
+Could you please provide more information or specify the location of the child?
+[Time: Hours: 00, Minutes: 00, Seconds: 37] Human: child is in the 2nd table
+[Time: Hours: 00, Minutes: 00, Seconds: 39] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: deliver lemonade from Stall 3 to the child at the 2nd table
+singlerobot_list: [Delivery Bot]
+[Time: Hours: 00, Minutes: 03, Seconds: 12] Human: clear the table
+[Time: Hours: 00, Minutes: 03, Seconds: 13] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: clear the table at the 2nd table
+singlerobot_list: [Delivery Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Human: get something to drink to that child
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Task Manager:
+Independent Tasks:
+Drone tasks: Identify the location of the child
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 47] Human: i think child is at table 2
+[Time: Hours: 00, Minutes: 00, Seconds: 49] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: Deliver drink from Stall 3 to Table 2
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 23] Human: get some drinks to gentleman
+[Time: Hours: 00, Minutes: 01, Seconds: 26] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: go to Stall 3, pick up drinks, deliver drinks to the gentleman
+singlerobot_list: [Delivery Bot]
+[Time: Hours: 00, Minutes: 02, Seconds: 16] Human: delivery robot stop
+[Time: Hours: 00, Minutes: 02, Seconds: 17] Task Manager:
+Plan:
+1. Delivery Bot: STOP
+multirobot_list: [Delivery Bot]
+singlerobot_list: []
+[Time: Hours: 00, Minutes: 02, Seconds: 18] Task Manager:
+ !! Multi-Robot Task Completed Successfully !!.
+
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Human: clean the place
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Task Manager:
+Independent Tasks:
+Cleaning Bot tasks: clean the floors
+multirobot_list: []
+singlerobot_list: [Cleaning Bot]
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Human: stop cleaning
+[Time: Hours: 00, Minutes: 00, Seconds: 23] Task Manager:
+Plan:
+1. Cleaning Bot: STOP
+multirobot_list: [Cleaning Bot]
+singlerobot_list: []
+[Time: Hours: 00, Minutes: 00, Seconds: 24] Task Manager:
+ !! Multi-Robot Task Completed Successfully !!.
+
+[Time: Hours: 00, Minutes: 01, Seconds: 03] Human: get the chicken biriyani to table3
+[Time: Hours: 00, Minutes: 01, Seconds: 06] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: get the chicken biriyani from Stall 2, deliver it to Table 3
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+[Time: Hours: 00, Minutes: 01, Seconds: 20] Human: stop the serving chicken
+[Time: Hours: 00, Minutes: 01, Seconds: 21] Task Manager:
+Plan:
+1. Delivery Bot: STOP
+multirobot_list: [Delivery Bot]
+singlerobot_list: []
+[Time: Hours: 00, Minutes: 01, Seconds: 21] Task Manager:
+ !! Multi-Robot Task Completed Successfully !!.
+
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 38] Human: get some juice to teable 1
+[Time: Hours: 00, Minutes: 00, Seconds: 41] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: get juice from Stall 3, deliver juice to Table 1
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+[Time: Hours: 00, Minutes: 00, Seconds: 54] Human: stop
+[Time: Hours: 00, Minutes: 00, Seconds: 56] Task Manager:
+Plan:
+1. Delivery Bot: STOP
+multirobot_list: [Delivery Bot]
+singlerobot_list: []
+[Time: Hours: 00, Minutes: 00, Seconds: 56] Task Manager:
+ !! Multi-Robot Task Completed Successfully !!.
+
+[Time: Hours: 00, Minutes: 01, Seconds: 23] Human: get some veg food to table 1
+[Time: Hours: 00, Minutes: 01, Seconds: 26] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: get vegetarian food from Stall 1, deliver vegetarian food to Table 1
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+[Time: Hours: 00, Minutes: 02, Seconds: 45] Human: actually table 1 needs nonveg food
+[Time: Hours: 00, Minutes: 02, Seconds: 48] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: get non-vegetarian food from Stall 2, deliver non-vegetarian food to Table 1
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+[Time: Hours: 00, Minutes: 02, Seconds: 57] Human: stop
+[Time: Hours: 00, Minutes: 02, Seconds: 59] Task Manager:
+Plan:
+1. Delivery Bot: STOP
+multirobot_list: [Delivery Bot]
+singlerobot_list: []
+[Time: Hours: 00, Minutes: 02, Seconds: 59] Task Manager:
+ !! Multi-Robot Task Completed Successfully !!.
+
+[Time: Hours: 00, Minutes: 03, Seconds: 33] Human: serve juice to gentleman sitting at table 2
+[Time: Hours: 00, Minutes: 03, Seconds: 35] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: get juice from Stall 3, deliver juice to Table 2
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Human: drone goto (5, 0, 3)
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Task Manager:
+Independent Tasks:
+drone tasks: goto (5, 0, 3)
+multirobot_list: []
+singlerobot_list: [drone]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 41] Human: drone goto (5,0, 3)
+[Time: Hours: 00, Minutes: 00, Seconds: 43] Task Manager:
+Independent Tasks:
+Drone tasks: goto (5,0, 3)
+multirobot_list: []
+singlerobot_list: [Drone]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 54] Human: drone goto (5, 0, 3)
+[Time: Hours: 00, Minutes: 00, Seconds: 57] Task Manager:
+Independent Tasks:
+Drone tasks: goto (5, 0, 3)
+multirobot_list: []
+singlerobot_list: [Drone]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 31] Human: drone goto (5, 0 ,3)
+[Time: Hours: 00, Minutes: 00, Seconds: 33] Task Manager:
+Independent Tasks:
+drone tasks: goto (5, 0, 3)
+multirobot_list: []
+singlerobot_list: [drone]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Human: serve the child with salad
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+Drone tasks: Identify the location of the child who needs to be served with salad
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Drone (msg): The child who needs to be served with salad is seated at table 2 (second from the left).
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: Pick up salad from Stall 1, Deliver salad to the child at Table 2
+singlerobot_list: [Delivery Bot]
+[Time: Hours: 00, Minutes: 00, Seconds: 56] Human: Please clean the red curry that has spilled on the floor
+[Time: Hours: 00, Minutes: 00, Seconds: 58] Task Manager:
+Independent Tasks:
+Cleaning Bot tasks: Clean the red curry spilled on the floor
+singlerobot_list: [Cleaning Bot]
+[Time: Hours: 00, Minutes: 02, Seconds: 37] Human: child is done eating can u clean teh table
+[Time: Hours: 00, Minutes: 02, Seconds: 38] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: Clear the table at Table 2
+singlerobot_list: [Delivery Bot]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 08, Seconds: 18] Human: serve the child with salad
+[Time: Hours: 00, Minutes: 08, Seconds: 21] Task Manager:
+Independent Tasks:
+Drone tasks: Identify the location of the child
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 08, Seconds: 27] Drone (msg): The child is seated at table 2.
+[Time: Hours: 00, Minutes: 08, Seconds: 30] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: Retrieve salad from Stall 1, Deliver salad to table 2
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 50] Human: serve salad to the child
+[Time: Hours: 00, Minutes: 01, Seconds: 52] Task Manager:
+Independent Tasks:
+Drone tasks: Identify child location
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 01, Seconds: 57] Drone (msg): The child is seated at table 2 (second from the left), in the middle chair.
+[Time: Hours: 00, Minutes: 01, Seconds: 59] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: Serve salad to the child at table 2
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 02, Seconds: 23] Human: serve salad to the child
+[Time: Hours: 00, Minutes: 02, Seconds: 25] Task Manager:
+Independent Tasks:
+Drone tasks: determine the location of the child
+
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 02, Seconds: 30] Drone (msg): The child is seated at table 2, which is the second table from the left.
+[Time: Hours: 00, Minutes: 02, Seconds: 33] Task Manager:
+Plan:
+1. Delivery Bot: STOP
+2. Delivery Bot: Pick up salad from Stall 1
+3. Delivery Bot: Deliver salad to the child at Table 2
+
+multirobot_list: [Delivery Bot]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 17] Human: serve salad to the child
+[Time: Hours: 00, Minutes: 01, Seconds: 19] Task Manager:
+Independent Tasks:
+Drone tasks: Identify the location of the child
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 01, Seconds: 27] Drone (msg): The child is seated at table 1 (from the left), in the chair closest to the stall area.
+[Time: Hours: 00, Minutes: 01, Seconds: 28] Task Manager:
+Plan:
+1. Delivery Bot: STOP
+2. Delivery Bot: Pick up salad from Stall 1
+3. Delivery Bot: Deliver salad to the child at Table 1
+multirobot_list: [Delivery Bot]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Human: serve teh child with salad
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Task Manager:
+Independent Tasks:
+Drone tasks: identify the location of the child who needs to be served with salad
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Human: he is at table 2
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: serve salad to the child at table 2
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: serve salad to teh child
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+Independent Tasks:
+Drone tasks: identify the location of the child
+
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Human: chikd is at table 2
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: serve salad to the child at table 2
+
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 01] Human: serve salad to the child
+[Time: Hours: 00, Minutes: 01, Seconds: 03] Task Manager:
+Independent Tasks:
+Drone tasks: identify the location of the child
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 01, Seconds: 09] Drone (msg): The child is seated at table 2 (second from the left), in the middle seat.
+[Time: Hours: 00, Minutes: 01, Seconds: 10] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: serve salad to the child at table 2
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+[Time: Hours: 00, Minutes: 03, Seconds: 39] Human: clean the table
+[Time: Hours: 00, Minutes: 03, Seconds: 42] Task Manager:
+Independent Tasks:
+Cleaning Bot tasks: clean the table
+multirobot_list: []
+singlerobot_list: [Cleaning Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 53] Human: serve salad to the child
+[Time: Hours: 00, Minutes: 00, Seconds: 55] Task Manager:
+Independent Tasks:
+Drone tasks: identify the location of the child
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 01, Seconds: 01] Drone (msg): The child is seated at table 1, stall 2 (the second seat from the left).
+[Time: Hours: 00, Minutes: 01, Seconds: 03] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: serve salad to the child at table 1
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 34] Human: serve salad to the child
+[Time: Hours: 00, Minutes: 01, Seconds: 35] Task Manager:
+Independent Tasks:
+Drone tasks: Identify the location of the child
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 01, Seconds: 42] Drone (msg): The child is seated at table 2, on the left side.
+[Time: Hours: 00, Minutes: 01, Seconds: 44] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: Retrieve salad from Stall 1, Serve salad to the child at Table 2
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+[Time: Hours: 00, Minutes: 03, Seconds: 53] Human: clear the table
+[Time: Hours: 00, Minutes: 03, Seconds: 55] Task Manager:
+Independent Tasks:
+Delivery Bot tasks: Clear the table
+multirobot_list: []
+singlerobot_list: [Delivery Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 03, Seconds: 02] Human: please clean the red curry that has spilled on the floor
+[Time: Hours: 00, Minutes: 03, Seconds: 04] Task Manager:
+Independent Tasks:
+Cleaning Bot tasks: clean the red curry spilled on the floor
+multirobot_list: []
+singlerobot_list: [Cleaning Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 03, Seconds: 32] Human: please clean the red curry that has spilled on the floor
+[Time: Hours: 00, Minutes: 03, Seconds: 33] Task Manager:
+Independent Tasks:
+Cleaning Bot tasks: clean the red curry spilled on the floor
+multirobot_list: []
+singlerobot_list: [Cleaning Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 02, Seconds: 42] Human: please clean the red curry that has spilled on the floor
+[Time: Hours: 00, Minutes: 02, Seconds: 44] Task Manager:
+Independent Tasks:
+Cleaning_Bot tasks: clean the red curry that has spilled on the floor
+multirobot_list: []
+singlerobot_list: [Cleaning_Bot]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 03, Seconds: 50] Human: please clean the red curry that has spilled on the floor
+[Time: Hours: 00, Minutes: 03, Seconds: 53] Task Manager:
+Independent Tasks:
+Cleaning Bot tasks: clean the red curry spilled on the floor
+multirobot_list: []
+singlerobot_list: [Cleaning Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 02, Seconds: 29] Human: please clean the red curry that has spilled on the floor
+[Time: Hours: 00, Minutes: 02, Seconds: 30] Task Manager:
+Independent Tasks:
+Cleaning Bot tasks: clean the red curry spilled on the floor
+multirobot_list: []
+singlerobot_list: [Cleaning Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Human: clean the floor
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Task Manager:
+Independent Tasks:
+Cleaning Bot tasks: clean the floor
+multirobot_list: []
+singlerobot_list: [Cleaning Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Human: clena the area
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Task Manager:
+Independent Tasks:
+Cleaning Bot tasks: clean the area
+multirobot_list: []
+singlerobot_list: [Cleaning Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Human: clean the are
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Task Manager:
+Independent Tasks:
+Cleaning Bot tasks: clean the area
+multirobot_list: []
+singlerobot_list: [Cleaning Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Human: clean the area
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Task Manager:
+Independent Tasks:
+Cleaning Bot tasks: clean the area
+multirobot_list: []
+singlerobot_list: [Cleaning Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: clean the area
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+Independent Tasks:
+Cleaning Bot tasks: clean the area
+multirobot_list: []
+singlerobot_list: [Cleaning Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 04, Seconds: 01] Human: burger1, burger 2 goto fridge in formation
+[Time: Hours: 00, Minutes: 04, Seconds: 04] Task Manager:
+Independent Tasks:
+Team 1: [burger1, burger2]: goto fridge in formation
+multirobot_list: []
+singlerobot_list: [Team 1]
+[Time: Hours: 00, Minutes: 04, Seconds: 46] Human: burger3 goto dishwasher
+[Time: Hours: 00, Minutes: 04, Seconds: 48] Task Manager:
+Independent Tasks:
+burger3 tasks: goto dishwasher
+multirobot_list: []
+singlerobot_list: [burger3]
+[Time: Hours: 00, Minutes: 08, Seconds: 08] Human: burger3 goto fridge
+[Time: Hours: 00, Minutes: 08, Seconds: 11] Task Manager:
+Plan:
+1. burger3: STOP
+2. Team 1: [burger1, burger2]: STOP
+3. burger3: goto fridge
+4. Team 1: [burger1, burger2]: resume goto fridge in formation
+multirobot_list: [burger3, Team 1]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Human: burger2 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Task Manager:
+Independent Tasks:
+Burger2 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Human: burgre2 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Task Manager:
+Independent Tasks:
+Burger2 tasks: go to fridge
+multirobot_list: []
+singlerobot_list: [Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Human: burger2 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
+Independent Tasks:
+Burger2 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [Burger2]
+[Time: Hours: 00, Minutes: 00, Seconds: 33] Human: burger1 goto round table burger3 goto children table
+[Time: Hours: 00, Minutes: 00, Seconds: 36] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto round table
+Burger3 tasks: goto children table
+multirobot_list: []
+singlerobot_list: [Burger1, Burger3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 28] Human: burger1, burger2, goto fridge and round table
+[Time: Hours: 00, Minutes: 00, Seconds: 32] Task Manager:
+Independent Tasks:
+Team 1: [burger1, burger2]: goto fridge, goto round table
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Human: burger1 goto fridge, burger2 goto childrens table
+[Time: Hours: 00, Minutes: 00, Seconds: 24] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+Burger2 tasks: goto childrens table
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+[Time: Hours: 00, Minutes: 04, Seconds: 37] Human: burger1 goto fridge, burger2 goto childrens table
+[Time: Hours: 00, Minutes: 04, Seconds: 39] Task Manager:
+Both tasks for Burger1 and Burger2 have already been completed. There is no need to repeat them.
+[Time: Hours: 00, Minutes: 04, Seconds: 50] Human: assign teh same task again
+[Time: Hours: 00, Minutes: 04, Seconds: 54] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+Burger2 tasks: goto childrens table
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Human: burger1 goto fridge, burger2 goto childrens table
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+Burger2 tasks: goto children's table
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Human: burger1 goto fridge, burger2 goto childrens table
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+Burger2 tasks: goto childrens table
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Human: burger1 goto fridge, burger2 goto childrens table
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+Burger2 tasks: goto children's table
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 02] Human: burger1 goto fridge, burger2 goto childrens table
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Task Manager:
+Independent Tasks:
+Burger1 tasks: go to fridge
+Burger2 tasks: go to children's table
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 02] Human: burger1 goto fridge, burger2 goto childrens table
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+Burger2 tasks: goto children's table
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Human: burger1 goto fridge, burger2 goto children table
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+Burger2 tasks: goto children table
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Human: burger1 goto fridge, burger2 goto children tabl
+[Time: Hours: 00, Minutes: 00, Seconds: 24] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+Burger2 tasks: goto children table
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 28] Human: burger1 goto fridge, burger2 goto children table
+[Time: Hours: 00, Minutes: 00, Seconds: 30] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+Burger2 tasks: goto children table
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 26] Human: burger1 goto fridge, burger2 goto childrens table
+[Time: Hours: 00, Minutes: 00, Seconds: 27] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+Burger2 tasks: goto children's table
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Human: burger1 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [Burger1]
+[Time: Hours: 00, Minutes: 01, Seconds: 54] Human: burger2 goto fridge
+[Time: Hours: 00, Minutes: 01, Seconds: 55] Task Manager:
+Independent Tasks:
+Burger2 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Human: burger1 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [Burger1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Human: burger1 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [Burger1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Human: burger1 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [Burger1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Human: burger1 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Task Manager:
+Independent Tasks:
+burger1 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [burger1]
+[Time: Hours: 00, Minutes: 00, Seconds: 49] Human: burger2 goto round table
+[Time: Hours: 00, Minutes: 00, Seconds: 50] Task Manager:
+Independent Tasks:
+burger2 tasks: goto round table
+multirobot_list: []
+singlerobot_list: [burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 36] Human: burger1 goto fridge gurger 2 goto round table
+[Time: Hours: 00, Minutes: 00, Seconds: 40] Task Manager:
+Independent Tasks:
+Burger1 tasks: go to fridge
+Burger2 tasks: go to round table
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: burger1 goto fridge gurger 2 goto round table
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
+Independent Tasks:
+Burger1 tasks: go to fridge
+Burger2 tasks: go to round table
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Human: burger2 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Task Manager:
+Independent Tasks:
+Burger2 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [Burger2]
+[Time: Hours: 00, Minutes: 00, Seconds: 38] Human: burger1 goto round table
+[Time: Hours: 00, Minutes: 00, Seconds: 40] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto round table
+multirobot_list: []
+singlerobot_list: [Burger1]
+[Time: Hours: 00, Minutes: 01, Seconds: 04] Human: burger1 goto round table
+[Time: Hours: 00, Minutes: 01, Seconds: 06] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto round table
+multirobot_list: []
+singlerobot_list: [Burger1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Human: burger1 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Task Manager:
+Independent Tasks:
+burger1 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [burger1]
+[Time: Hours: 00, Minutes: 00, Seconds: 57] Human: burger1 goto round table
+[Time: Hours: 00, Minutes: 00, Seconds: 58] Task Manager:
+Independent Tasks:
+burger1 tasks: goto round table
+multirobot_list: []
+singlerobot_list: [burger1]
+[Time: Hours: 00, Minutes: 05, Seconds: 48] Human: burger1 goto dishwasher
+[Time: Hours: 00, Minutes: 05, Seconds: 50] Task Manager:
+Independent Tasks:
+burger1 tasks: goto dishwasher
+multirobot_list: []
+singlerobot_list: [burger1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Human: burger 1 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
+Independent Tasks:
+Burger1 tasks: go to fridge
+multirobot_list: []
+singlerobot_list: [Burger1]
+[Time: Hours: 00, Minutes: 01, Seconds: 29] Human: burger2 goto dishwasher
+[Time: Hours: 00, Minutes: 01, Seconds: 31] Task Manager:
+Independent Tasks:
+Burger2 tasks: go to dishwasher
+multirobot_list: []
+singlerobot_list: [Burger2]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: brger1 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Task Manager:
+Independent Tasks:
+Burger1 tasks: go to fridge
+multirobot_list: []
+singlerobot_list: [Burger1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Human: burger1 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+burger1 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [burger1]
+[Time: Hours: 00, Minutes: 00, Seconds: 51] Human: burger2 goto dishwasher
+[Time: Hours: 00, Minutes: 00, Seconds: 55] Task Manager:
+Independent Tasks:
+burger2 tasks: goto dishwasher
+multirobot_list: []
+singlerobot_list: [burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 44] Human: burger1 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 46] Task Manager:
+Independent Tasks:
+burger1 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [burger1]
+[Time: Hours: 00, Minutes: 03, Seconds: 47] Human: burger2 goto round table
+[Time: Hours: 00, Minutes: 03, Seconds: 48] Task Manager:
+Independent Tasks:
+burger2 tasks: goto round table
+multirobot_list: []
+singlerobot_list: [burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Human: burger2 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+Independent Tasks:
+Burger2 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [Burger2]
+[Time: Hours: 00, Minutes: 00, Seconds: 44] Human: burger1 goto children table
+[Time: Hours: 00, Minutes: 00, Seconds: 46] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto children table
+multirobot_list: []
+singlerobot_list: [Burger1]
+[Time: Hours: 00, Minutes: 10, Seconds: 29] Human: burger2 goto fridge
+[Time: Hours: 00, Minutes: 10, Seconds: 32] Task Manager:
+Burger2 has already completed the task to go to the fridge. No further action is needed.
+[Time: Hours: 00, Minutes: 10, Seconds: 57] Human: burger3 goto fridge
+[Time: Hours: 00, Minutes: 10, Seconds: 59] Task Manager:
+Independent Tasks:
+Burger3 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [Burger3]
+[Time: Hours: 00, Minutes: 11, Seconds: 28] Human: burger1 goto round table
+[Time: Hours: 00, Minutes: 11, Seconds: 29] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto round table
+multirobot_list: []
+singlerobot_list: [Burger1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: burger1 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
+Independent Tasks:
+burger1 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [burger1]
+[Time: Hours: 00, Minutes: 00, Seconds: 28] Human: burger2 goto dishwasher
+[Time: Hours: 00, Minutes: 00, Seconds: 30] Task Manager:
+Independent Tasks:
+burger2 tasks: goto dishwasher
+multirobot_list: []
+singlerobot_list: [burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Human: burger1 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [Burger1]
+[Time: Hours: 00, Minutes: 00, Seconds: 30] Human: burger2 goto dishwasher
+[Time: Hours: 00, Minutes: 00, Seconds: 31] Task Manager:
+Independent Tasks:
+Burger2 tasks: goto dishwasher
+multirobot_list: []
+singlerobot_list: [Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: burger1 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [Burger1]
+[Time: Hours: 00, Minutes: 00, Seconds: 26] Human: burger2 goto dishwasher
+[Time: Hours: 00, Minutes: 00, Seconds: 27] Task Manager:
+Independent Tasks:
+Burger2 tasks: goto dishwasher
+multirobot_list: []
+singlerobot_list: [Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Human: burger1 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [Burger1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 32] Human: burger1 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 34] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [Burger1]
+[Time: Hours: 00, Minutes: 01, Seconds: 06] Human: burger2 goto dishwasher
+[Time: Hours: 00, Minutes: 01, Seconds: 07] Task Manager:
+Independent Tasks:
+Burger2 tasks: goto dishwasher
+multirobot_list: []
+singlerobot_list: [Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Human: burger 1 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [Burger1]
+[Time: Hours: 00, Minutes: 00, Seconds: 37] Human: burger2 goto children table
+[Time: Hours: 00, Minutes: 00, Seconds: 39] Task Manager:
+Independent Tasks:
+Burger2 tasks: goto children table
+multirobot_list: []
+singlerobot_list: [Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 03, Seconds: 53] Human: burger1 goto fridge
+[Time: Hours: 00, Minutes: 03, Seconds: 56] Task Manager:
+Independent Tasks:
+Burger1 tasks: go to fridge
+multirobot_list: []
+singlerobot_list: [Burger1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Human: burger1 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [Burger1]
+[Time: Hours: 00, Minutes: 03, Seconds: 06] Human: burger1 goto round table
+[Time: Hours: 00, Minutes: 03, Seconds: 07] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto round table
+multirobot_list: []
+singlerobot_list: [Burger1]
+[Time: Hours: 00, Minutes: 04, Seconds: 19] Human: gurger2 goto fridge
+[Time: Hours: 00, Minutes: 04, Seconds: 21] Task Manager:
+Independent Tasks:
+Burger2 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [Burger2]
+[Time: Hours: 00, Minutes: 04, Seconds: 49] Human: burger1 goto dishwasher
+[Time: Hours: 00, Minutes: 04, Seconds: 51] Task Manager:
+Plan:
+1. Burger1: STOP
+multirobot_list: [Burger1]
+singlerobot_list: []
+[Time: Hours: 00, Minutes: 04, Seconds: 52] Task Manager:
+ !! Multi-Robot Task Completed Successfully !!.
+
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 28] Human: burger1 goto round table
+[Time: Hours: 00, Minutes: 00, Seconds: 30] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto round table
+multirobot_list: []
+singlerobot_list: [Burger1]
+[Time: Hours: 00, Minutes: 00, Seconds: 39] Human: burger2 goto dishwasher
+[Time: Hours: 00, Minutes: 00, Seconds: 40] Task Manager:
+Independent Tasks:
+Burger2 tasks: goto dishwasher
+multirobot_list: []
+singlerobot_list: [Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 48] Human: burger1 goto fridge, burger2 goto dishwasher
+[Time: Hours: 00, Minutes: 00, Seconds: 50] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+Burger2 tasks: goto dishwasher
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 47] Human: burger1 goto fridge, burger2 goto dishwasher
+[Time: Hours: 00, Minutes: 00, Seconds: 49] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+Burger2 tasks: goto dishwasher
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 00] Human: burger2 goto fridger, burger2 goto fridge
+[Time: Hours: 00, Minutes: 01, Seconds: 03] Task Manager:
+Independent Tasks:
+Burger2 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [Burger2]
+[Time: Hours: 00, Minutes: 01, Seconds: 32] Human: burger1 goto fridge, burger2 goto dishwasher
+[Time: Hours: 00, Minutes: 01, Seconds: 33] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+Burger2 tasks: goto dishwasher
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+[Time: Hours: 00, Minutes: 07, Seconds: 11] Human: burger1 goto kitchen , burger2 goto farthest table
+[Time: Hours: 00, Minutes: 07, Seconds: 16] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto kitchen
+Burger2 tasks: goto farthest table
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 54] Human: burger1 goto fridge, burger2 goto dishwasher
+[Time: Hours: 00, Minutes: 01, Seconds: 03] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+Burger2 tasks: goto dishwasher
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 34] Human: burger1 goto fridge, burger2 goto dishwasher
+[Time: Hours: 00, Minutes: 00, Seconds: 35] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+Burger2 tasks: goto dishwasher
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 29] Human: burger1 goto fridge burger2 goto dishwasher
+[Time: Hours: 00, Minutes: 01, Seconds: 32] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+Burger2 tasks: goto dishwasher
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 25] Human: burger1 goto fridge burger2 goto dishwasher
+[Time: Hours: 00, Minutes: 00, Seconds: 27] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+Burger2 tasks: goto dishwasher
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Human: burger1 goto fridge burger2 goto dishwasher
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Task Manager:
+Independent Tasks:
+Burger1 tasks: go to fridge
+Burger2 tasks: go to dishwasher
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 54] Human: burger1 goto dishwasher, burger2 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 56] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto dishwasher
+Burger2 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 25] Human: burger1 goto dishwasher, burger2 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 27] Task Manager:
+Independent Tasks:
+Burger1 tasks: go to dishwasher
+Burger2 tasks: go to fridge
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 36] Human: burger1 goto dishwasher, burger2 goto fridge
+[Time: Hours: 00, Minutes: 00, Seconds: 38] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto dishwasher
+Burger2 tasks: goto fridge
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 04, Seconds: 52] Human: burger2 goto kitchen
+[Time: Hours: 00, Minutes: 04, Seconds: 54] Task Manager:
+Independent Tasks:
+Burger2 tasks: go to kitchen
+multirobot_list: []
+singlerobot_list: [Burger2]
+[Time: Hours: 00, Minutes: 05, Seconds: 56] Human: burger1 goto frige
+[Time: Hours: 00, Minutes: 05, Seconds: 59] Task Manager:
+Independent Tasks:
+Burger1 tasks: go to fridge
+multirobot_list: []
+singlerobot_list: [Burger1]
+[Time: Hours: 00, Minutes: 11, Seconds: 13] Human: burger3 goto fridge
+[Time: Hours: 00, Minutes: 11, Seconds: 15] Task Manager:
+Independent Tasks:
+Burger3 tasks: go to fridge
+multirobot_list: []
+singlerobot_list: [Burger3]
+[Time: Hours: 00, Minutes: 11, Seconds: 39] Human: burger2 goto dishwasher
+[Time: Hours: 00, Minutes: 11, Seconds: 41] Task Manager:
+Independent Tasks:
+Burger2 tasks: go to dishwasher
+multirobot_list: []
+singlerobot_list: [Burger2]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Human: burger1, 2 goto kitchen
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Task Manager:
+Independent Tasks:
+Team 1: [burger1, burger2]: goto kitchen
+multirobot_list: []
+singlerobot_list: [Team 1]
+[Time: Hours: 00, Minutes: 01, Seconds: 39] Human: burger1, 2 goto fridge, tb4 and waffle goto dishwasher
+[Time: Hours: 00, Minutes: 01, Seconds: 41] Task Manager:
+Independent Tasks:
+Team 1: [burger1, burger2]: goto fridge
+Team 2: [tb4, waffle]: goto dishwasher
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Human: burger1, 2 goto fridge tb4 goto dishwasher
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Task Manager:
+Independent Tasks:
+Team 1: [burger1, burger2]: goto fridge
+tb4 tasks: goto dishwasher
+multirobot_list: []
+singlerobot_list: [Team 1, tb4]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Human: burger1, 2 goto fridge waffle, tb4 goto dishwasher
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Task Manager:
+Independent Tasks:
+Team 1: [Burger1, Burger2]: goto fridge
+Team 2: [Waffle, Tb4]: goto dishwasher
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 12, Seconds: 42] Human: burger1, burger2 goto fridge, waffle, tb4 goto dishwasher
+[Time: Hours: 00, Minutes: 12, Seconds: 44] Task Manager:
+Independent Tasks:
+Burger1 tasks: goto fridge
+Burger2 tasks: goto fridge
+Waffle tasks: goto dishwasher
+Tb4 tasks: goto dishwasher
+multirobot_list: []
+singlerobot_list: [Burger1, Burger2, Waffle, Tb4]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 14] Human: burger1, 2 goto fridge together and waffle, tb4 goto dishwasher together
+[Time: Hours: 00, Minutes: 01, Seconds: 15] Task Manager:
+Independent Tasks:
+Team 1: [Burger1, Burger2]: goto fridge together
+Team 2: [Waffle, Tb4]: goto dishwasher together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 29] Human: burger1, 2 goto firdge waffle, tb4 goto dishwasher together
+[Time: Hours: 00, Minutes: 00, Seconds: 31] Task Manager:
+Independent Tasks:
+Team 1: [burger1, burger2]: go to fridge
+Team 2: [waffle, tb4]: go to dishwasher together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 47] Human: burger1, 2 goto fridge and waffle, tb4 goto dishwasher together
+[Time: Hours: 00, Minutes: 00, Seconds: 48] Task Manager:
+Independent Tasks:
+Team 1: [burger1, burger2]: goto fridge
+Team 2: [waffle, tb4]: goto dishwasher
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Human: burger1, 2 goto fridge and waffle, tb4 goto dishwasher together
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Task Manager:
+Independent Tasks:
+Team 1: [burger1, burger2]: go to fridge together
+Team 2: [waffle, tb4]: go to dishwasher together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+[Time: Hours: 00, Minutes: 05, Seconds: 39] Human: burger1, 2 goto fridge and waffle, tb4 goto dishwasher together
+[Time: Hours: 00, Minutes: 05, Seconds: 41] Task Manager:
+Independent Tasks:
+Team 1: [burger1, burger2]: go to fridge together
+Team 2: [waffle, tb4]: go to dishwasher together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Human: burger1, 2 goto fridge and waffle, tb4 goto dishwasher together
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Task Manager:
+Independent Tasks:
+Team 1: [burger1, burger2]: goto fridge
+Team 2: [waffle, tb4]: goto dishwasher
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Human: burger1, 2 goto fridge and waffle, tb4 goto dishwasher together
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Task Manager:
+Independent Tasks:
+Team 1: [burger1, burger2]: goto fridge
+Team 2: [waffle, tb4]: goto dishwasher
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 44] Human: burger1, 2 goto fridge and waffle, tb4 goto dishwasher together
+[Time: Hours: 00, Minutes: 00, Seconds: 45] Task Manager:
+Independent Tasks:
+Team 1: [burger1, burger2]: go to fridge
+Team 2: [waffle, tb4]: go to dishwasher
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Human: burger1, 2 goto fridge and waffle, tb4 goto dishwasher together
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Task Manager:
+Independent Tasks:
+Team 1: [burger1, burger2]: goto fridge
+Team 2: [waffle, tb4]: goto dishwasher
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 24] Human: burger1, 2 goto fridge and waffle, tb4 goto dishwasher together
+[Time: Hours: 00, Minutes: 00, Seconds: 25] Task Manager:
+Independent Tasks:
+Team 1: [burger1, burger2]: goto fridge
+Team 2: [waffle, tb4]: goto dishwasher
+
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 59] Human: burger1, 2 goto fridge and waffle, tb4 goto dishwasher
+[Time: Hours: 00, Minutes: 01, Seconds: 01] Task Manager:
+Independent Tasks:
+Team 1: [burger1, burger2]: Go to fridge
+Team 2: [waffle, tb4]: Go to dishwasher
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+[Time: Hours: 00, Minutes: 05, Seconds: 05] Human: burger1 and burger2 goto fridge independently
+[Time: Hours: 00, Minutes: 05, Seconds: 07] Task Manager:
+Independent Tasks:
+burger1 tasks: Go to fridge
+burger2 tasks: Go to fridge
+multirobot_list: []
+singlerobot_list: [burger1, burger2]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Human: robot1 goto nonveg stall
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Task Manager:
+Independent Tasks:
+Robot1 tasks: goto nonveg stall
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Human: robot1 goto chicken stall
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Task Manager:
+Independent Tasks:
+Robot1 tasks: go to chicken stall
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Human: robot1 goto chicken stall
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Task Manager:
+Independent Tasks:
+Robot1 tasks: go to chicken stall
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 37] Human: robot1 goto juice stall
+[Time: Hours: 00, Minutes: 00, Seconds: 39] Task Manager:
+Independent Tasks:
+Robot1 tasks: goto juice stall
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 25] Human: burger1 goto stall 2
+[Time: Hours: 00, Minutes: 00, Seconds: 27] Task Manager:
+Independent Tasks:
+Robot1 tasks: transport burger1 to stall 2
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 24] Human: robot1 goto stall 1
+[Time: Hours: 00, Minutes: 00, Seconds: 25] Task Manager:
+Independent Tasks:
+Robot1 tasks: goto stall 1
+multirobot_list: []
+singlerobot_list: [Robot1]
+[Time: Hours: 00, Minutes: 01, Seconds: 25] Human: robot1 goto stall 1
+[Time: Hours: 00, Minutes: 01, Seconds: 26] Task Manager:
+Robot1 is already in progress with the task to go to stall 1.
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Human: robot1 goto stall 1
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+Robot1 tasks: go to stall 1
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Human: robot1 goto stall 1
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Task Manager:
+Independent Tasks:
+Robot1 tasks: go to stall 1
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 56] Human: robot 1 goto stall 2
+[Time: Hours: 00, Minutes: 00, Seconds: 57] Task Manager:
+Independent Tasks:
+Robot1 tasks: go to stall 2
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Human: robot2, 3 goto stall 3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Task Manager:
+Independent Tasks:
+Team 1: [Robot2, Robot3]: go to stall 3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 24] Human: robot2, 3 goto stall
+[Time: Hours: 00, Minutes: 00, Seconds: 26] Task Manager:
+Independent Tasks:
+Robot2 tasks: go to stall
+Robot3 tasks: go to stall
+multirobot_list: []
+singlerobot_list: [Robot2, Robot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Human: robot1 goto stall 3
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Task Manager:
+Independent Tasks:
+Robot1 tasks: go to stall 3
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Human: robot1 goto stall3
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Task Manager:
+Independent Tasks:
+Robot1 tasks: goto stall3
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 02, Seconds: 05] Human: introduce all teh robots u ahve
+[Time: Hours: 00, Minutes: 02, Seconds: 06] Task Manager:
+We have two delivery robots:
+
+1. Delivery Bot1: A differential drive carry robot for indoor transport and cooperative item delivery.
+2. Delivery Bot2: A holonomic carry robot capable of omnidirectional movement for precise transport and cooperative delivery.
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 02] Human: deliverybot1 goto stall 1
+[Time: Hours: 00, Minutes: 01, Seconds: 04] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: go to stall 1
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 41] Human: deliverybot1 goto child
+[Time: Hours: 00, Minutes: 00, Seconds: 43] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: go to child
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Human: deliverybot1 goto the child
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: go to the child
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Human: deliverybot 1 goto child
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: go to child
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 24] Human: delivery bot 1 goto stall2
+[Time: Hours: 00, Minutes: 01, Seconds: 26] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: go to stall2
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 28] Human: delivery bot1 goto stall2
+[Time: Hours: 00, Minutes: 00, Seconds: 30] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: goto stall2
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+[Time: Hours: 00, Minutes: 01, Seconds: 27] Human: delivery boto goto stall 2
+[Time: Hours: 00, Minutes: 01, Seconds: 29] Task Manager:
+Independent Tasks:
+delivery_bot2 tasks: goto stall2
+multirobot_list: []
+singlerobot_list: [delivery_bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Human: delivery bot1 goto stall2
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: goto stall2
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 25] Human: delivery bot1 goto stall3
+[Time: Hours: 00, Minutes: 00, Seconds: 26] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: go to stall3
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Human: delivery bot1 goto stall 3
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: goto stall 3
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Human: delivery bot1 goto stall3
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: go to stall3
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+[Time: Hours: 00, Minutes: 00, Seconds: 43] Human: delivery bot3 goto stall1
+[Time: Hours: 00, Minutes: 00, Seconds: 44] Task Manager:
+I'm sorry, but there is no "delivery_bot3" available in the current configuration. Please provide a valid robot name or check the available robots for task assignment.
+[Time: Hours: 00, Minutes: 00, Seconds: 56] Human: delivery bot2 goto stall3
+[Time: Hours: 00, Minutes: 00, Seconds: 57] Task Manager:
+Independent Tasks:
+delivery_bot2 tasks: go to stall3
+multirobot_list: []
+singlerobot_list: [delivery_bot2]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 04] Human: delivery bot1 serve teh child with chicken and deliverybot2 serve the lady with salad
+[Time: Hours: 00, Minutes: 01, Seconds: 06] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: serve the child with chicken
+delivery_bot2 tasks: serve the lady with salad
+multirobot_list: []
+singlerobot_list: [delivery_bot1, delivery_bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 28] Human: delivery bot1 serve teh child with chicken and deliverybot2 serve the lady with salad
+[Time: Hours: 00, Minutes: 00, Seconds: 30] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: serve the child with chicken
+delivery_bot2 tasks: serve the lady with salad
+multirobot_list: []
+singlerobot_list: [delivery_bot1, delivery_bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 01] Human: deliverybot1 give teh child his drink and deliverybot2 serve the lady with chicken
+[Time: Hours: 00, Minutes: 01, Seconds: 02] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: deliver drink to child at chair3
+delivery_bot2 tasks: serve chicken to lady at chair10
+multirobot_list: []
+singlerobot_list: [delivery_bot1, delivery_bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Human: deliverybot1 give the child his drink and deliverybot2 serve the lady with chicken
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: give the child his drink
+delivery_bot2 tasks: serve the lady with chicken
+multirobot_list: []
+singlerobot_list: [delivery_bot1, delivery_bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: deliverybot1 give the child his drink and deliverybot2 serve the lady with chicken
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: give the child his drink
+delivery_bot2 tasks: serve the lady with chicken
+multirobot_list: []
+singlerobot_list: [delivery_bot1, delivery_bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Human: deliverybot1 give the child his drink and deliverybot2 serve the lady with chicken
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: deliver drink to the child at chair3
+delivery_bot2 tasks: deliver chicken to the lady at chair10
+multirobot_list: []
+singlerobot_list: [delivery_bot1, delivery_bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 35] Human: deliverybot1 give the child his drink and deliverybot2 serve the lady with chicken
+[Time: Hours: 00, Minutes: 00, Seconds: 37] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: deliver drink to child at chair3
+delivery_bot2 tasks: serve chicken to lady at chair10
+multirobot_list: []
+singlerobot_list: [delivery_bot1, delivery_bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Human: deliverybot1 give the child his drink and deliverybot2 serve the lady with chicken
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: give the child his drink
+delivery_bot2 tasks: serve the lady with chicken
+multirobot_list: []
+singlerobot_list: [delivery_bot1, delivery_bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Human: deliverybot1 give the child his drink and deliverybot2 serve the lady with chicken
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: give the child his drink
+delivery_bot2 tasks: serve the lady with chicken
+multirobot_list: []
+singlerobot_list: [delivery_bot1, delivery_bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Human: deliverybot1 give the child his drink and deliverybot2 serve the lady with chicken
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: deliver drink to the child at chair3
+delivery_bot2 tasks: serve chicken to the lady at chair10
+multirobot_list: []
+singlerobot_list: [delivery_bot1, delivery_bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Human: deliverybot1 give the child his drink and deliverybot2 serve the lady with chicken
+[Time: Hours: 00, Minutes: 00, Seconds: 28] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: give the child his drink
+delivery_bot2 tasks: serve the lady with chicken
+multirobot_list: []
+singlerobot_list: [delivery_bot1, delivery_bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 29] Human: deliverybot1 give the child his drink and deliverybot2 serve the lady with chicken
+[Time: Hours: 00, Minutes: 00, Seconds: 32] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: deliver drink to child at chair3
+delivery_bot2 tasks: deliver chicken to lady at chair10
+multirobot_list: []
+singlerobot_list: [delivery_bot1, delivery_bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 02] Human: deliverybot1 give the child his drink and deliverybot2 serve the lady with chicken
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: deliver drink to child at chair3
+delivery_bot2 tasks: serve chicken to lady at chair10
+multirobot_list: []
+singlerobot_list: [delivery_bot1, delivery_bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Human: deliverybot2 give the child his drink and deliverybot1 serve the lady with chicken
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Task Manager:
+Independent Tasks:
+delivery_bot2 tasks: deliver drink to child
+delivery_bot1 tasks: deliver chicken to lady
+multirobot_list: []
+singlerobot_list: [delivery_bot2, delivery_bot1]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Human: deliverybot1 give the child his drink and deliverybot2 serve the lady with chicken
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: give the child his drink
+delivery_bot2 tasks: serve the lady with chicken
+multirobot_list: []
+singlerobot_list: [delivery_bot1, delivery_bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 25] Human: deliverybot1 give the child his drink and deliverybot2 serve the lady with chicken
+[Time: Hours: 00, Minutes: 00, Seconds: 26] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: deliver drink to the child at chair3
+delivery_bot2 tasks: serve chicken to the lady at chair10
+multirobot_list: []
+singlerobot_list: [delivery_bot1, delivery_bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Human: tgn-robotics2:~/comuros/src/CoMuRoS/CoMuRoS/path_plan/path_planner/path_planner$ python3 path_planner_node.py 
+/home/multi-robot/.local/lib/python3.10/site-packages/matplotlib/projections/__init__.py:63: UserWarning: Unable to import Axes3D. This may be due to multiple versions of Matplotlib being installed (e.g. as a system package and as a pip package). As a result, the 3D projection is not available.
+  warnings.warn("Unable to import Axes3D. This may be due to multiple versions of "
+[INFO] [1770448288.903350456] [path_planner_node]: ============================================================
+[INFO] [1770448288.903506567] [path_planner_node]: Path Planner Node starting...
+[INFO] [1770448288.903615372] [path_planner_node]: ============================================================
+[INFO] [1770448288.904696417] [path_planner_node]: Show initial map: False
+[INFO] [1770448288.904808609] [path_planner_node]: Show path visualization: False
+[INFO] [1770448288.904915316] [path_planner_node]: Max iterations: 1500
+[INFO] [1770448288.905021981] [path_planner_node]: Time horizon: 1500.0s
+[INFO] [1770448288.905127987] [path_planner_node]: ============================================================
+[INFO] [1770448288.905236687] [path_planner_node]: Resolving directories and files...
+[INFO] [1770448288.905343649] [path_planner_node]: ============================================================
+[INFO] [1770448288.905639387] [path_planner_node]: Using default save_base_dir: /home/multi-robot/comuros/install/path_planner/share/path_planner/saved_paths
+[INFO] [1770448288.905827761] [path_planner_node]: Using default map_file_path: /home/multi-robot/comuros/install/path_planner/share/path_planner/data/restaurant.npy
+[INFO] [1770448288.906015455] [path_planner_node]: Using default config_file_path: /home/multi-robot/comuros/install/chatty/share/chatty/config/robot_config_restaurant1.json
+[INFO] [1770448288.906125249] [path_planner_node]: ============================================================
+[INFO] [1770448288.906232848] [path_planner_node]: Loading map...
+[INFO] [1770448288.906337184] [path_planner_node]: ============================================================
+[INFO] [1770448288.906442593] [path_planner_node]: Loading map from: /home/multi-robot/comuros/install/path_planner/share/path_planner/data/restaurant.npy
+[INFO] [1770448288.908132784] [path_planner_node]: Raw map loaded, shape: (140, 180), dtype: uint8
+[INFO] [1770448288.908357110] [path_planner_node]: Binary map created, occupied cells: 1560
+[INFO] [1770448288.908479079] [path_planner_node]: Map loaded: 180x140 @ 0.1m/cell
+[INFO] [1770448288.908748165] [path_planner_node]: Workspace bounds: (array([0., 0.]), array([18., 14.]))
+[INFO] [1770448288.908864227] [path_planner_node]: ============================================================
+[INFO] [1770448288.908972433] [path_planner_node]: Loading robot configuration...
+[INFO] [1770448288.909077751] [path_planner_node]: ============================================================
+[INFO] [1770448288.909226539] [path_planner_node]: Loaded JSON config from: /home/multi-robot/comuros/install/chatty/share/chatty/config/robot_config_restaurant1.json
+[INFO] [1770448288.909337875] [path_planner_node]: Loaded 2 robots: ['delivery_bot1', 'delivery_bot2']
+[INFO] [1770448288.909443964] [path_planner_node]: ============================================================
+[INFO] [1770448288.909546578] [path_planner_node]: Setting up odometry subscribers...
+[INFO] [1770448288.909650912] [path_planner_node]: ============================================================
+[INFO] [1770448288.937972020] [path_planner_node]: Subscribed to /delivery_bot1/odom_world
+[INFO] [1770448288.938388970] [path_planner_node]: Subscribed to /delivery_bot2/odom_world
+[INFO] [1770448288.938520412] [path_planner_node]: Robot colors: {'delivery_bot1': 'tab:blue', 'delivery_bot2': 'tab:orange'}
+[INFO] [1770448288.938627178] [path_planner_node]: ============================================================
+[INFO] [1770448288.938731730] [path_planner_node]: Setting up ROS2 publishers and subscribers...
+[INFO] [1770448288.938835122] [path_planner_node]: ============================================================
+[INFO] [1770448288.939564280] [path_planner_node]: Publisher created: /path_planner/paths
+[INFO] [1770448288.939895826] [path_planner_node]: Subscriber created: /path_planner/request
+[INFO] [1770448288.940007823] [path_planner_node]: ============================================================
+[INFO] [1770448288.940114526] [path_planner_node]: Path Planner Node initialized and ready
+[INFO] [1770448288.940240537] [path_planner_node]: ============================================================
+[INFO] [1770448317.470796177] [path_planner_node]: ============================================================
+[INFO] [1770448317.470932834] [path_planner_node]: Processing planning request #1
+[INFO] [1770448317.471037994] [path_planner_node]: ============================================================
+[INFO] [1770448317.471152670] [path_planner_node]: Plan JSON parsed successfully
+[INFO] [1770448317.471294060] [path_planner_node]: ============================================================
+[INFO] [1770448317.471401150] [path_planner_node]: Extracting robot goals from plan...
+[INFO] [1770448317.471504260] [path_planner_node]: ============================================================
+[INFO] [1770448317.471627538] [path_planner_node]:     - delivery_bot2: goal=[6.400, 7.000]
+[INFO] [1770448317.471872006] [path_planner_node]: Planning for 1 robots
+[INFO] [1770448317.472024200] [path_planner_node]:   - delivery_bot2: goal=[6.4 7. ]
+[INFO] [1770448317.472130145] [path_planner_node]: ============================================================
+[INFO] [1770448317.472234801] [path_planner_node]: Starting sequential path planning...
+[INFO] [1770448317.472334484] [path_planner_node]: ============================================================
+[INFO] [1770448317.472436453] [path_planner_node]: 
+>>> Planning path for delivery_bot2...
+[INFO] [1770448317.472543510] [path_planner_node]:   Start: [16.000, 8.000]
+[INFO] [1770448317.472644851] [path_planner_node]:   Goal:  [6.400, 7.000]
+[INFO] [1770448317.472749568] [path_planner_node]:   Agent radius: 0.15
+[INFO] [1770448317.472851920] [path_planner_node]:   Max velocity: 1.0
+[INFO] [1770448317.472951444] [path_planner_node]:   Dynamic obstacles: 0 (first robot)
+[ERROR] [1770448317.567833030] [path_planner_node]:   Planner returned None for delivery_bot2
+[ERROR] [1770448317.567983499] [path_planner_node]: ============================================================
+[ERROR] [1770448317.568094738] [path_planner_node]: Planning failed for delivery_bot2
+[ERROR] [1770448317.568206398] [path_planner_node]: Possible reasons:
+[ERROR] [1770448317.568311775] [path_planner_node]:   - No valid path exists (obstacles blocking)
+[ERROR] [1770448317.568417006] [path_planner_node]:   - Dynamic obstacle conflicts (timing issues)
+[ERROR] [1770448317.568522522] [path_planner_node]:   - Max iterations reached (1500)
+[ERROR] [1770448317.568629262] [path_planner_node]:   - Time horizon too short (1500.0s)
+[ERROR] [1770448317.568734938] [path_planner_node]: ============================================================
+[WARN] [1770448317.568862210] [path_planner_node]: Skipping delivery_bot2, continuing with other robots...
+[WARN] [1770448317.568989059] [path_planner_node]: ============================================================
+[WARN] [1770448317.569120210] [path_planner_node]: No paths were successfully planned
+[WARN] [1770448317.569257922] [path_planner_node]: ============================================================
+[ERROR] [1770448317.569364702] [path_planner_node]: ============================================================
+[ERROR] [1770448317.569470565] [path_planner_node]: ✗ Request #1 failed
+[ERROR] [1770448317.569572401] [path_planner_node]: ============================================================
+[INFO] [1770448317.569674831] [path_planner_node]: Stats: 0 completed, 1 failed, 0 cancelled
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Task Manager:
+Thank you for the detailed log. It seems there was an issue with the path planning for delivery_bot2, possibly due to obstacles or planning constraints. If you need assistance with tasks or planning, please let me know!
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Human: deliverybot1 give the child his drink and deliverybot2 serve the lady with chicken
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: give the child his drink
+delivery_bot2 tasks: serve the lady with chicken
+multirobot_list: []
+singlerobot_list: [delivery_bot1, delivery_bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Human: deliverybot1 give the child his drink and deliverybot2 serve the lady with chicken
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: deliver drink to the child
+delivery_bot2 tasks: serve chicken to the lady
+multirobot_list: []
+singlerobot_list: [delivery_bot1, delivery_bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 04] Human: deliverybot1 serve chicken to table 3, deliverybot2 give juice to the chile at table2
+[Time: Hours: 00, Minutes: 01, Seconds: 05] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: serve chicken to table 3
+delivery_bot2 tasks: give juice to the child at table 2
+multirobot_list: []
+singlerobot_list: [delivery_bot1, delivery_bot2]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 19] Human: robot1, robot2, robot3 goto robot4, robot5, robot6 together and robot4, robot5, robot6 goto robot1, robot2, robot3 together
+[Time: Hours: 00, Minutes: 01, Seconds: 22] Task Manager:
+Plan:
+1. Team 1: [robot1, robot2, robot3]: Move together to the location of robot4, robot5, robot6
+2. Team 2: [robot4, robot5, robot6]: Move together to the location of robot1, robot2, robot3
+multirobot_list: [Team 1, Team 2]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 47] Human: robot1, robot2, robot3 goto table 8 together and robot4, robot5, robot6 goto table1 together
+[Time: Hours: 00, Minutes: 00, Seconds: 49] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 8 together
+Team 2: [robot4, robot5, robot6]: goto table 1 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 25] Human: robot1, robot2, robot3 goto table 8 together and robot4, robot5, robot6 goto table1 together
+[Time: Hours: 00, Minutes: 00, Seconds: 27] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 8 together
+Team 2: [robot4, robot5, robot6]: goto table 1 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Human: robot1, robot2, robot3 goto table 7 together
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 7 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 32] Human: robot1, robot2, robot3 goto table 4 together
+[Time: Hours: 00, Minutes: 00, Seconds: 34] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 4 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Human: robot1, robot2, robot3 goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 02] Human: robot1, robot2, robot3 goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+[Time: Hours: 00, Minutes: 03, Seconds: 29] Human: robot1, robot2, robot3 goto table 6 together
+[Time: Hours: 00, Minutes: 03, Seconds: 31] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 02] Human: robot1, robot2, robot3 goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 01] Human: robot1, robot2, robot3 goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Human: robot1, robot2, robot3 goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 02] Human: robot1, robot2, robot3 goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 01] Human: robot1, robot2, robot3 goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Human: robot1, robot2, robot3 goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 02] Human: robot1, robot2, robot3 goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 01] Human: robot1, robot2, robot3 goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 02] Human: robot1, robot2, robot3 goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Human: robot1, robot2, robot3 goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Human: robot1, robot2, robot3 goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Human: robot1, robot2, robot3 goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 23] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 28] Human: [robot1, robot2, robot3]: goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 29] Task Manager:
+Plan:
+1. Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: [Team 1]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 02] Human: [robot1, robot2, robot3]: goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 02] Human: [robot1, robot2, robot3]: goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Human: [robot1, robot2, robot3]: goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Task Manager:
+Plan:
+1. Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: [Team 1]
+singlerobot_list: []
+[Time: Hours: 00, Minutes: 00, Seconds: 29] Human: [robot1, robot2, robot3]: goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 30] Task Manager:
+Plan:
+1. Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: [Team 1]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 02] Human: [robot1, robot2, robot3]: goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Human: [robot1, robot2, robot3]: goto table 6 together"
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Task Manager:
+Plan:
+1. Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: [Team 1]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 02] Human: [robot1, robot2, robot3]: goto table 6 together"
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Human: [robot1, robot2, robot3]: goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Human: [robot1, robot2, robot3]: goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+[Time: Hours: 00, Minutes: 00, Seconds: 34] Human: [robot1, robot2, robot3]: goto table 5 together
+[Time: Hours: 00, Minutes: 00, Seconds: 36] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 5 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+[Time: Hours: 00, Minutes: 00, Seconds: 52] Human: [robot1, robot2, robot3]: goto table 4 together
+[Time: Hours: 00, Minutes: 00, Seconds: 53] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 4 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 36] Human: [robot1, robot2, robot3]: goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 39] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 02] Human: [robot1, robot2, robot3]: goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Human: [robot1, robot2, robot3]: goto table 4 together
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 4 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: [robot1, robot2, robot3]: goto table 4 together
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 4 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Human: [robot1, robot2, robot3]: goto table 3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Human: robot 1 go to table 2
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Task Manager:
+Independent Tasks:
+Robot1 tasks: go to table 2
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Human: robot 3 goto table 2
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Task Manager:
+Independent Tasks:
+Robot3 tasks: go to table 2
+multirobot_list: []
+singlerobot_list: [Robot3]
+[Time: Hours: 00, Minutes: 01, Seconds: 04] Human: robot1, robot2, robot3 goto table2 together
+[Time: Hours: 00, Minutes: 01, Seconds: 05] Task Manager:
+Plan:
+1. robot3: STOP
+2. robot1: STOP
+3. robot2: STOP
+4. Team 1: [robot1, robot2, robot3]: go to table 2 together
+multirobot_list: [Team 1]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 39] Human: robot3, robot2 goto table 3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 40] Task Manager:
+Independent Tasks:
+Team 1: [robot3, robot2]: goto table 3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Human: robot1, robot2, robot3 goto table 3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 24] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Human: robot1, robot2, robot3 goto table 3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Human: robot1, robot2, robot3 goto stall 2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto stall 2 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Human: robot1, robot2, robot3 goto stall2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto stall2 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Human: robot1, robot2, robot3 goto stall2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto stall2 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+[Time: Hours: 00, Minutes: 01, Seconds: 26] Human: robot1, robot2 goto stall2 together
+[Time: Hours: 00, Minutes: 01, Seconds: 27] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2]: goto stall2 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Human: robot1, robot2, robot3 goto stall 2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Task Manager:
+Plan:
+1. Team 1: [robot1, robot2, robot3]: goto stall 2 together
+multirobot_list: [Team 1]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: robot1 goto stall 3
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+Independent Tasks:
+robot1 tasks: go to stall 3
+multirobot_list: []
+singlerobot_list: [robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: robot1 goto stall 3
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Task Manager:
+Independent Tasks:
+Robot1 tasks: go to stall 3
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Human: robot1 goto stall 2
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Task Manager:
+Independent Tasks:
+Robot1 tasks: goto stall 2
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 02, Seconds: 30] Human: robot2 goto stall 3
+[Time: Hours: 00, Minutes: 02, Seconds: 31] Task Manager:
+Independent Tasks:
+Robot2 tasks: go to stall 3
+multirobot_list: []
+singlerobot_list: [Robot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Human: robot1 goto table3
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Task Manager:
+Independent Tasks:
+Robot1 tasks: go to table3
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Human: robot3 goto stall 3
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Task Manager:
+Independent Tasks:
+Robot3 tasks: go to stall 3
+multirobot_list: []
+singlerobot_list: [Robot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Human: robot1, robot2, robot3 goto stall 3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 23] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto stall 3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Human: robot1, robot2, robot3 goto table3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Human: [robot1, robot2, robot3]: goto table3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Human: [robot1, robot2, robot3]: goto table3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Human: robot1, robot2, robot3 goto table together
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Human: robot1 , robot2, robot3 goto stall 3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto stall 3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 48] Human: robot1 goto table 4
+[Time: Hours: 00, Minutes: 00, Seconds: 52] Task Manager:
+Independent Tasks:
+Robot1 tasks: goto table 4
+multirobot_list: []
+singlerobot_list: [Robot1]
+[Time: Hours: 00, Minutes: 02, Seconds: 01] Human: robot1 goto 16, 3.5
+[Time: Hours: 00, Minutes: 02, Seconds: 03] Task Manager:
+Plan:
+1. Robot1: STOP
+2. Robot1: goto 16, 3.5
+multirobot_list: [Robot1]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 29] Human: robot 1 goto stall 3
+[Time: Hours: 00, Minutes: 00, Seconds: 31] Task Manager:
+Independent Tasks:
+Robot1 tasks: go to stall 3
+multirobot_list: []
+singlerobot_list: [Robot1]
+[Time: Hours: 00, Minutes: 01, Seconds: 31] Human: robot 2 goto juice stall
+[Time: Hours: 00, Minutes: 01, Seconds: 32] Task Manager:
+Independent Tasks:
+Robot2 tasks: go to juice stall
+multirobot_list: []
+singlerobot_list: [Robot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Human: robot1, robot2, robot3 goto juice stall together
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: goto juice stall together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 35] Human: robot1, robot2, robot3 goto tavble 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 36] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Human: robot1, robot2, robot3 goto table 4 together
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 4 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 27] Human: robot1, robot2, robot3 goto table5 together
+[Time: Hours: 00, Minutes: 00, Seconds: 28] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table5 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Human: robot1, robot2, robot3, goto salaad stall
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Task Manager:
+Independent Tasks:
+Robot1 tasks: goto salad stall
+Robot2 tasks: goto salad stall
+Robot3 tasks: goto salad stall
+multirobot_list: []
+singlerobot_list: [Robot1, Robot2, Robot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Human: robot1, robot2, robot3 goto salaad stall together
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto salaad stall together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Human: robot1, robot2, robot3, goto table3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Human: robot 2, robot3, goto table 2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Task Manager:
+Independent Tasks:
+Team 1: [Robot2, Robot3]: go to table 2 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Human: robot1, 2, 3, goto table 4 together
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table 4 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 04] Human: robot1 goto table 4
+[Time: Hours: 00, Minutes: 01, Seconds: 05] Task Manager:
+Independent Tasks:
+Robot1 tasks: go to table 4
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Human: robot4, 5, 6 goto table 4 together
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Task Manager:
+Independent Tasks:
+Team 1: [Robot4, Robot5, Robot6]: Go to table 4 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 28] Human: robot1, robot2, robot3, goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 30] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 41] Human: robot1, robot2, robot3 goto table7 together
+[Time: Hours: 00, Minutes: 01, Seconds: 44] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table7 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Human: robot1, 2, 3 goto table 7 together
+[Time: Hours: 00, Minutes: 00, Seconds: 24] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: goto table 7 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Human: robto1 goto stall 2
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+Independent Tasks:
+robot1 tasks: goto stall 2
+multirobot_list: []
+singlerobot_list: [robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: robot1 goto stall2
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+Independent Tasks:
+Robot1 tasks: goto stall2
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: robot1 goto stall 2
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Task Manager:
+Independent Tasks:
+Robot1 tasks: go to stall 2
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Human: robot1 goto stall 2
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+Independent Tasks:
+Robot1 tasks: goto stall 2
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Human: robot1 goto table6
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Task Manager:
+Independent Tasks:
+Robot1 tasks: go to table6
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Human: robot 1 goto table4
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Task Manager:
+Independent Tasks:
+Robot1 tasks: goto table4
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Human: robot1 goto table3
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Task Manager:
+Independent Tasks:
+Robot1 tasks: go to table3
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Human: robot1, 2, 3, goto table3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: goto table3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Human: robot1, 2, 3 goto table 3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table 3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Human: robot1, 2, 3 goto table together
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Human: robot1, 2, 3 goto table 3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Human: robot1 ,2, 3 goto table 3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table 3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 25] Human: robot1, 2, 3 goto table3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 27] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: goto table3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Human: robot1, 2, 3 goto table7 together
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table7 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Human: robot1, 2, 3, goto table3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Human: robot1, 2, 3 goto table3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: goto table3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Human: robot1, 2, 3 goto table3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: go to table3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Human: robot1, 2, 3 goto table3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: go to table3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Human: robot1, 2, 3 goto table3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: goto table3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Human: robot1, 2, 3 goto table3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Human: robot1, 2, 3 goto table3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 33] Human: robot1, 2, 3 goto table3 together and robot 4,5,6 goto table 5 togethe
+[Time: Hours: 00, Minutes: 00, Seconds: 36] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table3 together
+Team 2: [robot4, robot5, robot6]: goto table5 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 30] Human: [robot1, robot2, robot3]: goto table3 together,  [robot4, robot5, robot6]: goto table5 together
+[Time: Hours: 00, Minutes: 00, Seconds: 32] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table3 together
+Team 2: [robot4, robot5, robot6]: goto table5 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 33] Human: robot1,2,3 goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 34] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Human: robot1, 2, 3 goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Human: robot1, 2, 3 goto table 5 together
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table 5 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Human: robot1, 2, 3 goto table 3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 26] Human: robot1, 2, 3 goto table 3 together
+[Time: Hours: 00, Minutes: 00, Seconds: 31] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 3 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Human: robot1,2,3 goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table 6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 25] Human: robot1,2,3 goto table 6 together
+[Time: Hours: 00, Minutes: 00, Seconds: 27] Task Manager:
+Plan:
+1. Team 1: [robot1, robot2, robot3]: Move to table 6 together
+multirobot_list: [Team 1]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 23] Human: robot 1,2,3 goto table6 togethre
+[Time: Hours: 00, Minutes: 00, Seconds: 25] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table6 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 42] Human: robot 1,2,3 encircle the table6
+[Time: Hours: 00, Minutes: 01, Seconds: 43] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: encircle table6
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 41] Human: robot 1,2,3 encircle the stall 2
+[Time: Hours: 00, Minutes: 01, Seconds: 42] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: Encircle stall 2
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Human: robot 1,2,3 encircle the stall 2
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Task Manager:
+Plan:
+1. Robot1: Encircle stall 2
+2. Robot2: Encircle stall 2
+3. Robot3: Encircle stall 2
+multirobot_list: [Robot1, Robot2, Robot3]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: robot 1,2,3 encircle the stall 2
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+Plan:
+1. Team 1: [robot1, robot2, robot3]: Encircle stall 2
+multirobot_list: [Team 1]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Human: robot 1,2,3 encircle the stall 2
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: encircle the stall 2
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 30] Human: robot 1,2,3 encircle the stall 2
+[Time: Hours: 00, Minutes: 00, Seconds: 33] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: Encircle stall 2
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Human: robot 1,2,3 encircle the stall 2
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Task Manager:
+Plan:
+1. Team 1: [robot1, robot2, robot3]: Encircle stall 2
+multirobot_list: [Team 1]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 02, Seconds: 39] Human: robot1,2,3 encircle the stall 2
+[Time: Hours: 00, Minutes: 02, Seconds: 42] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: encircle the stall 2
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Human: robot1,2,3 encircle the stall 2
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: encircle the stall 2
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: robot1,2,3 encircle the stall 2
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: encircle stall 2
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Human: robot1,2,3 encircle the chicken stall
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: Encircle the chicken stall
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Human: robot1,2,3 encircle the chicken stall
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: Encircle the chicken stall
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 01] Human: robot1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 01, Seconds: 03] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table6 together
+Team 2: [robot4, robot5, robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 24] Human: robot1,2,3 goto table6 together and robot4,5,6 goto table 2 together
+[Time: Hours: 00, Minutes: 01, Seconds: 27] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table6 together
+Team 2: [robot4, robot5, robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 02] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 01, Seconds: 08] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table6 together
+Team 2: [robot4, robot5, robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table6 together
+Team 2: [robot4, robot5, robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: go to table6 together
+Team 2: [Robot4, Robot5, Robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table6 together
+Team 2: [robot4, robot5, robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: go to table6 together
+Team 2: [Robot4, Robot5, Robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table6 together
+Team 2: [robot4, robot5, robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table6 together
+Team 2: [robot4, robot5, robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table6 together
+Team 2: [robot4, robot5, robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 34] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 37] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table6 together
+Team 2: [robot4, robot5, robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 35] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 37] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table6 together
+Team 2: [robot4, robot5, robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 togethe
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table6 together
+Team 2: [robot4, robot5, robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table6 together
+Team 2: [robot4, robot5, robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: go to table6 together
+Team 2: [Robot4, Robot5, Robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table6 together
+Team 2: [robot4, robot5, robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: move to table6
+Team 2: [robot4, robot5, robot6]: move to table2
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: go to table6 together
+Team 2: [Robot4, Robot5, Robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: goto table6 together
+Team 2: [Robot4, Robot5, Robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 46] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 48] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table6 together
+Team 2: [robot4, robot5, robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: go to table6 together
+Team 2: [Robot4, Robot5, Robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+[Time: Hours: 00, Minutes: 03, Seconds: 37] Human: robot 1 goto table 5
+[Time: Hours: 00, Minutes: 03, Seconds: 39] Task Manager:
+Independent Tasks:
+Robot1 tasks: go to table5
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 37] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 45] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: goto table6 together
+Team 2: [Robot4, Robot5, Robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table6 together
+Team 2: [robot4, robot5, robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 53] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 01, Seconds: 55] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: goto table6 together
+Team 2: [Robot4, Robot5, Robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: go to table6 together
+Team 2: [Robot4, Robot5, Robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: go to table6 together
+Team 2: [Robot4, Robot5, Robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 02] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: go to table6 together
+Team 2: [Robot4, Robot5, Robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 39] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 41] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: Move to table6 together
+Team 2: [Robot4, Robot5, Robot6]: Move to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 02] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: go to table6 together
+Team 2: [Robot4, Robot5, Robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table6 together
+Team 2: [robot4, robot5, robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table6 together
+Team 2: [robot4, robot5, robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 31] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 33] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table6 together
+Team 2: [robot4, robot5, robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 45] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 47] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table6 together
+Team 2: [robot4, robot5, robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: goto table6 together
+Team 2: [Robot4, Robot5, Robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 01] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table6 together
+Team 2: [robot4, robot5, robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 25] Human: robot 1,2,3 goto table7 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 27] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: goto table7 together
+Team 2: [Robot4, Robot5, Robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Human: robot 1,2,3 goto table7 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: goto table7 together
+Team 2: [Robot4, Robot5, Robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Human: robot 1,2,3 goto table7 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table7 together
+Team 2: [robot4, robot5, robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Human: robot 1,2,3 goto table7 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table7 together
+Team 2: [robot4, robot5, robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 02] Human: robot 1,2,3 goto table7 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table7 together
+Team 2: [robot4, robot5, robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 23] Human: robot 1,2,3 goto table7 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 26] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table7 together
+Team 2: [robot4, robot5, robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 47] Human: robot 1,2,3 goto table7 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 49] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table7 together
+Team 2: [robot4, robot5, robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Human: robot 1,2,3 goto table7 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table7 together
+Team 2: [robot4, robot5, robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Human: robot 1,2,3 goto table7 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: go to table7 together
+Team 2: [Robot4, Robot5, Robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Human: robot 1,2,3 goto table7 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: goto table7 together
+Team 2: [Robot4, Robot5, Robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Human: robot 1,2,3 goto table7 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Error from GPT.
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Human: robot 1,2,3 goto table7 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Task Manager:
+Error from GPT.
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: go to table6 together
+Team 2: [Robot4, Robot5, Robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 40] Human: robot 1,2,3 goto table6 together and robot 4,5,6 goto table2 togethe
+[Time: Hours: 00, Minutes: 00, Seconds: 41] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot3]: go to table6 together
+Team 2: [Robot4, Robot5, Robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 02, Seconds: 10] Human: $ robot1, 2, 3 goto table6 together and robot4, 5, 6 goto table2 together
+[Time: Hours: 00, Minutes: 02, Seconds: 12] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table6 together
+Team 2: [robot4, robot5, robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Human: robot1, 2, 3 goto table7 together and robot4, 5, 6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table7 together
+Team 2: [robot4, robot5, robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 04, Seconds: 54] Human: robot1, 2, 3 goto table7 together robot4, 5, 6 goto table2 togethr
+[Time: Hours: 00, Minutes: 04, Seconds: 57] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table7 together
+Team 2: [robot4, robot5, robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 03, Seconds: 04] Human: robot1, 2, 3 goto table7 together and robot4, 5, 6 goto table2 together
+[Time: Hours: 00, Minutes: 03, Seconds: 08] Task Manager:
+Plan:
+1. Team 1: [robot1, robot2, robot3]: goto table7 together
+2. Team 2: [robot4, robot5, robot6]: goto table2 together
+multirobot_list: [Team 1, Team 2]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Human: robot1, 2, 3 goto table7 together and robot4, 5, 6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table7 together
+Team 2: [robot4, robot5, robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 02, Seconds: 21] Human: robot1, 2, 3 goto table7 together and robot4, 5, 6 goto table2 together
+[Time: Hours: 00, Minutes: 02, Seconds: 24] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table7 together
+Team 2: [robot4, robot5, robot6]: go to table2 together
+
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 03, Seconds: 48] Human: robot1, 2, 3 goto table7 together and robot4, 5, 6 goto table2 together
+[Time: Hours: 00, Minutes: 03, Seconds: 49] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table7 together
+Team 2: [robot4, robot5, robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 05, Seconds: 13] Human: robot1, 2, 3 goto table7 together and robot4, 5, 6 goto table2 together
+[Time: Hours: 00, Minutes: 05, Seconds: 17] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table7 together
+Team 2: [robot4, robot5, robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 51] Human: robot1, 2, 3 goto table7 together and robot4, 5, 6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 53] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: go to table7 together
+Team 2: [robot4, robot5, robot6]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 17, Seconds: 03] Human: robot1, 2, 3 goto table7 together and robot4, 5, 6 goto table2 together
+[Time: Hours: 00, Minutes: 17, Seconds: 06] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: move to table7 together
+Team 2: [robot4, robot5, robot6]: move to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Human: where is teh child seated
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Task Manager:
+Could you please provide more context or specify which child you are referring to?
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Human: where is teh child seated
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Task Manager:
+Please hold on, I'll ask the drone for the information.
+
+Independent Tasks:
+Drone tasks: locate and report the child's seating location
+multirobot_list: []
+singlerobot_list: [Drone]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: where is teh child seated
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+Could you please provide more details about the child or the context?
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Human: where is teh child is seated
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+I'm not sure where the child is seated. Let me ask the drone to find out.
+
+Independent Tasks:
+Drone tasks: Locate the child's seating position
+
+multirobot_list: []
+singlerobot_list: [Drone]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: where is teh child
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Task Manager:
+I'm sorry, I don't have information about the child's location.
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Human: where is teh child seated
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Task Manager:
+I'm sorry, I don't have information about the child's location.
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Human: where is teh child
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Task Manager:
+I'm sorry, I don't have information about a child.
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Human: where is teh child
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Task Manager:
+I'm sorry, but I don't have information about the location of a child.
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Human: where is teh child
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Task Manager:
+Could you please clarify which child you are referring to?
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Human: where is the child
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Task Manager:
+The drone can provide information about the scene. 
+
+Independent Tasks:
+Drone tasks: Provide information about the child's location
+
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Drone (msg): The child is located at the third table from the left (table 3), sitting on the bottom side.
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Task Manager:
+Thank you for the information.
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Human: where is the child
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
+I'm sorry, I don't have that information.
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Human: where is teh child
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Task Manager:
+I'm sorry, I do not have information about the child.
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Human: where is the child
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Task Manager:
+Could you please provide more context or specify the location you are referring to?
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Human: where is the child
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Task Manager:
+Could you please specify which child you are referring to? If you need information about a specific location or object, I can assist you better with more details.
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Human: deliver the salad to child
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Task Manager:
+Independent Tasks:
+Drone tasks: find the location of the child who ordered the salad
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Drone (msg): The child who ordered the salad is sitting at table 3.
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Task Manager:
+Independent Tasks:
+Robot4 tasks: deliver the salad to table 3
+multirobot_list: []
+singlerobot_list: [Robot4]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 31] Human: hey can someone deliver chicken soupe and salad to child
+[Time: Hours: 00, Minutes: 00, Seconds: 33] Task Manager:
+Independent Tasks:
+Drone tasks: Determine the location of the child for delivery
+
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 38] Drone (msg): The child is located at table 4, seat 2 (from left to right).
+[Time: Hours: 00, Minutes: 00, Seconds: 41] Task Manager:
+Independent Tasks:
+Robot2 tasks: Deliver chicken soup and salad to table 4, seat 2
+
+multirobot_list: []
+singlerobot_list: [Robot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 39] Human: robot1, 2, 3 goto table7 together and robot4, 5, 6 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 41] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto table7 together
+Team 2: [robot4, robot5, robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 07, Seconds: 03] Human: robot1, 2, 6 goto table5 together and robot3, 4, 5 goto table 2 together
+[Time: Hours: 00, Minutes: 07, Seconds: 07] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot6]: go to table5 together
+Team 2: [robot3, robot4, robot5]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 27] Human: robot1, 2, 6 goto table5 together and robot3, 4, 5 goto table 2 together
+[Time: Hours: 00, Minutes: 01, Seconds: 31] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot6]: goto table5 together
+Team 2: [robot3, robot4, robot5]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 02] Human: robot1, 2, 6 goto table5 together and robot3, 4, 5 goto table 2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot6]: goto table5 together
+Team 2: [robot3, robot4, robot5]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 06, Seconds: 06] Human: robot1, 2, 6 goto table5 together and robot3, 4, 5 goto table2 together
+[Time: Hours: 00, Minutes: 06, Seconds: 09] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot6]: goto table5 together
+Team 2: [robot3, robot4, robot5]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 03, Seconds: 31] Human: robot1, 2, 6 goto table5 together and robot3, 4, 5 goto table2 together
+[Time: Hours: 00, Minutes: 03, Seconds: 33] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot6]: Go to table5 together
+Team 2: [robot3, robot4, robot5]: Go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 50] Human: robot1, 2, 6 goto table5 together and robot3, 4, 5 goto table2 together
+[Time: Hours: 00, Minutes: 01, Seconds: 52] Task Manager:
+Plan:
+1. Team 1: [robot1, robot2, robot6]: Move to table5 together
+2. Team 2: [robot3, robot4, robot5]: Move to table2 together
+multirobot_list: [Team 1, Team 2]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 04, Seconds: 03] Human: robot1, 2, 6 goto table5 together and robot3, 4, 5 goto table2 together
+[Time: Hours: 00, Minutes: 04, Seconds: 04] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot6]: goto table5 together
+Team 2: [robot3, robot4, robot5]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 05, Seconds: 33] Human: robot1, 2, 6 goto table5 together and robot3,4, 5 goto table2 together
+[Time: Hours: 00, Minutes: 05, Seconds: 35] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot6]: goto table5 together
+Team 2: [robot3, robot4, robot5]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 02, Seconds: 14] Human: robot1, 2, 6 goto table5 together and robot3, 4, 5 goto table2 together
+[Time: Hours: 00, Minutes: 02, Seconds: 16] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot6]: go to table5 together
+Team 2: [robot3, robot4, robot5]: go to table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 04, Seconds: 34] Human: robot1, 2, 6 goto table5 together and robot4, 5, 6 goto table2 together
+[Time: Hours: 00, Minutes: 04, Seconds: 37] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot6]: goto table5 together
+Team 2: [robot4, robot5, robot6]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 24, Seconds: 03] Human: robot 1 goto juice_stall
+[Time: Hours: 00, Minutes: 24, Seconds: 05] Task Manager:
+Independent Tasks:
+Robot1 tasks: go to juice_stall
+multirobot_list: []
+singlerobot_list: [Robot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 41] Human: robot 4 goto table 2
+[Time: Hours: 00, Minutes: 00, Seconds: 43] Task Manager:
+Independent Tasks:
+Robot4 tasks: go to table 2
+multirobot_list: []
+singlerobot_list: [Robot4]
+[Time: Hours: 00, Minutes: 06, Seconds: 24] Human: robot4, goto sink2
+[Time: Hours: 00, Minutes: 06, Seconds: 31] Task Manager:
+Independent Tasks:
+Robot4 tasks: go to sink2
+multirobot_list: []
+singlerobot_list: [Robot4]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Human: robot4 goto sink 2
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Task Manager:
+Independent Tasks:
+Robot4 tasks: go to sink 2
+multirobot_list: []
+singlerobot_list: [Robot4]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 09] Human: robot1, 2, 6 goto table5 together and robot 3, 4, 5 goto sink1 together
+[Time: Hours: 00, Minutes: 01, Seconds: 15] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot6]: goto table5 together
+Team 2: [robot3, robot4, robot5]: goto sink1 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 38] Human: robot 1, 2, 6 goto the front of sink togetHER
+[Time: Hours: 00, Minutes: 00, Seconds: 40] Task Manager:
+Plan:
+1. Team 1: [Robot1, Robot2, Robot6]: Go to the front of the sink together
+multirobot_list: [Team 1]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Human: robot 1, 2, 6 goto in front of sink1 together
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot6]: goto in front of sink1 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 12] Human: robot1, 2, 6 goto behind the sink1 together
+[Time: Hours: 00, Minutes: 01, Seconds: 13] Task Manager:
+Plan:
+1. Team 1: [Robot1, Robot2, Robot6]: Go to behind the sink1 together
+multirobot_list: [Team 1]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Human: [Robot1, Robot2, Robot6]: Go to behind the sink1 together
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Task Manager:
+Independent Tasks:
+Team 1: [Robot1, Robot2, Robot6]: Go to behind the sink1 together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 56] Human: robot1, 2, 6 goto juice stall together and robot3, 4, 5 goto table2 together
+[Time: Hours: 00, Minutes: 01, Seconds: 00] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot6]: goto juice stall together
+Team 2: [robot3, robot4, robot5]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 02] Human: robot1, 2, 6 goto juice stall together and robot3, 4, 5 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot6]: goto juice stall together
+Team 2: [robot3, robot4, robot5]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 01] Human: robot1, 2, 6 goto juice stall together and robot3, 4, 5 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot6]: goto juice stall together
+Team 2: [robot3, robot4, robot5]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 47] Human: robot1, robot2, robot3 goto juice stall together
+[Time: Hours: 00, Minutes: 00, Seconds: 49] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto juice stall together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 50] Human: robot1, robot2, robot3 goto juice stall together
+[Time: Hours: 00, Minutes: 00, Seconds: 52] Task Manager:
+Plan:
+1. Team 1: [robot1, robot2, robot3]: Go to juice stall together
+multirobot_list: [Team 1]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 40] Human: robot1, robot2, robot goto juice stall together
+[Time: Hours: 00, Minutes: 00, Seconds: 42] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: Go to juice stall together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 41] Human: robot1, robot2, robot3 goto juice stall together
+[Time: Hours: 00, Minutes: 01, Seconds: 43] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot3]: goto juice stall together
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 02, Seconds: 18] Human: robot1 goto juice stall , robot2 goto table 3 and robot3 goto table2
+[Time: Hours: 00, Minutes: 02, Seconds: 20] Task Manager:
+Independent Tasks:
+Robot1 tasks: go to juice stall
+Robot2 tasks: go to table 3
+Robot3 tasks: go to table 2
+multirobot_list: []
+singlerobot_list: [Robot1, Robot2, Robot3]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 26] Human: robot1 goto juice stall, robot2 goto table3 and robot3 goto table2
+[Time: Hours: 00, Minutes: 01, Seconds: 29] Task Manager:
+Independent Tasks:
+Robot1 tasks: goto juice stall
+Robot2 tasks: goto table3
+Robot3 tasks: goto table2
+multirobot_list: []
+singlerobot_list: [Robot1, Robot2, Robot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 34] Human: robot1 goto juice stall, robot goto table3 and robot3 goto table2
+[Time: Hours: 00, Minutes: 01, Seconds: 36] Task Manager:
+Independent Tasks:
+Robot1 tasks: go to juice stall
+Robot2 tasks: go to table3
+Robot3 tasks: go to table2
+multirobot_list: []
+singlerobot_list: [Robot1, Robot2, Robot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 47] Human: robot1 goto juice stall, robot2 goto table3 and robot3 goto table2
+[Time: Hours: 00, Minutes: 00, Seconds: 49] Task Manager:
+Independent Tasks:
+Robot1 tasks: go to juice stall
+Robot2 tasks: go to table3
+Robot3 tasks: go to table2
+multirobot_list: []
+singlerobot_list: [Robot1, Robot2, Robot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 44] Human: robot1 goto juice stall, robot2 goto table3 and robot3 goto table2
+[Time: Hours: 00, Minutes: 00, Seconds: 45] Task Manager:
+Independent Tasks:
+Robot1 tasks: go to juice stall
+Robot2 tasks: go to table3
+Robot3 tasks: go to table2
+multirobot_list: []
+singlerobot_list: [Robot1, Robot2, Robot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 24] Human: robot1 goto juice stall, robot2 goto table3 and robot3 goto table2
+[Time: Hours: 00, Minutes: 01, Seconds: 26] Task Manager:
+Independent Tasks:
+Robot1 tasks: goto juice stall
+Robot2 tasks: goto table3
+Robot3 tasks: goto table2
+multirobot_list: []
+singlerobot_list: [Robot1, Robot2, Robot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 03] Human: robot1 goto juice stall, robot2 goto table3 and robot3 goto table2
+[Time: Hours: 00, Minutes: 01, Seconds: 04] Task Manager:
+Independent Tasks:
+Robot1 tasks: go to juice stall
+Robot2 tasks: go to table3
+Robot3 tasks: go to table2
+multirobot_list: []
+singlerobot_list: [Robot1, Robot2, Robot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 02, Seconds: 00] Human: robot1 goto juice stall, robot2 goto table3 and robot3 goto table2
+[Time: Hours: 00, Minutes: 02, Seconds: 01] Task Manager:
+Independent Tasks:
+Robot1 tasks: goto juice stall
+Robot2 tasks: goto table3
+Robot3 tasks: goto table2
+multirobot_list: []
+singlerobot_list: [Robot1, Robot2, Robot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 54] Human: robot1 goto juice stall, robot2 goto table3 and robot3 goto table2
+[Time: Hours: 00, Minutes: 01, Seconds: 56] Task Manager:
+Independent Tasks:
+Robot1 tasks: go to juice stall
+Robot2 tasks: go to table3
+Robot3 tasks: go to table2
+multirobot_list: []
+singlerobot_list: [Robot1, Robot2, Robot3]

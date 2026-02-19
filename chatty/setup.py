@@ -28,9 +28,10 @@ setup(
     entry_points={
         'console_scripts': [
             'chat_gui = chatty.chat_gui:main',
-            'chat_gui2 = chatty.chat_gui2:main',
+            # 'chat_gui2 = chatty.chat_gui2:main',
             'chat_manager = chatty.chat_manager:main',
             'task_manager = chatty.task_manager:main',
+            'task_manager1 = chatty.task_manager1:main',
 
             'speak = chatty.speak:main',
             'time = chatty.time:main',

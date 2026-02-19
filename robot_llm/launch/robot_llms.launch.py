@@ -1,47 +1,79 @@
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.conditions import IfCondition
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
 from launch_ros.actions import Node
-from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
 
-    yahboom_robot = Node(
+    robot1_node = Node(
+        package='burger_robot',
+        executable='burger_robot_llm',
+        name='robot1_node',
+        parameters=[{'robot_name': 'robot1'}],
+        output='screen',
+    )
+
+    robot2_node = Node(
+        package='burger_robot',
+        executable='burger_robot_llm',
+        name='robot2_node',
+        parameters=[{'robot_name': 'robot2'}],
+        output='screen',
+    )
+
+    robot3_node = Node(
+        package='burger_robot',
+        executable='burger_robot_llm',
+        name='robot3_node',
+        parameters=[{'robot_name': 'robot3'}],
+        output='screen',
+    )
+
+    robot4_node = Node(
         package='yahboom_llm',
         executable='yahboom_llm',
-        name='yahboom_llm_node',
-        parameters=[{
-            'robot_name': 'cleaning_bot',
-        }],
+        name='robot4_node',
+        parameters=[{'robot_name': 'robot4'}],
         output='screen',
     )
 
-    burger_robot = Node(
-        package='turtlebot3_llm',
-        executable='burger_llm',
-        name='burger_llm_node',
-        parameters=[{
-            'robot_name': 'delivery_bot',
-        }],
+    robot5_node = Node(
+        package='yahboom_llm',
+        executable='yahboom_llm',
+        name='robot5_node',
+        parameters=[{'robot_name': 'robot5'}],
         output='screen',
     )
 
-    x3_uav_robot = Node(
-        package='x3_uav_llm', 
-        executable='x3_uav_llm',
-        name='x3_uav_llm_node',
-        parameters=[{
-            'robot_name': 'drone',
-        }],
+    robot6_node = Node(
+        package='yahboom_llm',
+        executable='yahboom_llm',
+        name='robot6_node',
+        parameters=[{'robot_name': 'robot6'}],
+        output='screen',
+    )
+
+    drone_llm = Node(
+        package='drone',
+        executable='drone_llm',
+        name='drone_node',
+        parameters=[{'robot_name': 'drone'}],
+        output='screen',
+    )
+
+    team_node = Node(
+        package='robot_llm',
+        executable='team_llm_node3',
+        name='team_node',
         output='screen',
     )
 
     return LaunchDescription([
-        burger_robot,
-        x3_uav_robot,
-        yahboom_robot,
-
+        robot1_node,
+        robot2_node,
+        robot3_node,
+        robot4_node,
+        robot5_node,
+        robot6_node,
+        drone_llm,
+        team_node,
     ])

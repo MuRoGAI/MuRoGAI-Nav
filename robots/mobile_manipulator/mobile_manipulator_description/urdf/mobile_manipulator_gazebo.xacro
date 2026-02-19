@@ -1,0 +1,284 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  
+  <xacro:if value="${use_ignition}">
+    
+    <!-- ============================================ -->
+    <!-- ROS2 CONTROL PLUGIN -->
+    <!-- ============================================ -->
+    <xacro:if value="${use_ros2_control}">
+      <gazebo>
+        <plugin filename="ign_ros2_control-system" name="ign_ros2_control::IgnitionROS2ControlPlugin">
+          <parameters>$(find mobile_manipulator_control)/config/${control_file}ros2_controllers.yaml</parameters>
+          <ros>
+            <namespace>${ns_prefix}</namespace>
+          </ros>
+        </plugin>
+      </gazebo>
+    </xacro:if>
+
+    <!-- ============================================ -->
+    <!-- PLUGIN CONTROL MODE -->
+    <!-- All plugins combined in ONE <gazebo> block -->
+    <!-- ============================================ -->
+    <xacro:if value="${use_plugin_control}">
+      <gazebo>
+        <!-- ARM TRAJECTORY CONTROLLER -->
+        <!-- <plugin
+          filename="ignition-gazebo-joint-trajectory-controller-system"
+          name="ignition::gazebo::systems::JointTrajectoryController">
+          
+          <joint_name>${frame_prefix}ur_joint1</joint_name>
+          <initial_position>0.0</initial_position>
+          <position_p_gain>5</position_p_gain>
+          <position_i_gain>0.1</position_i_gain>
+          <position_d_gain>0.5</position_d_gain>
+          <position_i_min>-1</position_i_min>
+          <position_i_max>1</position_i_max>
+          <position_cmd_min>-10</position_cmd_min>
+          <position_cmd_max>10</position_cmd_max>
+          
+          <joint_name>${frame_prefix}ur_joint2</joint_name>
+          <initial_position>0.0</initial_position>
+          <position_p_gain>5</position_p_gain>
+          <position_i_gain>0.1</position_i_gain>
+          <position_d_gain>0.5</position_d_gain>
+          <position_i_min>-1</position_i_min>
+          <position_i_max>1</position_i_max>
+          <position_cmd_min>-10</position_cmd_min>
+          <position_cmd_max>10</position_cmd_max>
+          
+          <joint_name>${frame_prefix}ur_joint3</joint_name>
+          <initial_position>0.0</initial_position>
+          <position_p_gain>5</position_p_gain>
+          <position_i_gain>0.1</position_i_gain>
+          <position_d_gain>0.5</position_d_gain>
+          <position_i_min>-1</position_i_min>
+          <position_i_max>1</position_i_max>
+          <position_cmd_min>-10</position_cmd_min>
+          <position_cmd_max>10</position_cmd_max>
+          
+          <joint_name>${frame_prefix}ur_joint4</joint_name>
+          <initial_position>0.0</initial_position>
+          <position_p_gain>3</position_p_gain>
+          <position_i_gain>0.05</position_i_gain>
+          <position_d_gain>0.3</position_d_gain>
+          <position_i_min>-1</position_i_min>
+          <position_i_max>1</position_i_max>
+          <position_cmd_min>-5</position_cmd_min>
+          <position_cmd_max>5</position_cmd_max>
+          
+          <joint_name>${frame_prefix}ur_joint5</joint_name>
+          <initial_position>0.0</initial_position>
+          <position_p_gain>3</position_p_gain>
+          <position_i_gain>0.05</position_i_gain>
+          <position_d_gain>0.3</position_d_gain>
+          <position_i_min>-1</position_i_min>
+          <position_i_max>1</position_i_max>
+          <position_cmd_min>-5</position_cmd_min>
+          <position_cmd_max>5</position_cmd_max>
+          
+          <joint_name>${frame_prefix}ur_joint6</joint_name>
+          <initial_position>0.0</initial_position>
+          <position_p_gain>2</position_p_gain>
+          <position_i_gain>0.02</position_i_gain>
+          <position_d_gain>0.2</position_d_gain>
+          <position_i_min>-1</position_i_min>
+          <position_i_max>1</position_i_max>
+          <position_cmd_min>-3</position_cmd_min>
+          <position_cmd_max>3</position_cmd_max>
+          
+          <topic>${namespace}/arm_cmds</topic>
+        </plugin> -->
+
+        <!-- DIFF DRIVE CONTROLLER -->
+        <plugin filename="gz-sim-diff-drive-system"
+                name="gz::sim::systems::DiffDrive">
+          
+          <left_joint>${frame_prefix}fl_wheel_joint</left_joint>
+          <right_joint>${frame_prefix}fr_wheel_joint</right_joint>
+          
+          <wheel_separation>0.27</wheel_separation>
+          <wheel_radius>0.04445</wheel_radius>
+          
+          <topic>${namespace}/cmd_vel</topic>
+          <!-- <update_rate>200</update_rate> -->
+          
+          <!-- <odom_publish_frequency>50</odom_publish_frequency> -->
+          <!-- <frame_id>${frame_prefix}odom</frame_id>
+          <child_frame_id>${frame_prefix}base_footprint</child_frame_id> -->
+
+          <publish_odom>false</publish_odom>
+          <publish_odom_tf>false</publish_odom_tf>
+          
+          <!-- <tf_topic>/tf</tf_topic> -->
+          <!-- <odom_topic>${namespace}/odom</odom_topic> -->
+        </plugin>
+
+        <plugin filename="ignition-gazebo-odometry-publisher-system"
+                name="ignition::gazebo::systems::OdometryPublisher">
+            <odom_frame>${frame_prefix}odom</odom_frame>
+            <robot_base_frame>${frame_prefix}base_footprint</robot_base_frame>
+            <odom_publish_frequency>200</odom_publish_frequency>
+            <odom_topic>${namespace}/odom</odom_topic>
+            <odom_covariance_topic>${namespace}/odometry_with_covariance</odom_covariance_topic>
+            <tf_topic>/tf</tf_topic>
+        </plugin>
+
+
+        <!-- JOINT STATE PUBLISHER -->
+        <plugin filename="ignition-gazebo-joint-state-publisher-system" 
+                name="ignition::gazebo::systems::JointStatePublisher">
+          <topic>${namespace}/joint_states</topic>
+          <update_rate>50</update_rate>
+        </plugin>
+      </gazebo>
+    </xacro:if>
+
+
+
+<!-- ============================================ -->
+<!-- DETACHABLE JOINT GRIPPER (ALTERNATIVE) -->
+<!-- ============================================ -->
+  <!-- <gazebo>
+    <plugin
+      filename="gz-sim-detachable-joint-system"
+      name="gz::sim::systems::DetachableJoint">
+      
+      <parent_link>${frame_prefix}vac_gripper</parent_link>
+      <child_model>test_cube</child_model>
+      <child_link>test_cube_link</child_link>
+
+     <initial_attach>false</initial_attach>
+      
+      <attach_topic>${namespace}/gripper/test_cube/attach</attach_topic>
+      <detach_topic>${namespace}/gripper/test_cube/detach</detach_topic>
+      <output_topic>${namespace}/gripper/test_cube/state</output_topic>
+      
+      <suppress_child_warning>true</suppress_child_warning>
+    </plugin>
+  </gazebo> -->
+  
+  <!-- ign topic -t /gripper/test_cube/attach -m ignition.msgs.Empty -p '{}'  -->
+
+<!--  <gazebo>
+    <plugin
+      filename="gz-sim-detachable-joint-system"
+      name="gz::sim::systems::DetachableJoint">
+      
+      <parent_link>${frame_prefix}vac_gripper</parent_link>
+      <child_model>test_cylinder</child_model>
+      <child_link>test_cylinder_link</child_link>
+
+     <initial_attach>false</initial_attach>
+      
+      <attach_topic>${namespace}/gripper/test_cylinder/attach</attach_topic>
+      <detach_topic>${namespace}/gripper/test_cylinder/detach</detach_topic>
+      <output_topic>${namespace}/gripper/test_cylinder/state</output_topic>
+      
+      <suppress_child_warning>true</suppress_child_warning>
+    </plugin>
+  </gazebo> -->
+
+
+<!-- DYNAMIC DETACHABLE JOINT - ONE PLUGIN FOR ALL OBJECTS! -->
+<!-- https://github.com/gazebosim/gz-sim/issues/2362 -->
+<!-- <gazebo>
+  <plugin filename="gz-sim-dynamic-detachable-joint-system"
+          name="gz::sim::systems::DynamicDetachableJoint">
+    
+    <parent_link>${frame_prefix}vac_gripper</parent_link>
+    
+    <service_name>${namespace}/gripper/attach_detach</service_name>
+    
+    <output_topic>${namespace}/gripper/state</output_topic>
+    
+    <attach_distance>0.05</attach_distance>
+    
+  </plugin>
+</gazebo> -->
+
+
+
+    <!-- ============================================ -->
+    <!-- BASE LINK PROPERTIES -->
+    <!-- ============================================ -->
+    <gazebo reference="${frame_prefix}base_link">
+      <mu1>0.1</mu1>
+      <mu2>0.1</mu2>
+      <material>Gazebo/Cyan</material>
+    </gazebo>
+
+    <!-- ============================================ -->
+    <!-- ARM LINK PROPERTIES -->
+    <!-- ============================================ -->
+    <!-- <gazebo reference="${frame_prefix}ur_link1">
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+      <material>Gazebo/Blue</material>
+    </gazebo>
+    
+    <gazebo reference="${frame_prefix}ur_link2">
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+      <material>Gazebo/Orange</material>
+    </gazebo>
+    
+    <gazebo reference="${frame_prefix}ur_link3">
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+      <material>Gazebo/Blue</material>
+    </gazebo>
+    
+    <gazebo reference="${frame_prefix}ur_link4">
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+      <material>Gazebo/Orange</material>
+    </gazebo>
+    
+    <gazebo reference="${frame_prefix}ur_link5">
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+      <material>Gazebo/Blue</material>
+    </gazebo>
+    
+    <gazebo reference="${frame_prefix}ur_link6">
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+      <material>Gazebo/Green</material>
+    </gazebo>
+
+    <gazebo reference="${frame_prefix}vac_gripper">
+      <mu1>0.5</mu1>
+      <mu2>0.5</mu2>
+      <material>Gazebo/Red</material>
+    </gazebo> -->
+    
+    <!-- ============================================ -->
+    <!-- WHEEL PROPERTIES - IMPROVED TRACTION -->
+    <!-- ============================================ -->
+
+  <gazebo reference="${frame_prefix}fl_wheel">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+  </gazebo>
+
+  <gazebo reference="${frame_prefix}fr_wheel">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+  </gazebo>
+
+  <gazebo reference="${frame_prefix}caster_wheel">
+    <mu1>0.0</mu1>
+    <mu2>0.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+  </gazebo>
+
+  </xacro:if>
+
+</robot>

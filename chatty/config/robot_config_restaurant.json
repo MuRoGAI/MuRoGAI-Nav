@@ -1,0 +1,180 @@
+{
+  "robot_names": [
+    "robot1",
+    "robot2",
+    "robot3",
+    "robot4",
+    "robot5",
+    "robot6",
+    "drone"
+  ],
+
+  "robot_capabilities": {
+    "robot1": "Differential drive carry robot for indoor transport and cooperative item delivery.",
+    "robot2": "Differential drive carry robot for indoor transport and cooperative item delivery.",
+    "robot3": "Differential drive carry robot for indoor transport and cooperative item delivery.",
+    "robot4": "Holonomic carry robot capable of omnidirectional movement for precise transport and cooperative delivery.",
+    "robot5": "Holonomic carry robot capable of omnidirectional movement for precise transport and cooperative delivery.",
+    "robot6": "Holonomic carry robot capable of omnidirectional movement for precise transport and cooperative delivery.",
+    "drone" : "The drone is positioned at a place where it can observe most of the food court. It has camera mounted. Its primary job is to answer questions, it could be about the scene for awareness of Task Manager or other robots or anything else. "
+  },
+
+  "robot_morphology": {
+    "robot1": "Drive Type: Differential Drive, Radius: 0.25 m, Payload: 5 kg, Mobility: Non-holonomic",
+    "robot2": "Drive Type: Differential Drive, Radius: 0.25 m, Payload: 5 kg, Mobility: Non-holonomic",
+    "robot3": "Drive Type: Differential Drive, Radius: 0.25 m, Payload: 5 kg, Mobility: Non-holonomic",
+    "robot4": "Drive Type: Holonomic, Radius: 0.25 m, Payload: 10 kg, Mobility: Omnidirectional",
+    "robot5": "Drive Type: Holonomic, Radius: 0.25 m, Payload: 10 kg, Mobility: Omnidirectional",
+    "robot6": "Drive Type: Holonomic, Radius: 0.25 m, Payload: 10 kg, Mobility: Omnidirectional",
+    "drone" : "Payload: 1.5 kg, Speed: 0-3 m/s, Dimensions: 450 X 450 X 200 mm, Type: quadrotor UAV, "
+  },
+
+  "robot_states": {
+    "robot1": {
+      "relative_position": "Free",
+      "relative_orientation": "Facing direction of travel",
+      "carry_state": "Empty",
+      "battery_state": "Full",
+      "mode": "Idle"
+    },
+
+    "robot2": {
+      "relative_position": "Free",
+      "relative_orientation": "Facing direction of travel",
+      "carry_state": "Empty",
+      "battery_state": "Full",
+      "mode": "Idle"
+    },
+
+    "robot3": {
+      "relative_position": "Free",
+      "relative_orientation": "Facing direction of travel",
+      "carry_state": "Empty",
+      "battery_state": "Full",
+      "mode": "Idle"
+    },
+
+    "robot4": {
+      "relative_position": "Free",
+      "relative_orientation": "Fully maneuverable",
+      "carry_state": "Empty",
+      "battery_state": "Full",
+      "mode": "Idle"
+    },
+
+    "robot5": {
+      "relative_position": "Free",
+      "relative_orientation": "Fully maneuverable",
+      "carry_state": "Empty",
+      "battery_state": "Full",
+      "mode": "Idle"
+    },
+
+    "robot6": {
+      "relative_position": "Free",
+      "relative_orientation": "Fully maneuverable",
+      "carry_state": "Empty",
+      "battery_state": "Full",
+      "mode": "Idle"
+    },
+    "drone": {
+      "relative_position": "Free",
+      "relative_orientation": "Fully maneuverable",
+      "carry_state": "Empty",
+      "battery_state": "Full",
+      "mode": "Idle"
+    }
+  },
+  "path_planner":{
+    "robot1":{
+      "radius":0.25,
+      "max_linear_velocity_x": 0.12,
+      "max_linear_velocity_y": 0.0,
+      "max_angular_velocity_z": 0.4,
+      "max_acceleration": 0.05,
+      "max_angular_acceleration": 0.3,
+      "colour": "green",
+      "type": "Differential Drive Robot"
+    },
+    "robot2":{
+      "radius":0.25,
+      "max_linear_velocity_x": 0.12,
+      "max_linear_velocity_y": 0.0,
+      "max_angular_velocity_z": 0.4,
+      "max_acceleration": 0.05,
+      "max_angular_acceleration": 0.3,
+      "colour": "blue",
+      "type": "Differential Drive Robot"
+    },
+    "robot3":{
+      "radius":0.25,
+      "max_linear_velocity_x": 0.12,
+      "max_linear_velocity_y": 0.0,
+      "max_angular_velocity_z": 0.4,
+      "max_acceleration": 0.05,
+      "max_angular_acceleration": 0.3,
+      "colour": "red",
+      "type": "Differential Drive Robot"
+    },
+    "robot4":{
+      "radius":0.25,
+      "max_linear_velocity_x": 0.25,
+      "max_linear_velocity_y": 0.25,
+      "max_angular_velocity_z": 0.4,
+      "max_acceleration": 0.4,
+      "max_angular_acceleration": 3.5,
+      "colour": "brown",
+      "type": "Holonomic Drive Robot"
+    },
+    "robot5":{
+      "radius":0.25,
+      "max_linear_velocity_x": 0.25,
+      "max_linear_velocity_y": 0.25,
+      "max_angular_velocity_z": 0.4,
+      "max_acceleration": 0.4,
+      "max_angular_acceleration": 3.5,
+      "colour": "orange",
+      "type": "Holonomic Drive Robot"
+    },
+    "robot6":{
+      "radius":0.25,
+      "max_linear_velocity_x": 0.25,
+      "max_linear_velocity_y": 0.25,
+      "max_angular_velocity_z": 0.4,
+      "max_acceleration": 0.4,
+      "max_angular_acceleration": 3.5,
+      "colour": "purple",
+      "type": "Holonomic Drive Robot"
+    },
+    "drone":{
+      "radius":0.25,
+      "max_linear_velocity_x": 0.25,
+      "max_linear_velocity_y": 0.25,
+      "max_linear_velocity_z": 0.25,
+      "max_angular_velocity_x": 0.4,
+      "max_angular_velocity_y": 0.4,
+      "max_angular_velocity_z": 0.4,
+      "max_acceleration": 0.4,
+      "max_angular_acceleration": 3.5,
+      "colour": "purple",
+      "type": "Drone"
+    }
+  },
+
+  "task_specific_rules": [
+    "This is restaurant environment, where robots servem clean and help. ",
+    "The entire restaurant is maintained by robots. ",
+    "Stall 1 has all types of vegetarian food. ",
+    "Stall 2 has all types of non-vegetarian food. ",
+    "Stall 3 has all types of juices or drinks. ",
+    "Tables 1, 2, 3, 4, 5, 6, 7 and 8 are present in the restaurant environment. ",
+    "Stalls, Tables and a Sinks locations are known to robots. ",
+    "Whenever specific information is not known ask the drone about it. ",
+    "After the drone replies to your question, you can continue to allocate task. ",
+    "Answering questions should be classified as an independent task. ",
+    "Always assign the task with the correct Stall Number or Table Number. If the information is not known, ask the drone for it. "
+  ],
+
+  "task_replanning_rules": [
+  ]
+}

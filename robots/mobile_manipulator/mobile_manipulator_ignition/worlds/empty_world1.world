@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <world name="default">
+    <!-- Core System Plugins -->
+    <plugin
+      filename="gz-sim-physics-system"
+      name="gz::sim::systems::Physics">
+    </plugin>
+    <plugin
+      filename="gz-sim-user-commands-system"
+      name="gz::sim::systems::UserCommands">
+    </plugin>
+    <plugin
+      filename="gz-sim-scene-broadcaster-system"
+      name="gz::sim::systems::SceneBroadcaster">
+    </plugin>
+    <plugin
+      filename="gz-sim-sensors-system"
+      name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin
+      filename="gz-sim-imu-system"
+      name="gz::sim::systems::Imu">
+    </plugin>
+
+    <!-- Ground Plane with Optimized Friction -->
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <!-- Ground surface properties -->
+          <surface>
+            <friction>
+              <ode>
+                <mu>1.0</mu>
+                <mu2>0.0</mu2>
+              </ode>
+            </friction>
+            <contact>
+              <ode>
+                <kp>1000000.0</kp>
+                <kd>100.0</kd>
+                <max_vel>100.0</max_vel>
+                <min_depth>0.001</min_depth>
+              </ode>
+            </contact>
+          </surface>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <specular>0.8 0.8 0.8 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Lighting -->
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <!-- Camera View (Optional) -->
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose frame=''>3.5 -3.5 2.5 0 0.4 0.785</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+      </camera>
+    </gui>
+
+    <!-- OPTIMIZED PHYSICS PARAMETERS -->
+    <physics type="ode">
+      <!-- Reduced update rate for better performance -->
+      <real_time_update_rate>100.0</real_time_update_rate>
+      
+      <!-- Larger time step - balance between accuracy and speed -->
+      <max_step_size>0.01</max_step_size>
+      
+      <!-- Try to maintain real-time -->
+      <real_time_factor>1.0</real_time_factor>
+      
+      <ode>
+        <solver>
+          <!-- Quick solver is good for wheeled robots -->
+          <type>quick</type>
+          
+          <!-- Reduced iterations for faster computation -->
+          <iters>50</iters>
+          <precon_iters>0</precon_iters>
+          
+          <!-- Successive Over-Relaxation parameter -->
+          <sor>1.3</sor>
+          
+          <!-- Use dynamic MOI rescaling -->
+          <use_dynamic_moi_rescaling>1</use_dynamic_moi_rescaling>
+        </solver>
+        
+        <constraints>
+          <!-- Constraint Force Mixing - adds springiness to constraints -->
+          <!-- Lower = stiffer, higher = softer -->
+          <cfm>0.0</cfm>
+          
+          <!-- Error Reduction Parameter - how quickly to correct errors -->
+          <!-- Higher = faster correction but can cause instability -->
+          <erp>0.2</erp>
+          
+          <!-- Maximum velocity for contact correction -->
+          <contact_max_correcting_vel>100.0</contact_max_correcting_vel>
+          
+          <!-- Contact surface layer thickness -->
+          <contact_surface_layer>0.001</contact_surface_layer>
+        </constraints>
+      </ode>
+    </physics>
+
+    <!-- Gravity -->
+    <gravity>0 0 -9.81</gravity>
+
+  </world>
+</sdf>

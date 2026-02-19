@@ -1,0 +1,128 @@
+/r2/controller_manager:
+  ros__parameters:
+    update_rate: 100  # Hz
+
+    # Joint State Broadcaster
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    # Arm Controller
+    arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    # Differential Drive Controller for wheels
+    diff_drive_controller:
+      type: diff_drive_controller/DiffDriveController
+
+    # # Steering Controllers
+    # front_steering_controller:
+    #   type: position_controllers/JointGroupPositionController
+
+
+# Arm Controller Configuration
+/r2/arm_controller:
+  ros__parameters:
+    joints:
+      - r2/ur_joint1
+      - r2/ur_joint2
+      - r2/ur_joint3
+      - r2/ur_joint4
+      - r2/ur_joint5
+      - r2/ur_joint6
+    
+    command_interfaces:
+      - position
+    
+    state_interfaces:
+      - position
+      - velocity
+    
+    constraints:
+      stopped_velocity_tolerance: 0.01
+      goal_time: 0.0
+
+# Differential Drive Controller Configuration
+/r2/diff_drive_controller:
+  ros__parameters:
+    # Wheel joint names (only front wheels, no back wheels)
+    left_wheel_names: 
+      - r2/fl_wheel_joint
+    right_wheel_names:
+      - r2/fr_wheel_joint
+
+    # Physical robot parameters - CRITICAL FOR ACCURATE ODOMETRY
+    # wheel_separation: Distance between wheel centers (measured accurately)
+    wheel_separation: 0.27        # Distance between left and right wheel centers (meters)
+    wheel_radius: 0.04445         # Wheel radius from constants.xacro (meters)
+    
+    # Calibration multipliers - ADJUST THESE IF ODOMETRY DRIFTS
+    # If robot turns less than expected: increase wheel_separation_multiplier
+    # If robot turns more than expected: decrease wheel_separation_multiplier
+    # If robot moves less than expected: increase wheel_radius_multiplier
+    # If robot moves more than expected: decrease wheel_radius_multiplier
+    wheel_separation_multiplier: 1.0
+    left_wheel_radius_multiplier: 1.0
+    right_wheel_radius_multiplier: 1.0
+    
+    # Command velocity settings
+    use_stamped_vel: false
+    
+    # Publishing settings
+    publish_rate: 50.0
+    
+    # Frame IDs - IMPORTANT: Must match URDF
+    odom_frame_id: odom
+    base_frame_id: base_footprint
+    
+    # Covariance matrices (lower = more confident)
+    pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
+    twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
+    
+    # Odometry settings - CRITICAL FOR ACCURACY
+    open_loop: false              # Use encoder feedback (closed-loop control)
+    enable_odom_tf: true          # Publish odom->base_footprint transform
+    
+    # Position feedback
+    position_feedback: true       # Use wheel position for odometry
+    
+    # Timeout and limits
+    cmd_vel_timeout: 0.5
+    publish_limited_velocity: true
+    velocity_rolling_window_size: 10
+    
+    # Linear velocity limits (reduced for better control)
+    linear:
+      x:
+        has_velocity_limits: true
+        has_acceleration_limits: true
+        has_jerk_limits: false
+        max_velocity: 0.3           # m/s (further reduced for stability)
+        min_velocity: -0.3          # m/s
+        max_acceleration: 0.3       # m/s² (gentler acceleration)
+        min_acceleration: -0.3      # m/s² (gentler deceleration)
+        max_deceleration: 0.5       # m/s² (controlled stopping)
+    
+    # Angular velocity limits (reduced for better path tracking)
+    angular:
+      z:
+        has_velocity_limits: true
+        has_acceleration_limits: true
+        has_jerk_limits: false
+        max_velocity: 0.8           # rad/s (reduced for smoother turns)
+        min_velocity: -0.8          # rad/s
+        max_acceleration: 0.8       # rad/s² (gentler angular acceleration)
+        min_acceleration: -0.8      # rad/s² (gentler angular deceleration)
+        max_deceleration: 1.0       # rad/s² (controlled stopping)
+
+# # Front Steering Controller Configuration
+# /r2/front_steering_controller:
+#   ros__parameters:
+#     joints:
+#       - r2/fl_steer_joint
+#       - r2/fr_steer_joint
+    
+#     command_interfaces:
+#       - position
+    
+#     state_interfaces:
+#       - position

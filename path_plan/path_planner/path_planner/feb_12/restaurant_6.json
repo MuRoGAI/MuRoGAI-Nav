@@ -1,0 +1,421 @@
+{
+  "map_info": {
+    "name": "restaurant_6",
+    "resolution": 0.1,
+    "width": 24,
+    "height": 24,
+    "origin": [
+      0,
+      0
+    ],
+    "originPosition": "bottom-left"
+  },
+  "objects": [
+    {
+      "id": "rectangle_1770399503595",
+      "name": "sink2",
+      "type": "obstacle",
+      "shape": {
+        "type": "rectangle",
+        "center": [
+          2,
+          16
+        ],
+        "width": 1,
+        "height": 1,
+        "rotation": 0
+      },
+      "properties": {
+        "color": "#f97316",
+        "material": "ceramic"
+      }
+    },
+    {
+      "id": "rectangle_1770399505778",
+      "name": "sink1",
+      "type": "obstacle",
+      "shape": {
+        "type": "rectangle",
+        "center": [
+          22,
+          8
+        ],
+        "width": 1,
+        "height": 1,
+        "rotation": 3.141592653589793
+      },
+      "properties": {
+        "color": "#f97316",
+        "material": "ceramic"
+      }
+    },
+    {
+      "id": "rectangle_1770399512179",
+      "name": "salad_stall",
+      "type": "obstacle",
+      "shape": {
+        "type": "rectangle",
+        "center": [
+          7,
+          12
+        ],
+        "width": 0.8,
+        "height": 0.6,
+        "rotation": 0
+      },
+      "properties": {
+        "color": "#33d17a",
+        "material": "default"
+      }
+    },
+    {
+      "id": "rectangle_1770399515294",
+      "name": "juice_stall",
+      "type": "obstacle",
+      "shape": {
+        "type": "rectangle",
+        "center": [
+          17,
+          12
+        ],
+        "width": 0.8,
+        "height": 0.6,
+        "rotation": 0
+      },
+      "properties": {
+        "color": "#33d17a",
+        "material": "default"
+      }
+    },
+    {
+      "id": "circle_1770399518496",
+      "name": "table5",
+      "type": "obstacle",
+      "shape": {
+        "type": "circle",
+        "center": [
+          12,
+          20
+        ],
+        "radius": 0.5
+      },
+      "properties": {
+        "color": "#1c71d8",
+        "material": "wooden"
+      }
+    },
+    {
+      "id": "circle_1770399522527",
+      "name": "table6",
+      "type": "obstacle",
+      "shape": {
+        "type": "circle",
+        "center": [
+          18,
+          20
+        ],
+        "radius": 0.5
+      },
+      "properties": {
+        "color": "#1c71d8",
+        "material": "wooden"
+      }
+    },
+    {
+      "id": "circle_1770399527678",
+      "name": "table1",
+      "type": "obstacle",
+      "shape": {
+        "type": "circle",
+        "center": [
+          6,
+          4
+        ],
+        "radius": 0.5
+      },
+      "properties": {
+        "color": "#1c71d8",
+        "material": "wooden"
+      }
+    },
+    {
+      "id": "circle_1770399529162",
+      "name": "table2",
+      "type": "obstacle",
+      "shape": {
+        "type": "circle",
+        "center": [
+          12,
+          4
+        ],
+        "radius": 0.5
+      },
+      "properties": {
+        "color": "#1c71d8",
+        "material": "wooden"
+      }
+    },
+    {
+      "id": "circle_1770399530794",
+      "name": "table3",
+      "type": "obstacle",
+      "shape": {
+        "type": "circle",
+        "center": [
+          18,
+          4
+        ],
+        "radius": 0.5
+      },
+      "properties": {
+        "color": "#1c71d8",
+        "material": "wooden"
+      }
+    },
+    {
+      "id": "circle_1770399532544",
+      "name": "table4",
+      "type": "obstacle",
+      "shape": {
+        "type": "circle",
+        "center": [
+          6,
+          20
+        ],
+        "radius": 0.5
+      },
+      "properties": {
+        "color": "#1c71d8",
+        "material": "wooden"
+      }
+    },
+    {
+      "id": "rectangle_1770400919439",
+      "name": "chair1",
+      "type": "obstacle",
+      "shape": {
+        "type": "rectangle",
+        "center": [
+          5,
+          4
+        ],
+        "width": 0.5,
+        "height": 0.5,
+        "rotation": 0
+      },
+      "properties": {
+        "color": "#865e3c",
+        "material": "wooden"
+      }
+    },
+    {
+      "id": "rectangle_1770401078254",
+      "name": "chair2",
+      "type": "obstacle",
+      "shape": {
+        "type": "rectangle",
+        "center": [
+          7,
+          4
+        ],
+        "width": 0.5,
+        "height": 0.5,
+        "rotation": 3.141592653589793
+      },
+      "properties": {
+        "color": "#865e3c",
+        "material": "wooden"
+      }
+    },
+    {
+      "id": "rectangle_1770401147436",
+      "name": "chair3",
+      "type": "obstacle",
+      "shape": {
+        "type": "rectangle",
+        "center": [
+          10.97,
+          4
+        ],
+        "width": 0.5,
+        "height": 0.5,
+        "rotation": 0
+      },
+      "properties": {
+        "color": "#865e3c",
+        "material": "wooden"
+      }
+    },
+    {
+      "id": "rectangle_1770401209518",
+      "name": "chair4",
+      "type": "obstacle",
+      "shape": {
+        "type": "rectangle",
+        "center": [
+          13,
+          4
+        ],
+        "width": 0.5,
+        "height": 0.5,
+        "rotation": 3.141592653589793
+      },
+      "properties": {
+        "color": "#865e3c",
+        "material": "wooden"
+      }
+    },
+    {
+      "id": "rectangle_1770401234135",
+      "name": "chair5",
+      "type": "obstacle",
+      "shape": {
+        "type": "rectangle",
+        "center": [
+          17,
+          4
+        ],
+        "width": 0.5,
+        "height": 0.5,
+        "rotation": 0
+      },
+      "properties": {
+        "color": "#865e3c",
+        "material": "wooden"
+      }
+    },
+    {
+      "id": "rectangle_1770401257668",
+      "name": "chair6",
+      "type": "obstacle",
+      "shape": {
+        "type": "rectangle",
+        "center": [
+          19,
+          4
+        ],
+        "width": 0.5,
+        "height": 0.5,
+        "rotation": 3.141592653589793
+      },
+      "properties": {
+        "color": "#865e3c",
+        "material": "wooden"
+      }
+    },
+    {
+      "id": "rectangle_1770401280901",
+      "name": "chair7",
+      "type": "obstacle",
+      "shape": {
+        "type": "rectangle",
+        "center": [
+          5,
+          20
+        ],
+        "width": 0.5,
+        "height": 0.5,
+        "rotation": 0
+      },
+      "properties": {
+        "color": "#865e3c",
+        "material": "wooden"
+      }
+    },
+    {
+      "id": "rectangle_1770401316067",
+      "name": "chair8",
+      "type": "obstacle",
+      "shape": {
+        "type": "rectangle",
+        "center": [
+          7,
+          20
+        ],
+        "width": 0.5,
+        "height": 0.5,
+        "rotation": 3.141592653589793
+      },
+      "properties": {
+        "color": "#865e3c",
+        "material": "wooden"
+      }
+    },
+    {
+      "id": "rectangle_1770401354800",
+      "name": "chair9",
+      "type": "obstacle",
+      "shape": {
+        "type": "rectangle",
+        "center": [
+          11,
+          20
+        ],
+        "width": 0.5,
+        "height": 0.5,
+        "rotation": 0
+      },
+      "properties": {
+        "color": "#865e3c",
+        "material": "wooden"
+      }
+    },
+    {
+      "id": "rectangle_1770401357382",
+      "name": "chair10",
+      "type": "obstacle",
+      "shape": {
+        "type": "rectangle",
+        "center": [
+          13,
+          20
+        ],
+        "width": 0.5,
+        "height": 0.5,
+        "rotation": 3.141592653589793
+      },
+      "properties": {
+        "color": "#865e3c",
+        "material": "wooden"
+      }
+    },
+    {
+      "id": "rectangle_1770401484399",
+      "name": "chair11",
+      "type": "obstacle",
+      "shape": {
+        "type": "rectangle",
+        "center": [
+          17,
+          20
+        ],
+        "width": 0.5,
+        "height": 0.5,
+        "rotation": 0
+      },
+      "properties": {
+        "color": "#865e3c",
+        "material": "wooden"
+      }
+    },
+    {
+      "id": "rectangle_1770401522897",
+      "name": "chair12",
+      "type": "obstacle",
+      "shape": {
+        "type": "rectangle",
+        "center": [
+          19,
+          20
+        ],
+        "width": 0.5,
+        "height": 0.5,
+        "rotation": 3.141592653589793
+      },
+      "properties": {
+        "color": "#865e3c",
+        "material": "wooden"
+      }
+    }
+  ]
+}

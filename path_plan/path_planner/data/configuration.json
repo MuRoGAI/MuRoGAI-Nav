@@ -1,0 +1,94 @@
+{
+  "robot_names": [
+    "burger1",
+    "burger2",
+    "burger3",
+    "waffle",
+    "tb4",
+    "go2"
+  ],
+
+  "robot_capabilities": {
+    "burger1": "Indoor service robot for fetching items, opening doors, carrying light payloads, and operating in formations.",
+    "burger2": "Indoor service robot for delivery, cooperative transport, and formation-based navigation.",
+    "burger3": "Indoor service robot for interaction with tables, kitchen appliances, and formation tasks.",
+    "waffle": "Heavy-duty mobile robot for carrying larger payloads and assisting in cooperative manipulation tasks.",
+    "tb4": "Autonomous mobile robot for navigation, monitoring, and lightweight transport tasks.",
+    "go2": "Quadruped robot capable of rough terrain traversal, inspection, search, and agile motion."
+  },
+
+  "robot_morphology": {
+    "burger1": "Size: 250 x 250 x 600 mm, Payload: 2 kg, Speed: 0.6 m/s, Degrees of Freedom: 0 (mobile base)",
+    "burger2": "Size: 250 x 250 x 600 mm, Payload: 2 kg, Speed: 0.6 m/s, Degrees of Freedom: 0 (mobile base)",
+    "burger3": "Size: 250 x 250 x 600 mm, Payload: 2 kg, Speed: 0.6 m/s, Degrees of Freedom: 0 (mobile base)",
+    "waffle": "Size: 354 x 354 x 950 mm, Payload: 10 kg, Speed: 0.5 m/s, Degrees of Freedom: 0 (mobile base)",
+    "tb4": "Size: 300 x 300 x 800 mm, Payload: 3 kg, Speed: 0.7 m/s, Degrees of Freedom: 0 (mobile base)",
+    "go2": "Size: 700 x 430 x 550 mm, Payload: 5 kg, Speed: 0–3.5 m/s, Degrees of Freedom: 12 (leg joints)"
+  },
+
+  "robot_states": {
+    "burger1": {
+      "relative_position": "Free",
+      "relative_orientation": "Aligned with formation",
+      "carry_state": "Empty",
+      "arm_state": "None",
+      "battery_state": "Full",
+      "mode": "Idle"
+    },
+
+    "burger2": {
+      "relative_position": "Free",
+      "relative_orientation": "Aligned with formation",
+      "carry_state": "Empty",
+      "arm_state": "None",
+      "battery_state": "Full",
+      "mode": "Idle"
+    },
+
+    "burger3": {
+      "relative_position": "Free",
+      "relative_orientation": "Aligned with formation",
+      "carry_state": "Empty",
+      "arm_state": "None",
+      "battery_state": "Full",
+      "mode": "Idle"
+    },
+
+    "waffle": {
+      "relative_position": "Independent",
+      "relative_orientation": "Facing goal",
+      "carry_state": "Empty",
+      "battery_state": "Full",
+      "mode": "Idle"
+    },
+
+    "tb4": {
+      "relative_position": "Independent",
+      "relative_orientation": "Facing goal",
+      "carry_state": "Empty",
+      "battery_state": "Full",
+      "mode": "Idle"
+    },
+
+    "go2": {
+      "relative_position": "Independent",
+      "relative_orientation": "Facing direction of travel",
+      "mobility_state": "Standing",
+      "carry_state": "Empty",
+      "battery_state": "Full",
+      "mode": "Idle"
+    }
+  },
+
+  "task_specific_rules": [
+    "Burger robots may operate in formation for fetch, surround, escort, and cooperative manipulation tasks.",
+    "Waffle may assist with heavy payload transport when assigned jointly with burger robots.",
+    "Go2 may be deployed for exploration, fast inspection, and obstacle-rich navigation."
+  ],
+
+  "task_replanning_rules": [
+    "If a robot in formation fails, redistribute formation roles among remaining burger robots.",
+    "If go2 encounters unreachable terrain, reassign task to wheeled robots if possible.",
+    "If obstacles block appliance access, adjust formation centroid and approach angle."
+  ]
+}

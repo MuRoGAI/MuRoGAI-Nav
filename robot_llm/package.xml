@@ -4,8 +4,14 @@
   <name>robot_llm</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="bhavishraib@gmail.com">suraj</maintainer>
+  <maintainer email="name@gmail.com">name</maintainer>
   <license>TODO: License declaration</license>
+
+  <depend>rclpy</depend>
+  <depend>std_msgs</depend>
+  <depend>ament_index_python</depend>
+  <depend>robot_interface</depend>
+
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

@@ -19,7 +19,7 @@ class ChatGUI(Node):
         self.subscription = self.create_subscription(String, "/chat/output", self.on_output, 10)
         self.time_sub = self.create_subscription(String, "/current_time", self.on_time, 10)
 
-        self.declare_parameter("config_file", "robot_config_assmble_help")
+        self.declare_parameter("config_file", "robot_config_restaurant")
         cfg_file_name = self.get_parameter("config_file").get_parameter_value().string_value
         package_share = get_package_share_directory("chatty")
 

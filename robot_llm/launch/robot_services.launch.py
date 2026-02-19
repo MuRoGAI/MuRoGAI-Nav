@@ -1,50 +1,71 @@
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.conditions import IfCondition
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
 from launch_ros.actions import Node
-from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
 
-    holonomic_robot1 = Node(
-        package='yahboom_llm',
-        executable='holonomic_position_controller_service',
-        name='holonomic_position_controller_1',
-        parameters=[{
-            'namespace': 'r1',
-        }],
+    robot1_controller = Node(
+        package='burger_robot',
+        executable='controller7_diff_drive_pose1',
+        name='robot1_controller',
+        parameters=[{'robot_name': 'robot1'}],
         output='screen',
     )
 
-
-    holonomic_robot2 = Node(
-        package='yahboom_llm',
-        executable='holonomic_position_controller_service',
-        name='holonomic_position_controller_2',
-        parameters=[{
-            'namespace': 'r2',
-        }],
-        output='screen',        
+    robot2_controller = Node(
+        package='burger_robot',
+        executable='controller7_diff_drive_pose1',
+        name='robot2_controller',
+        parameters=[{'robot_name': 'robot2'}],
+        output='screen',
     )
 
+    robot3_controller = Node(
+        package='burger_robot',
+        executable='controller7_diff_drive_pose1',
+        name='robot3_controller',
+        parameters=[{'robot_name': 'robot3'}],
+        output='screen',
+    )
 
-    drone_1 = Node(
-        package='x3_uav_llm', 
-        executable='drone_position_controller_service',
-        name='drone_position_controller_service',
-        parameters=[{
-            'namespace': 'r3',
-        }],
+    robot4_controller = Node(
+        package='burger_robot',
+        executable='controller5_holo_pose1',
+        name='robot4_controller',
+        parameters=[{'robot_name': 'robot4'}],
+        output='screen',
+    )
+
+    robot5_controller = Node(
+        package='burger_robot',
+        executable='controller5_holo_pose1',
+        name='robot5_controller',
+        parameters=[{'robot_name': 'robot5'}],
+        output='screen',
+    )
+
+    robot6_controller = Node(
+        package='burger_robot',
+        executable='controller5_holo_pose1',
+        name='robot6_controller',
+        parameters=[{'robot_name': 'robot6'}],
+        output='screen',
+    )
+
+    multi_robot_odom_offset = Node(
+        package='robot_llm',
+        executable='multi_robot_odom_offset',
+        name='multi_robot_odom_offset',
         output='screen',
     )
 
     return LaunchDescription([
-        holonomic_robot1,
-        holonomic_robot2,
-        drone_1,
-
+        robot1_controller,
+        robot2_controller,
+        robot3_controller,
+        robot4_controller,
+        robot5_controller,
+        robot6_controller,
+        multi_robot_odom_offset,
 
     ])

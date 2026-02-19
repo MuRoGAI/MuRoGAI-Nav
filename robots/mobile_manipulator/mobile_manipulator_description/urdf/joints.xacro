@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  
+  <!-- ============================================ -->
+  <!-- BASE JOINTS -->
+  <!-- ============================================ -->
+  <joint name="${frame_prefix}base_footprint_base_link_joint" type="fixed">
+    <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0"/>
+    <parent link="${frame_prefix}base_footprint"/>
+    <child link="${frame_prefix}base_link"/>
+  </joint>
+  
+  <!-- ============================================ -->
+  <!-- UR ARM JOINTS -->
+  <!-- ============================================ -->
+  <!-- <joint name="${frame_prefix}ur_joint1" type="continuous">
+    <origin xyz="0 0 ${ur_base_height}" rpy="0 0 1.5708"/>
+    <parent link="${frame_prefix}base_link"/>
+    <child link="${frame_prefix}ur_link1"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  
+  <joint name="${frame_prefix}ur_joint2" type="continuous">
+    <origin xyz="0 -0.054 0.06585" rpy="1.5708 0 3.1416"/>
+    <parent link="${frame_prefix}ur_link1"/>
+    <child link="${frame_prefix}ur_link2"/>
+    <axis xyz="0 0 -1"/>
+  </joint>
+  
+  <joint name="${frame_prefix}ur_joint3" type="continuous">
+    <origin xyz="0 0.24365 0" rpy="0 0 0"/>
+    <parent link="${frame_prefix}ur_link2"/>
+    <child link="${frame_prefix}ur_link3"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  
+  <joint name="${frame_prefix}ur_joint4" type="continuous">
+    <origin xyz="0 0.213 -0.015239" rpy="0 0 0"/>
+    <parent link="${frame_prefix}ur_link3"/>
+    <child link="${frame_prefix}ur_link4"/>
+    <axis xyz="0 0 -1"/>
+  </joint>
+  
+  <joint name="${frame_prefix}ur_joint5" type="continuous">
+    <origin xyz="0 0.0426 -0.0445" rpy="1.5708 0 3.1415"/>
+    <parent link="${frame_prefix}ur_link4"/>
+    <child link="${frame_prefix}ur_link5"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  
+  <joint name="${frame_prefix}ur_joint6" type="continuous">
+    <origin xyz="0 -0.0426 0.0445" rpy="1.5708 0 3.1416"/>
+    <parent link="${frame_prefix}ur_link5"/>
+    <child link="${frame_prefix}ur_link6"/>
+    <axis xyz="0 0 -1"/>
+  </joint>
+   -->
+  <!-- ============================================ -->
+  <!-- GRIPPER JOINT -->
+  <!-- ============================================ -->
+  <!-- <joint name="${frame_prefix}gripper_joint" type="revolute">
+    <origin xyz="0 0 -0.039" rpy="-1.5708 0 1.5708"/>
+    <parent link="${frame_prefix}ur_link6"/>
+    <child link="${frame_prefix}vac_gripper"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="0.0" upper="0.0" effort="0" velocity="0"/>
+  </joint> -->
+  
+  <!-- ============================================ -->
+  <!-- STEERING JOINTS - COMMENTED OUT -->
+  <!-- ============================================ -->
+  
+  <!-- Front Right Steering - COMMENTED OUT -->
+  <!-- <joint name="${frame_prefix}fr_steer_joint" type="revolute"> -->
+  <!-- <joint name="${frame_prefix}fr_steer_joint" type="fixed">
+    <origin xyz="${steer_x_offset} ${-steer_y_offset} ${steer_z_offset}" rpy="-1.5708 0 -1.5708"/>
+    <parent link="${frame_prefix}base_link"/>
+    <child link="${frame_prefix}fr_steer_link"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.571" upper="1.571" effort="100" velocity="10"/>
+  </joint> -->
+  
+  <!-- Front Left Steering - COMMENTED OUT -->
+  <!-- <joint name="${frame_prefix}fl_steer_joint" type="revolute"> -->
+  <!-- <joint name="${frame_prefix}fl_steer_joint" type="fixed">
+    <origin xyz="${steer_x_offset} ${steer_y_offset} ${steer_z_offset}" rpy="-1.5708 0 -1.5708"/>
+    <parent link="${frame_prefix}base_link"/>
+    <child link="${frame_prefix}fl_steer_link"/> -->
+    <!-- <axis xyz="0 1 0"/> -->
+    <!-- <limit lower="-1.571" upper="1.571" effort="100" velocity="10"/> -->
+  <!-- </joint> -->
+  
+  <!-- Back Right Steering (Fixed) - COMMENTED OUT -->
+  <!-- <joint name="${frame_prefix}br_steer_joint" type="revolute"> -->
+  <!-- <joint name="${frame_prefix}br_steer_joint" type="fixed">
+    <origin xyz="${-steer_x_offset} ${-steer_y_offset} ${steer_z_offset}" rpy="-1.5708 0 -1.5708"/>
+    <parent link="${frame_prefix}base_link"/>
+    <child link="${frame_prefix}br_steer_link"/> -->
+    <!-- <axis xyz="0 1 0"/> -->
+    <!-- <limit lower="-1.571" upper="1.571" effort="100" velocity="10"/> -->
+  <!-- </joint> -->
+  
+  <!-- Back Left Steering (Fixed) - COMMENTED OUT -->
+  <!-- <joint name="${frame_prefix}bl_steer_joint" type="revolute"> -->
+  <!-- <joint name="${frame_prefix}bl_steer_joint" type="fixed">
+    <origin xyz="${-steer_x_offset} ${steer_y_offset} ${steer_z_offset}" rpy="-1.5708 0 -1.5708"/>
+    <parent link="${frame_prefix}base_link"/>
+    <child link="${frame_prefix}bl_steer_link"/> -->
+    <!-- <axis xyz="0 1 0"/> -->
+    <!-- <limit lower="-1.571" upper="1.571" effort="100" velocity="10"/> -->
+  <!-- </joint> -->
+  
+  <!-- ============================================ -->
+  <!-- WHEEL JOINTS - DIRECTLY ATTACHED TO BASE -->
+  <!-- ============================================ -->
+  
+  <!-- Front Right Wheel - Now directly attached to base_link -->
+  <joint name="${frame_prefix}fr_wheel_joint" type="continuous">
+    <origin xyz="${wheel_x_offset} ${-wheel_y_offset} ${wheel_z_offset}" rpy="-1.5708 0 0"/>
+    <parent link="${frame_prefix}base_link"/>
+    <child link="${frame_prefix}fr_wheel"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  
+  <!-- Front Left Wheel - Now directly attached to base_link -->
+  <joint name="${frame_prefix}fl_wheel_joint" type="continuous">
+    <origin xyz="${wheel_x_offset} ${wheel_y_offset} ${wheel_z_offset}" rpy="-1.5708 0 0"/>
+    <parent link="${frame_prefix}base_link"/>
+    <child link="${frame_prefix}fl_wheel"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  
+  <!-- Back Right Wheel - COMMENTED OUT -->
+  <!-- <joint name="${frame_prefix}br_wheel_joint" type="continuous">
+    <origin xyz="0 ${wheel_radius} 0" rpy="0 0 1.5708"/>
+    <parent link="${frame_prefix}br_steer_link"/>
+    <child link="${frame_prefix}br_wheel"/>
+    <axis xyz="0 1 0"/>
+  </joint> -->
+  
+  <!-- Back Left Wheel - COMMENTED OUT -->
+  <!-- <joint name="${frame_prefix}bl_wheel_joint" type="continuous">
+    <origin xyz="0 ${wheel_radius} 0" rpy="0 0 1.5708"/>
+    <parent link="${frame_prefix}bl_steer_link"/>
+    <child link="${frame_prefix}bl_wheel"/>
+    <axis xyz="0 1 0"/>
+  </joint> -->
+  
+  <!-- ============================================ -->
+  <!-- CASTER WHEEL JOINT -->
+  <!-- ============================================ -->
+  <joint name="${frame_prefix}caster_joint" type="fixed">
+    <origin xyz="${caster_x_offset} 0 ${caster_z_offset}" rpy="0 0 0"/>
+    <parent link="${frame_prefix}base_link"/>
+    <child link="${frame_prefix}caster_wheel"/>
+  </joint>
+
+</robot>

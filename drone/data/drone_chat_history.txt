@@ -1,0 +1,11 @@
+[Time: Hours: 00, Minutes: 00, Seconds: 01] Task Manager:
+[Time: Hours: 00, Minutes: 00, Seconds: 01] Human: robot1, 2, 6 goto juice stall together and robot3, 4, 5 goto table2 together
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Task Manager:
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Task Manager:
+Independent Tasks:
+Team 1: [robot1, robot2, robot6]: goto juice stall together
+Team 2: [robot3, robot4, robot5]: goto table2 together
+multirobot_list: []
+singlerobot_list: [Team 1, Team 2]
+{"team2": {"status": "IN PROGRESS", "current_task": "goto table2 together", "robots": ["robot3", "robot4", "robot5"], "pending_tasks": [], "completed_tasks": 1, "last_activity": 1770889387.9667425}, "team1": {"status": "IDLE", "current_task": "", "robots": ["robot1", "robot2", "robot6"], "pending_tasks": ["goto juice stall together"], "completed_tasks": 0, "last_activity": 1770889387.964658}}
+{"team2": {"status": "IN PROGRESS", "current_task": "goto table2 together", "robots": ["robot3", "robot4", "robot5"], "pending_tasks": [], "completed_tasks": 1, "last_activity": 1770889387.9667425}, "team1": {"status": "IN PROGRESS", "current_task": "goto juice stall together", "robots": ["robot1", "robot2", "robot6"], "pending_tasks": [], "completed_tasks": 1, "last_activity": 1770889387.9704409}}

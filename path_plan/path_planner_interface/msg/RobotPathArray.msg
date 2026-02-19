@@ -1,0 +1,3 @@
+# RobotPathArray.msg
+
+RobotPath[] paths

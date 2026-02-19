@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  
+  <!-- ============================================ -->
+  <!-- ARGUMENTS (Launch-time configuration) -->
+  <!-- ============================================ -->
+  <xacro:arg name="robot_name" default=""/>
+  <xacro:arg name="prefix" default=""/>
+  <xacro:arg name="use_ignition" default="false"/>
+  <xacro:arg name="use_ros2_control" default="false"/>
+  <xacro:arg name="use_plugin_control" default="false"/>
+  <xacro:arg name="use_hardware" default="false"/>
+  <xacro:arg name="use_mock_hardware" default="false"/>
+  
+  <!-- ============================================ -->
+  <!-- PROPERTIES (Converted from arguments) -->
+  <!-- ============================================ -->
+  <xacro:property name="robot_name" value="$(arg robot_name)"/>
+  <xacro:property name="prefix" value="$(arg prefix)"/>
+  <xacro:property name="use_ignition" value="$(arg use_ignition)"/>
+  <xacro:property name="use_ros2_control" value="$(arg use_ros2_control)"/>
+  <xacro:property name="use_plugin_control" value="$(arg use_plugin_control)"/>
+  <xacro:property name="use_hardware" value="$(arg use_hardware)"/>
+  <xacro:property name="use_mock_hardware" value="$(arg use_mock_hardware)"/>
+  
+  <!-- ============================================ -->
+  <!-- NAMESPACE HELPER (for ROS topics and frames) -->
+  <!-- ============================================ -->
+  <xacro:property name="ns_prefix" value="${prefix if prefix else ''}"/>
+  <xacro:property name="namespace" value="${'/' + prefix if prefix else ''}"/>
+  <xacro:property name="frame_prefix" value="${prefix + '/' if prefix else ''}"/>
+  <xacro:property name="name" value="${prefix if prefix else robot_name}"/> 
+  <xacro:property name="control_file" value="${prefix + '_' if prefix else ''}"/>
+  
+  <!-- ============================================ -->
+  <!-- PHYSICAL CONSTANTS -->
+  <!-- ============================================ -->
+  <xacro:property name="PI" value="3.14159265359"/>
+  
+  <!-- ============================================ -->
+  <!-- BASE DIMENSIONS -->
+  <!-- ============================================ -->
+  <xacro:property name="base_mass" value="20.0"/>
+  <xacro:property name="base_width" value="0.25"/>
+  <xacro:property name="base_length" value="0.3"/>
+  <xacro:property name="base_height" value="0.1"/>
+  
+  <!-- ============================================ -->
+  <!-- WHEEL DIMENSIONS -->
+  <!-- ============================================ -->
+  <xacro:property name="wheel_mass" value="5.0"/>
+  <xacro:property name="wheel_radius" value="0.04445"/>
+  <xacro:property name="wheel_width" value="0.02"/>
+  
+  <!-- ============================================ -->
+  <!-- CASTER WHEEL DIMENSIONS -->
+  <!-- ============================================ -->
+  <xacro:property name="caster_mass" value="0.5"/>
+  <xacro:property name="caster_radius" value="${wheel_radius/2}"/>
+  
+  <!-- ============================================ -->
+  <!-- ARM LINK POSITIONS -->
+  <!-- Arm mounted directly on top of base link -->
+  <!-- ============================================ -->
+  <xacro:property name="ur_base_height" value="${base_height}"/>  <!-- Top of base box -->
+
+  <!-- ============================================ -->
+  <!-- WHEEL POSITIONS (Direct mounting to base) -->
+  <!-- Wheels positioned OUTSIDE the base to avoid collision -->
+  <!-- Base box is 0.3m(x) x 0.25m(y) x 0.1m(z) -->
+  <!-- ============================================ -->
+  <xacro:property name="wheel_x_offset" value="${base_length/2 - 0.05}"/>        <!-- Front of base (0.15m from center) -->
+  <xacro:property name="wheel_y_offset" value="${base_length/2 - wheel_width/2}"/>        <!-- Outside base (base width is 0.25m/2=0.125m) -->
+  <xacro:property name="wheel_z_offset" value="0"/>     <!-- At wheel radius height from ground -->
+  
+  <!-- ============================================ -->
+  <!-- CASTER POSITION (Back center for stability) -->
+  <!-- Positioned at rear, at caster radius height -->
+  <!-- ============================================ -->
+  <xacro:property name="caster_x_offset" value="${-base_length/2 + 0.05}"/>    <!-- Behind base rear edge -->
+  <xacro:property name="caster_z_offset" value="${-caster_radius}"/>            <!-- Caster center at radius height -->
+  
+  <!-- ============================================ -->
+  <!-- DEPRECATED: Old steering positions (kept for reference) -->
+  <!-- ============================================ -->
+  <xacro:property name="steer_x_offset" value="0.09525"/>
+  <xacro:property name="steer_y_offset" value="0.1016"/>
+  <xacro:property name="steer_z_offset" value="0.079375"/>
+  
+</robot>

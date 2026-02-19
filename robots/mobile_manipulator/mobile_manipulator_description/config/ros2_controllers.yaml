@@ -1,0 +1,117 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100  # Hz
+
+    # Joint State Broadcaster
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    # Arm Controller
+    arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    # Differential Drive Controller for wheels
+    diff_drive_controller:
+      type: diff_drive_controller/DiffDriveController
+
+    # Steering Controllers
+    front_steering_controller:
+      type: position_controllers/JointGroupPositionController
+
+# Joint State Broadcaster Configuration
+joint_state_broadcaster:
+  ros__parameters:
+    joints:
+      - ur_joint1
+      - ur_joint2
+      - ur_joint3
+      - ur_joint4
+      - ur_joint5
+      - ur_joint6
+      - fl_steer_joint
+      - fr_steer_joint
+      - fl_wheel_joint
+      - fr_wheel_joint
+      - bl_wheel_joint
+      - br_wheel_joint
+
+# Arm Controller Configuration
+arm_controller:
+  ros__parameters:
+    joints:
+      - ur_joint1
+      - ur_joint2
+      - ur_joint3
+      - ur_joint4
+      - ur_joint5
+      - ur_joint6
+    
+    command_interfaces:
+      - position
+    
+    state_interfaces:
+      - position
+      - velocity
+    
+    constraints:
+      stopped_velocity_tolerance: 0.01
+      goal_time: 0.0
+
+# Differential Drive Controller Configuration
+diff_drive_controller:
+  ros__parameters:
+    left_wheel_names: ["bl_wheel_joint", "fl_wheel_joint"]
+    right_wheel_names: ["br_wheel_joint", "fr_wheel_joint"]
+    
+    wheel_separation: 0.1905  # Distance between left and right wheels (meters)
+    wheel_radius: 0.04445     # Wheel radius (meters)
+    
+    wheel_separation_multiplier: 1.0
+    left_wheel_radius_multiplier: 1.0
+    right_wheel_radius_multiplier: 1.0
+    
+    publish_rate: 50.0
+    odom_frame_id: odom
+    base_frame_id: base_footprint
+    pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
+    twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
+    
+    open_loop: false
+    enable_odom_tf: true
+    
+    cmd_vel_timeout: 0.5
+    publish_limited_velocity: true
+    velocity_rolling_window_size: 10
+    
+    linear:
+      x:
+        has_velocity_limits: true
+        has_acceleration_limits: true
+        has_jerk_limits: false
+        max_velocity: 1.0
+        min_velocity: -1.0
+        max_acceleration: 1.0
+        min_acceleration: -1.0
+    
+    angular:
+      z:
+        has_velocity_limits: true
+        has_acceleration_limits: true
+        has_jerk_limits: false
+        max_velocity: 2.0
+        min_velocity: -2.0
+        max_acceleration: 1.5
+        min_acceleration: -1.5
+
+# Front Steering Controller Configuration
+front_steering_controller:
+  ros__parameters:
+    joints:
+      - fl_steer_joint
+      - fr_steer_joint
+    
+    command_interfaces:
+      - position
+    
+    state_interfaces:
+      - position

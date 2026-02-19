@@ -5,8 +5,6 @@ from std_msgs.msg import String
 from std_srvs.srv import Trigger
 from ament_index_python.packages import get_package_share_directory
 import os
-import datetime
-import re
 
 class ChatManager(Node):
     """
@@ -46,13 +44,6 @@ class ChatManager(Node):
         script_name_current = "chat_history_current.txt"
         self.file_path_current = os.path.join(package_path, directry, script_name_current)
      
-     
-        self.declare_parameter("student", 0)
-        self.student = self.get_parameter("student").get_parameter_value().integer_value
-
-        script_name_student = f"chat_history_student_{self.student}.txt"
-        self.file_path_student = os.path.join(package_path, directry, script_name_student)
-
         self.clean_current_history()
 
         self.get_logger().info("[ChatManager] Ready and running.")
@@ -135,10 +126,6 @@ class ChatManager(Node):
                 file.write("*********     NEW EXPERIMNET           ********* \n")  # Clear the file
             self.get_logger().info(f"[ChatManager] Cleared current history file at {self.file_path_current}.")
 
-            with open(self.file_path_student, "a") as file:
-                file.write(f"*********     NEW EXPERIMNET           ********* \nStudent {self.student}")  # Clear the file
-            self.get_logger().info(f"[ChatManager] Cleared current history file at {self.file_path_student}.")
-
         except Exception as e:
             self.get_logger().error(f"[ChatManager] Failed to clear current history: {e}")
 
@@ -148,10 +135,6 @@ class ChatManager(Node):
             with open(self.file_path_current, "a") as file:
                 file.write(self.chat_entry + "\n")
             self.get_logger().info(f"[ChatManager] Appended {len(self.chat_log)} new messages to {self.file_path_current}.")
-
-            with open(self.file_path_student, "a") as file:
-                file.write(self.chat_entry + "\n")
-            self.get_logger().info(f"[ChatManager] Appended {len(self.chat_log)} new messages to {self.file_path_student}.")
 
         except Exception as e:
             self.get_logger().error(f"[ChatManager] Failed to save history: {e}")

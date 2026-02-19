@@ -1,0 +1,527 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  
+  <!-- ============================================ -->
+  <!-- BASE FOOTPRINT -->
+  <!-- ============================================ -->
+  <link name="${frame_prefix}base_footprint"/>
+  
+  <!-- ============================================ -->
+  <!-- BASE LINK -->
+  <!-- ============================================ -->
+  <link name="${frame_prefix}base_link">
+    <!-- <inertial>
+      <origin xyz="0 0 ${base_height/2}" rpy="0 0 0"/>
+      <mass value="${base_mass}"/>
+      <inertia
+        ixx="0.160894" ixy="0.0" ixz="0.0"
+        iyy="0.288892" iyz="0.0" izz="0.160887"/>
+    </inertial> -->
+    <xacro:inertial_box mass="${base_mass}" x="${base_length}" y="${base_width}" z="${base_height}">
+        <origin xyz="0 0 ${base_height/2}" rpy="0 0 0"/>
+    </xacro:inertial_box>
+    <visual>
+      <origin xyz="0 0 ${base_height/2}" rpy="0 0 0"/>
+      <geometry>
+        <!-- Box representing the base platform -->
+        <box size="${base_length} ${base_width} ${base_height}"/>
+      </geometry>
+       <material name="cyan"/>
+    </visual>
+    <!-- STL mesh version - COMMENTED OUT -->
+    <!-- <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/base_link.STL"/>
+      </geometry>
+       <material name="cyan"/>
+    </visual> -->
+    <collision>
+      <origin xyz="0 0 ${base_height/2}" rpy="0 0 0"/>
+      <geometry>
+        <!-- Slightly smaller collision box to prevent wheel interference -->
+        <box size="${base_length - 0.02} ${base_width - 0.02} ${base_height}"/>
+      </geometry>
+    </collision>
+    <!-- STL mesh collision - COMMENTED OUT -->
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/base_link.STL"/>
+      </geometry>
+    </collision> -->
+  </link>
+  
+  <!-- ============================================ -->
+  <!-- UR ARM LINKS -->
+  <!-- ============================================ -->
+  <!-- <link name="${frame_prefix}ur_link1">
+    <inertial>
+      <origin xyz="-1.1686E-06 -0.0073375 0.05429" rpy="0 0 0"/>
+      <mass value="0.075599"/>
+      <inertia
+        ixx="0.001069" ixy="8.9098E-08" ixz="1.1225E-07"
+        iyy="0.00099027" iyz="0.00013107" izz="0.00090659"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/ur_link1.STL"/>
+      </geometry>
+      <material name="arm_blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/ur_link1.STL"/>
+      </geometry>
+    </collision>
+  </link>
+  
+  <link name="${frame_prefix}ur_link2">
+    <inertial>
+      <origin xyz="-2.72775473316338E-06 0.105689190962758 -0.0625965049844405" rpy="0 0 0"/>
+      <mass value="0.180198342548997"/>
+      <inertia
+        ixx="0.00264979451361119" ixy="1.02106153655479E-07" ixz="9.40161921197151E-08"
+        iyy="0.00167012474397332" iyz="8.11148655835377E-05" izz="0.00251747167515764"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/ur_link2.STL"/>
+      </geometry>
+      <material name="arm_orange"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/ur_link2.STL"/>
+      </geometry>
+    </collision>
+  </link>
+  
+  <link name="${frame_prefix}ur_link3">
+    <inertial>
+      <origin xyz="1.42516266435917E-06 0.111180503455293 0.0222120942662305" rpy="0 0 0"/>
+      <mass value="0.0962304717786686"/>
+      <inertia
+        ixx="0.00107269450235351" ixy="1.2579385521768E-08" ixz="2.00415572357587E-09"
+        iyy="0.000542642851910322" iyz="4.61333899514844E-05" izz="0.00101487910380245"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/ur_link3.STL"/>
+      </geometry>
+      <material name="arm_blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/ur_link3.STL"/>
+      </geometry>
+    </collision>
+  </link>
+  
+  <link name="${frame_prefix}ur_link4">
+    <inertial>
+      <origin xyz="-1.54664952694528E-07 -0.000517517328520678 -0.0385790737239192" rpy="0 0 0"/>
+      <mass value="0.0325202204660325"/>
+      <inertia
+        ixx="0.000226230418109377" ixy="5.53256916807704E-10" ixz="1.09314832190794E-10"
+        iyy="0.000199107649368955" iyz="1.83392535226262E-05" izz="0.000194591889649777"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/ur_link4.STL"/>
+      </geometry>
+      <material name="arm_orange"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/ur_link4.STL"/>
+      </geometry>
+    </collision>
+  </link>
+  
+  <link name="${frame_prefix}ur_link5">
+    <inertial>
+      <origin xyz="3.6946597298589E-06 8.92340309935763E-05 0.038633009042455" rpy="0 0 0"/>
+      <mass value="0.0328191721532824"/>
+      <inertia
+        ixx="0.000227612478846299" ixy="2.38322967569763E-09" ixz="3.25800238926714E-09"
+        iyy="0.000201866554543042" iyz="1.83392858733668E-05" izz="0.000195999056894894"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/ur_link5.STL"/>
+      </geometry>
+      <material name="arm_blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/ur_link5.STL"/>
+      </geometry>
+    </collision>
+  </link>
+  
+  <link name="${frame_prefix}ur_link6">
+    <inertial>
+      <origin xyz="5.77073541925559E-11 -0.000106055688466555 -0.0189845667010021" rpy="0 0 0"/>
+      <mass value="0.011236569554859"/>
+      <inertia
+        ixx="4.10643963272602E-05" ixy="3.77185696181121E-13" ixz="6.45137995347095E-13"
+        iyy="4.12798033286199E-05" iyz="1.03226516512007E-07" izz="5.62853958723767E-05"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/ur_link6.STL"/>
+      </geometry>
+      <material name="gripper_green"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/ur_link6.STL"/>
+      </geometry>
+    </collision>
+  </link> -->
+  
+  <!-- ============================================ -->
+  <!-- VACUUM GRIPPER -->
+  <!-- ============================================ -->
+  <!-- <link name="${frame_prefix}vac_gripper">
+    <inertial>
+      <origin xyz="8.12283862394736E-09 0.0199997106778893 3.27978920902574E-07" rpy="0 0 0"/>
+      <mass value="0.0184335337413634"/>
+      <inertia
+        ixx="9.34297331535443E-05" ixy="4.71675041882134E-11" ixz="1.11384552268069E-10"
+        iyy="0.000147183153344922" iyz="1.21554863910265E-10" izz="9.34277869398142E-05"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/vac_gripper.STL"/>
+      </geometry>
+      <material name="gripper_red"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/vac_gripper.STL"/>
+      </geometry>
+    </collision>
+  </link> -->
+  
+  <!-- ============================================ -->
+  <!-- FRONT WHEEL STEERING LINKS - COMMENTED OUT -->
+  <!-- ============================================ -->
+  
+  <!-- Front Right Steer Link - COMMENTED OUT -->
+  <!-- <link name="${frame_prefix}fr_steer_link">
+    <inertial>
+      <origin xyz="0 0.0119006090942748 1.38777878078145E-17" rpy="0 0 0"/>
+      <mass value="0.0340030421650543"/>
+      <inertia
+        ixx="1.5879792611512E-05" ixy="-2.01489123035579E-21" ixz="-3.23846527850222E-22"
+        iyy="1.66248823688066E-05" iyz="6.38337858174192E-22" izz="1.72093553828835E-05"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/fr_steer_link.STL"/>
+      </geometry>
+      <material name="steel_gray"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/fr_steer_link.STL"/>
+      </geometry>
+    </collision>
+  </link> -->
+  
+  <!-- Front Left Steer Link - COMMENTED OUT -->
+  <!-- <link name="${frame_prefix}fl_steer_link">
+    <inertial>
+      <origin xyz="1.38777878078145E-17 0.0119006090942748 -1.38777878078145E-17" rpy="0 0 0"/>
+      <mass value="0.0340030421650542"/>
+      <inertia
+        ixx="1.5879792611512E-05" ixy="-3.62355206050052E-21" ixz="-1.26152949228295E-22"
+        iyy="1.66248823688066E-05" iyz="3.54121783999717E-21" izz="1.72093553828835E-05"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/fl_steer_link.STL"/>
+      </geometry>
+      <material name="steel_gray"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/fl_steer_link.STL"/>
+      </geometry>
+    </collision>
+  </link> -->
+  
+  <!-- ============================================ -->
+  <!-- FRONT WHEELS (CYLINDERS INSTEAD OF STL) -->
+  <!-- ============================================ -->
+  
+  <!-- Front Right Wheel - Using Cylinder Geometry -->
+  <link name="${frame_prefix}fr_wheel">
+    <!-- Inertia for a cylinder: I = m*r^2/2 (roll), I = m*(3*r^2 + h^2)/12 (pitch/yaw) -->
+    <!-- <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="${wheel_mass}"/>
+      <inertia
+        ixx="0.0300470784455855" ixy="0.0" ixz="0.0"
+        iyy="0.0500929586200209" iyz="0.0" izz="0.0300470784455855"/>
+    </inertial> -->
+    <xacro:inertial_cylinder mass="${wheel_mass}" length="${wheel_width}" radius="${wheel_radius}">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_cylinder>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <!-- Cylinder: radius and length (height along y-axis when rpy="0 0 0") -->
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+      <material name="black_rubber"/>
+    </visual>
+    <!-- STL mesh version - COMMENTED OUT -->
+    <!-- <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/fr_wheel.STL"/>
+      </geometry>
+      <material name="black_rubber"/>
+    </visual> -->
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+    </collision>
+    <!-- STL mesh collision - COMMENTED OUT -->
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/fr_wheel.STL"/>
+      </geometry>
+    </collision> -->
+  </link>
+  
+  <!-- Front Left Wheel - Using Cylinder Geometry -->
+  <link name="${frame_prefix}fl_wheel">
+    <!-- <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="${wheel_mass}"/>
+      <inertia
+        ixx="0.0300470784455855" ixy="0.0" ixz="0.0"
+        iyy="0.0500929586200209" iyz="0.0" izz="0.0300470784455855"/>
+    </inertial> -->
+    <xacro:inertial_cylinder mass="${wheel_mass}" length="${wheel_width}" radius="${wheel_radius}">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_cylinder>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <!-- Cylinder: radius and length (height along y-axis when rpy="0 0 0") -->
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+      <material name="black_rubber"/>
+    </visual>
+    <!-- STL mesh version - COMMENTED OUT -->
+    <!-- <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/fl_wheel.STL"/>
+      </geometry>
+      <material name="black_rubber"/>
+    </visual> -->
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+    </collision>
+    <!-- STL mesh collision - COMMENTED OUT -->
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/fl_wheel.STL"/>
+      </geometry>
+    </collision> -->
+  </link>
+  
+  <!-- ============================================ -->
+  <!-- BACK WHEELS - COMMENTED OUT -->
+  <!-- (Previously used 4-wheel configuration) -->
+  <!-- ============================================ -->
+  
+  <!-- Back Right Steer Link - COMMENTED OUT -->
+  <!-- <link name="${frame_prefix}br_steer_link">
+    <inertial>
+      <origin xyz="1.38777878078145E-17 0.0119006090942748 1.38777878078145E-17" rpy="0 0 0"/>
+      <mass value="0.0340030421650543"/>
+      <inertia
+        ixx="1.5879792611512E-05" ixy="-2.73248998539391E-21" ixz="2.67028011644598E-22"
+        iyy="1.66248823688066E-05" iyz="-2.43114144305083E-21" izz="1.72093553828835E-05"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/br_steer_link.STL"/>
+      </geometry>
+      <material name="steel_gray"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/br_steer_link.STL"/>
+      </geometry>
+    </collision>
+  </link> -->
+  
+  <!-- Back Right Wheel - COMMENTED OUT -->
+  <!-- <link name="${frame_prefix}br_wheel">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="${wheel_mass}"/>
+      <inertia
+        ixx="0.0300470784455855" ixy="0.0" ixz="0.0"
+        iyy="0.0500929586200209" iyz="0.0" izz="0.0300470784455855"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+      <material name="black_rubber"/>
+    </visual>
+    STL mesh version - COMMENTED OUT
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/br_wheel.STL"/>
+      </geometry>
+      <material name="black_rubber"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+    </collision>
+    STL mesh collision - COMMENTED OUT
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/br_wheel.STL"/>
+      </geometry>
+    </collision>
+  </link> -->
+  
+  <!-- Back Left Steer Link - COMMENTED OUT -->
+  <!-- <link name="${frame_prefix}bl_steer_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.0340030421650543"/>
+      <inertia
+        ixx="1.5879792611512E-05" ixy="-1.0271E-21" ixz="2.281E-22"
+        iyy="1.66248823688066E-05" iyz="-2.43114144305083E-21" izz="1.72093553828835E-05"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/bl_steer_link.STL"/>
+      </geometry>
+      <material name="steel_gray"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/bl_steer_link.STL"/>
+      </geometry>
+    </collision>
+  </link> -->
+  
+  <!-- Back Left Wheel - COMMENTED OUT -->
+  <!-- <link name="${frame_prefix}bl_wheel">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="${wheel_mass}"/>
+      <inertia
+        ixx="0.0300470784455855" ixy="0.0" ixz="0.0"
+        iyy="0.0500929586200209" iyz="0.0" izz="0.0300470784455855"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+      <material name="black_rubber"/>
+    </visual>
+    STL mesh version - COMMENTED OUT
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/bl_wheel.STL"/>
+      </geometry>
+      <material name="black_rubber"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+    </collision>
+    STL mesh collision - COMMENTED OUT
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mobile_manipulator_description/meshes/bl_wheel.STL"/>
+      </geometry>
+    </collision>
+  </link> -->
+  
+  <!-- ============================================ -->
+  <!-- CASTER WHEEL (SPHERE FOR OMNIDIRECTIONAL) -->
+  <!-- ============================================ -->
+  <link name="${frame_prefix}caster_wheel">
+    <!-- Inertia for a sphere: I = 2/5 * m * r^2 -->
+    <!-- <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="${caster_mass}"/>
+      <inertia
+        ixx="0.0001" ixy="0.0" ixz="0.0"
+        iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial> -->
+    <xacro:inertial_sphere mass="${caster_mass}" radius="${caster_radius}">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_sphere>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <!-- Sphere for omnidirectional rolling -->
+        <sphere radius="${caster_radius}"/>
+      </geometry>
+      <material name="dark_grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="${caster_radius}"/>
+      </geometry>
+    </collision>
+  </link>
+
+</robot>
