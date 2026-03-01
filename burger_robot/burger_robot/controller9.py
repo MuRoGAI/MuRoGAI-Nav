@@ -12,23 +12,60 @@ from rclpy.qos import QoSProfile, ReliabilityPolicy
 # ============================================================
 # Quintic Polynomial Utilities
 # ============================================================
+# def compute_quintic_coeffs(t0, tf, p0, v0, a0, pf, vf, af):
+#     A = np.array([
+#         [1, t0,   t0**2,    t0**3,     t0**4,      t0**5],
+#         [0,  1,  2*t0,    3*t0**2,   4*t0**3,    5*t0**4],
+#         [0,  0,   2,      6*t0,     12*t0**2,   20*t0**3],
+#         [1, tf,   tf**2,    tf**3,     tf**4,      tf**5],
+#         [0,  1,  2*tf,    3*tf**2,   4*tf**3,    5*tf**4],
+#         [0,  0,   2,      6*tf,     12*tf**2,   20*tf**3],
+#     ], dtype=float)
+#     b = np.array([p0, v0, a0, pf, vf, af], dtype=float)
+#     return np.linalg.solve(A, b)
 def compute_quintic_coeffs(t0, tf, p0, v0, a0, pf, vf, af):
-    A = np.array([
-        [1, t0,   t0**2,    t0**3,     t0**4,      t0**5],
-        [0,  1,  2*t0,    3*t0**2,   4*t0**3,    5*t0**4],
-        [0,  0,   2,      6*t0,     12*t0**2,   20*t0**3],
-        [1, tf,   tf**2,    tf**3,     tf**4,      tf**5],
-        [0,  1,  2*tf,    3*tf**2,   4*tf**3,    5*tf**4],
-        [0,  0,   2,      6*tf,     12*tf**2,   20*tf**3],
-    ], dtype=float)
-    b = np.array([p0, v0, a0, pf, vf, af], dtype=float)
-    return np.linalg.solve(A, b)
+    """
+    Now computes CUBIC Hermite spline coefficients.
+    Signature kept identical so rest of code remains unchanged.
+    Acceleration inputs are ignored.
+    """
+
+    T = tf - t0
+    if T <= 1e-9:
+        return np.array([p0, 0.0, 0.0, 0.0])
+
+    # Shift to local time tau = t - t0
+    # Cubic polynomial:
+    # p(tau) = a0 + a1*tau + a2*tau^2 + a3*tau^3
+
+    a0_c = p0
+    a1_c = v0
+    a2_c = (3*(pf - p0)/(T**2)) - (2*v0 + vf)/T
+    a3_c = (-2*(pf - p0)/(T**3)) + (v0 + vf)/(T**2)
+
+    # We store t0 so evaluation works in global time
+    return np.array([a0_c, a1_c, a2_c, a3_c, t0])
+# def eval_quintic(t, c):
+#     p = c[0] + c[1]*t + c[2]*t**2 + c[3]*t**3 + c[4]*t**4 + c[5]*t**5
+#     v = c[1] + 2*c[2]*t + 3*c[3]*t**2 + 4*c[4]*t**3 + 5*c[5]*t**4
+#     return p, v
 
 def eval_quintic(t, c):
-    p = c[0] + c[1]*t + c[2]*t**2 + c[3]*t**3 + c[4]*t**4 + c[5]*t**5
-    v = c[1] + 2*c[2]*t + 3*c[3]*t**2 + 4*c[4]*t**3 + 5*c[5]*t**4
-    return p, v
+    """
+    Evaluates cubic Hermite spline.
+    Function name unchanged to avoid modifying controller.
+    """
 
+    a0_c, a1_c, a2_c, a3_c, t0 = c
+
+    tau = t - t0
+    if tau < 0:
+        tau = 0.0
+
+    p = a0_c + a1_c*tau + a2_c*tau**2 + a3_c*tau**3
+    v = a1_c + 2*a2_c*tau + 3*a3_c*tau**2
+
+    return p, v
 # ============================================================
 # Controller Node
 # ============================================================
@@ -285,6 +322,31 @@ class Controller(Node):
 
         # -------- Stop at End --------
         if t > self.segments[-1]["tf"]:
+
+            last_seg = self.segments[-1]
+
+            # Final desired yaw from waypoint
+            final_theta = 0.0
+            if "ct" in last_seg:
+                final_theta, _ = eval_quintic(last_seg["tf"], last_seg["ct"])
+
+            x, y, yaw = self.current_pose
+            yaw_error = self.normalize_angle(final_theta - yaw)
+
+            cmd = Twist()
+
+            # Keep rotating until yaw matches
+            if abs(yaw_error) > 0.02:   # ~1 degree tolerance
+                cmd.linear.x = 0.0
+                cmd.angular.z = float(np.clip(
+                    self.kp_angular * yaw_error,
+                    -self.max_ang_z,
+                    self.max_ang_z
+                ))
+                self.cmd_vel_pub.publish(cmd)
+                return
+
+            # Once yaw matched, stop and finish
             self.publish_zero()
             self.publish_goal_reached()
             self.active = False
@@ -302,10 +364,39 @@ class Controller(Node):
         cmd = Twist()
 
         if self.robot_type == "diff-drive":
-            # Desired pose and velocities from quintic spline
-            xd,            xd_dot           = eval_quintic(t, seg["cx"])
-            yd,            yd_dot           = eval_quintic(t, seg["cy"])
-            desired_theta, desired_theta_dot = eval_quintic(t, seg["ct"])
+
+            # Desired position and velocities from spline
+            xd, xd_dot = eval_quintic(t, seg["cx"])
+            yd, yd_dot = eval_quintic(t, seg["cy"])
+
+            x, y, yaw = self.current_pose
+
+            # ------------------------------------------------------
+            # 1️⃣ Use path tangent heading for all intermediate motion
+            # ------------------------------------------------------
+            if math.hypot(xd_dot, yd_dot) > 1e-6:
+                desired_theta = math.atan2(yd_dot, xd_dot)
+                desired_theta_dot = 0.0
+            else:
+                desired_theta = yaw
+                desired_theta_dot = 0.0
+
+            # ------------------------------------------------------
+            # 2️⃣ If at final segment AND near final position,
+            #     then enforce final waypoint theta
+            # ------------------------------------------------------
+            last_seg = self.segments[-1]
+            if seg == last_seg:
+                xf, _ = eval_quintic(last_seg["tf"], last_seg["cx"])
+                yf, _ = eval_quintic(last_seg["tf"], last_seg["cy"])
+
+                pos_error_to_goal = math.hypot(xf - x, yf - y)
+
+                if pos_error_to_goal < 0.05:   # 5 cm tolerance
+                    if "ct" in last_seg:
+                        final_theta, _ = eval_quintic(last_seg["tf"], last_seg["ct"])
+                        desired_theta = final_theta
+                        desired_theta_dot = 0.0
 
             # Current pose
             x, y, yaw = self.current_pose

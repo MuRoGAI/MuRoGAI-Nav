@@ -50,18 +50,13 @@ def compute_robot_poses(centroid, theta, P_star, sx, sy, robot_types=None):
 
 #########################
 
-P_star = [
-    [-0.6, 0.0],
-    [0.6, 0.0],
-    [0.0, 0.6]
-]
-
-centroid = [19.66, 12.0]
+P_star = [[-0.19, 0.57], [-0.19, -0.57], [0.38, 0.00]]
+centroid = [2.28, 1.33]
 theta = 0.0
 sx = 1.0
 sy = 1.0
 
-robot_types = ["diff-drive", "holonomic", "diff-drive"]
+robot_types = ["diff-drive", "diff-drive", "holonomic",]
 
 poses = compute_robot_poses(
     centroid, theta, P_star, sx, sy, robot_types
@@ -71,26 +66,26 @@ for i, p in enumerate(poses):
     print(f"Robot {i} :{p}: : {robot_types[i]}")
 
 
-##################
-print("")
-###################
+# ##################
+# print("")
+# ###################
 
-P_star = [
-    [-0.19, 0.57],
-    [-0.19, -0.57],
-    [0.38, 0.0]
-]
+# P_star = [
+#     [-0.19, 0.57],
+#     [-0.19, -0.57],
+#     [0.38, 0.0]
+# ]
 
-centroid = [2.28, 1.33]
-theta = 1.57
-sx = 1.0
-sy = 1.0
+# centroid = [2.28, 1.33]
+# theta = 1.57
+# sx = 1.0
+# sy = 1.0
 
-robot_types = ["diff-drive", "holonomic", "diff-drive"]
+# robot_types = ["diff-drive", "holonomic", "diff-drive"]
 
-poses = compute_robot_poses(
-    centroid, theta, P_star, sx, sy, robot_types
-)
+# poses = compute_robot_poses(
+#     centroid, theta, P_star, sx, sy, robot_types
+# )
 
-for i, p in enumerate(poses):
-    print(f"Robot {i} :{p}: : {robot_types[i]}")
+# for i, p in enumerate(poses):
+#     print(f"Robot {i} :{p}: : {robot_types[i]}")
