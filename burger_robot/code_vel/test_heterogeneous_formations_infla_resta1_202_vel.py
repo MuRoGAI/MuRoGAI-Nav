@@ -588,7 +588,7 @@ for name, agent, start, goal, agent_type in agents:
         goal_sample_rate=0.35,
         neighbor_radius=2.0,
         precision=2,
-        seed=66, #101
+        seed=616, #101 #66
         debug=True,
         use_kinodynamic=use_kino,
         kinodynamic_params=kino_params,
