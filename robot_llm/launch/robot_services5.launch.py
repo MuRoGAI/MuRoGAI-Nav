@@ -137,10 +137,31 @@ def generate_launch_description():
         }]
     )
     
+    firebird = Node(
+        package="burger_robot",
+        executable="controller9",
+        name=f"burger1_controller",
+        output="screen",
+        parameters=[{
+            "robot_name": 'firebird',
+            "kp_linear": 1.3,
+            "kp_angular": 3.0,
+            "kd_linear": 0.5,
+            "kd_angular": 0.5,
+            "ky": 3.3,
+            "max_lin_x": 0.4,
+            "max_lin_y": 0.0,
+            "max_ang_z": 2.84,
+            "max_lin_acc": 2.5,
+            "max_ang_acc": 3.2,
+        }]
+    )
+
     return LaunchDescription([
-        burger1,
-        burger2,
+        # burger1,
+        # burger2,
         # burger3,
-        waffle,
-        tb4_1,
+        # waffle,
+        # tb4_1,
+        firebird,
     ])

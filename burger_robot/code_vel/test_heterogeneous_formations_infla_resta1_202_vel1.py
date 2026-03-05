@@ -278,7 +278,7 @@ class HeterogeneousFormationAgent:
 # Workspace + Map
 # ===========================================================
 
-grid = np.load('10_103_a_outside_1.npy')
+grid = np.load('10_103_a_outside.npy')
 res = 0.1
 height, width = grid.shape
 height, width = height * res, width * res
@@ -303,10 +303,10 @@ static_grid = OccupancyGrid(grid, res)
 #     a_max=0.9, alpha_max=1.5, inflation=INFLATION_RADIUS,
 # )
 
-waffle_ = DifferentialDriveAgent(
-    radius=0.25, v_max=0.26, omega_max=1.82,
-    a_max=1.0, alpha_max=2.0, inflation=INFLATION_RADIUS,
-)
+# waffle_ = DifferentialDriveAgent(
+#     radius=0.25, v_max=0.26, omega_max=1.82,
+#     a_max=1.0, alpha_max=2.0, inflation=INFLATION_RADIUS,
+# )
 
 # hetero_form = HeterogeneousFormationAgent(
 #     P_star=[[-0.19, 0.57], [-0.19, -0.57], [0.38, 0.00]],
@@ -325,17 +325,17 @@ waffle_ = DifferentialDriveAgent(
 
 
 hetero_form1 = HeterogeneousFormationAgent(
-    P_star=[[-0.292, 0.567], [-0.291, -0.57], [0.583, 0.00]],
-    robot_types=['diff-drive', 'diff-drive', 'diff-drive'],
+    P_star=[[-0.438, 0.569], [-0.437, -0.57], [0.438, -0.569], [0.437, 0.57]],
+    robot_types=['diff-drive', 'diff-drive', 'diff-drive', 'diff-drive'],
     # Without this, v_max defaults to 1.0 -> v_max_list=[1.0,1.0,1.0]
     # and travel_time() divides by 1.0 instead of the real hardware limit.
-    v_max=[0.22, 0.22, 0.22],       # per-robot linear velocity limit [m/s]
-    omega_max=[2.84, 2.84, 2.84],   # per-robot angular velocity [rad/s]
-    a_max=[1.0, 1.0, 1.0],          # per-robot linear accel [m/s^2]
-    alpha_max=[2.0, 2.0, 2.0],      # per-robot angular accel [rad/s^2]
+    v_max=[0.22, 0.22, 0.22, 0.26],       # per-robot linear velocity limit [m/s]
+    omega_max=[2.84, 2.84, 2.84, 1.82],   # per-robot angular velocity [rad/s]
+    a_max=[1.0, 1.0, 1.0, 1.0],          # per-robot linear accel [m/s^2]
+    alpha_max=[2.0, 2.0, 2.0, 2.0],      # per-robot angular accel [rad/s^2]
     sx_range=(1.0, 2.5),
     sy_range=(1.0, 2.5),
-    radius=[0.2, 0.2, 0.2],  # per-robot radius [m]
+    radius=[0.2, 0.2, 0.2, 0.25],  # per-robot radius [m]
 )
 
 hetero_form2 = HeterogeneousFormationAgent(
@@ -362,7 +362,7 @@ agents = [
 
 
     ("HeteroForm1", hetero_form1,
-     np.array([3.135, 1.167, 1.57, 1.0, 1.0]),
+     np.array([3.135, 1.3125, 1.57, 1.0, 1.0]),
      np.array([3.135, 7.583, 1.57, 1.0, 1.0]),
      "heterogeneous-formation"),
 
@@ -371,10 +371,10 @@ agents = [
      np.array([3.135, 1.75, -1.57, 1.0, 1.0]),
      "heterogeneous-formation"),
 
-    ("waffle", waffle_,
-     np.array([5.130, 4.375, 3.1415]),
-     np.array([1.140, 4.375 , 3.1415]),
-     "diff-drive"),
+    # ("waffle", waffle_,
+    #  np.array([5.130, 4.375, 3.1415]),
+    #  np.array([1.140, 4.375 , 3.1415]),
+    #  "diff-drive"),
 
     #  ("DD1", dd_robot1,
     #  np.array([0.57, 4.56, 0.0]),
@@ -627,7 +627,7 @@ for name, agent, start, goal, agent_type in agents:
         goal_sample_rate=0.35,
         neighbor_radius=2.0,
         precision=2,
-        seed=25, #101 #66 #616 #51 #616
+        seed=360, #101 #66 #616 #51 #352
         debug=False,
         use_kinodynamic=use_kino,
         kinodynamic_params=kino_params,

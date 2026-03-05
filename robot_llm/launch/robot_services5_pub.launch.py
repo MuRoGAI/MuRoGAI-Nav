@@ -30,6 +30,11 @@ def generate_launch_description():
             "type": "diff-drive",
             "file": "HeteroForm_robot1_diff-drive.csv"
         },
+        {
+            "name": "firebird",
+            "type": "diff-drive",
+            "file": "DD1.csv"
+        },
     ]
 
     nodes = []
