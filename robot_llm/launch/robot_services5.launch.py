@@ -43,11 +43,11 @@ def generate_launch_description():
         output="screen",
         parameters=[{
             "robot_name": 'burger1',
-            "kp_linear": 1.8,
-            "kp_angular": 3.0,
+            "kp_linear": 7.2,
+            "kp_angular": 3.9,
             "kd_linear": 0.5,
             "kd_angular": 0.3,
-            "ky": 3.5,
+            "ky": 11.4,
             "max_lin_x": 0.22,
             "max_lin_y": 0.0,
             "max_ang_z": 2.84,
@@ -63,11 +63,11 @@ def generate_launch_description():
         output="screen",
         parameters=[{
             "robot_name": 'burger2',
-            "kp_linear": 1.8,
-            "kp_angular": 2.0,
+            "kp_linear": 2.7,
+            "kp_angular": 3.6,
             "kd_linear": 0.5,
             "kd_angular": 0.5,
-            "ky": 2.2,
+            "ky": 2.4,
             "max_lin_x": 0.22,
             "max_lin_y": 0.0,
             "max_ang_z": 2.84,
@@ -104,11 +104,11 @@ def generate_launch_description():
         output="screen",
         parameters=[{
             "robot_name": 'waffle',
-            "kp_linear": 1.8,
+            "kp_linear": 2.3,
             "kp_angular": 1.8,
             "kd_linear": 0.5,
             "kd_angular": 0.3,
-            "ky": 2.8,
+            "ky": 3.2,
             "max_lin_x": 0.26,
             "max_lin_y": 0.0,
             "max_ang_z": 1.82,
@@ -124,11 +124,11 @@ def generate_launch_description():
         output="screen",
         parameters=[{
             "robot_name": 'tb4_1',
-            "kp_linear": 2.0,
+            "kp_linear": 2.6,
             "kp_angular": 3.0,
             "kd_linear": 0.5,
             "kd_angular": 0.3,
-            "ky": 3.5,
+            "ky": 3.9,
             "max_lin_x": 0.31,
             "max_lin_y": 0.0,
             "max_ang_z": 1.9,
@@ -156,12 +156,12 @@ def generate_launch_description():
             "max_ang_acc": 3.2,
         }]
     )
-
+    
     return LaunchDescription([
-        # burger1,
-        # burger2,
-        # burger3,
-        # waffle,
-        # tb4_1,
+        burger1,
+        burger2,
+        burger3,
+        waffle,
+        tb4_1,
         firebird,
     ])

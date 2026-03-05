@@ -8,32 +8,32 @@ def generate_launch_description():
         {
             "name": "burger1",
             "type": "diff-drive",
-            "file": "DD1.csv"
+            "file": "HeteroForm1_robot0_diff-drive.csv"
         },
         {
             "name": "burger2",
             "type": "diff-drive",
-            "file": "DD2.csv"
+            "file": "HeteroForm1_robot1_diff-drive.csv"
         },
-        # {
-        #     "name": "burger3",
-        #     "type": "diff-drive",
-        #     "file": "HeteroForm_robot2_diff-drive.csv"
-        # },
+        {
+            "name": "burger3",
+            "type": "diff-drive",
+            "file": "HeteroForm1_robot2_diff-drive.csv"
+        },
         {
             "name": "waffle",
             "type": "diff-drive",
-            "file": "HeteroForm_robot0_diff-drive.csv"
+            "file": "waffle.csv"
         },
         {
             "name": "tb4_1",
             "type": "diff-drive",
-            "file": "HeteroForm_robot1_diff-drive.csv"
+            "file": "HeteroForm2_robot0_diff-drive.csv"
         },
         {
             "name": "firebird",
             "type": "diff-drive",
-            "file": "DD1.csv"
+            "file": "HeteroForm2_robot1_diff-drive.csv"
         },
     ]
 
@@ -51,7 +51,7 @@ def generate_launch_description():
                     "robot_name": robot["name"],
                     "robot_type": robot["type"],
                     "package_name": "burger_robot",
-                    "dir_name": "trajectory_logs4",
+                    "dir_name": "trajectory_logs_1",
                     "file_name": robot["file"]
                 }]
             )
@@ -66,7 +66,7 @@ def generate_launch_description():
             "robot_name": "go2",
             "robot_type": "holonomic",
             "package_name": "burger_robot",
-            "dir_name": "trajectory_logs3",
+            "dir_name": "trajectory_logs",
             "file_name": "DD3.csv",
             "tcp_host": "0.0.0.0",
             "tcp_port": 5001,
