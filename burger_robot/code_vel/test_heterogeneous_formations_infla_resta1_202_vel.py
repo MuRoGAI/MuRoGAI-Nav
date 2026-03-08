@@ -278,7 +278,7 @@ class HeterogeneousFormationAgent:
 # Workspace + Map
 # ===========================================================
 
-grid = np.load('10_103_a_outside_1.npy')
+grid = np.load('10_103_a_outside.npy')
 res = 0.1
 height, width = grid.shape
 height, width = height * res, width * res
@@ -324,7 +324,7 @@ waffle_ = DifferentialDriveAgent(
 # )
 
 
-hetero_form1 = HeterogeneousFormationAgent(
+hetero_form2 = HeterogeneousFormationAgent(
     P_star=[[-0.292, 0.567], [-0.291, -0.57], [0.583, 0.00]],
     robot_types=['diff-drive', 'diff-drive', 'diff-drive'],
     # Without this, v_max defaults to 1.0 -> v_max_list=[1.0,1.0,1.0]
@@ -338,7 +338,7 @@ hetero_form1 = HeterogeneousFormationAgent(
     radius=[0.2, 0.2, 0.2],  # per-robot radius [m]
 )
 
-hetero_form2 = HeterogeneousFormationAgent(
+hetero_form1 = HeterogeneousFormationAgent(
     P_star=[[-0.291, 0.57], [-0.292, -0.569], [0.583, 0.00]],
     robot_types=['diff-drive', 'diff-drive', 'holonomic'],
     # Without this, v_max defaults to 1.0 -> v_max_list=[1.0,1.0,1.0]
@@ -627,7 +627,7 @@ for name, agent, start, goal, agent_type in agents:
         goal_sample_rate=0.35,
         neighbor_radius=2.0,
         precision=2,
-        seed=25, #101 #66 #616 #51 #616
+        seed=93, #101 #66 #616 #51 #25
         debug=False,
         use_kinodynamic=use_kino,
         kinodynamic_params=kino_params,

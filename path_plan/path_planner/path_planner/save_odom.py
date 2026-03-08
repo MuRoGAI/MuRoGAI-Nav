@@ -29,6 +29,7 @@ class MultiRobotLogger(Node):
             "burger3",
             "waffle",
             "tb4_1",
+            "firebird",
         ]
 
         qos_profile = QoSProfile(
@@ -42,7 +43,7 @@ class MultiRobotLogger(Node):
         self.files = {}
         self.writers = {}
 
-        save_dir = Path("odom_logs_1")
+        save_dir = Path("outside_hard_exp_1")
         save_dir.mkdir(exist_ok=True)
 
         for robot in self.robots:
