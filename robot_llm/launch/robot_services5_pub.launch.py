@@ -51,7 +51,7 @@ def generate_launch_description():
                     "robot_name": robot["name"],
                     "robot_type": robot["type"],
                     "package_name": "burger_robot",
-                    "dir_name": "trajectory_logs_2",
+                    "dir_name": "trajectory_logs_1",
                     "file_name": robot["file"]
                 }]
             )

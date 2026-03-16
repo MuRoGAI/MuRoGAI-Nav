@@ -278,7 +278,7 @@ class HeterogeneousFormationAgent:
 # Workspace + Map
 # ===========================================================
 
-grid = np.load('10_103_a_outside.npy')
+grid = np.load('10_103_a_outside_1.npy')
 res = 0.1
 height, width = grid.shape
 height, width = height * res, width * res
@@ -324,7 +324,7 @@ waffle_ = DifferentialDriveAgent(
 # )
 
 
-hetero_form2 = HeterogeneousFormationAgent(
+hetero_form1 = HeterogeneousFormationAgent(
     P_star=[[-0.292, 0.567], [-0.291, -0.57], [0.583, 0.00]],
     robot_types=['diff-drive', 'diff-drive', 'diff-drive'],
     # Without this, v_max defaults to 1.0 -> v_max_list=[1.0,1.0,1.0]
@@ -333,12 +333,12 @@ hetero_form2 = HeterogeneousFormationAgent(
     omega_max=[2.84, 2.84, 2.84],   # per-robot angular velocity [rad/s]
     a_max=[1.0, 1.0, 1.0],          # per-robot linear accel [m/s^2]
     alpha_max=[2.0, 2.0, 2.0],      # per-robot angular accel [rad/s^2]
-    sx_range=(1.0, 2.5),
-    sy_range=(1.0, 2.5),
+    sx_range=(0.9, 4.0),
+    sy_range=(0.9, 4.0),
     radius=[0.2, 0.2, 0.2],  # per-robot radius [m]
 )
 
-hetero_form1 = HeterogeneousFormationAgent(
+hetero_form2 = HeterogeneousFormationAgent(
     P_star=[[-0.291, 0.57], [-0.292, -0.569], [0.583, 0.00]],
     robot_types=['diff-drive', 'diff-drive', 'holonomic'],
     # Without this, v_max defaults to 1.0 -> v_max_list=[1.0,1.0,1.0]
@@ -347,8 +347,8 @@ hetero_form1 = HeterogeneousFormationAgent(
     omega_max=[1.9, 1.9, 0.0],   # per-robot angular velocity [rad/s]
     a_max=[0.9, 0.9, 0.9],          # per-robot linear accel [m/s^2]
     alpha_max=[2.0, 2.0, 0.0],      # per-robot angular accel [rad/s^2]
-    sx_range=(1.0, 2.5),
-    sy_range=(1.0, 2.5),
+    sx_range=(0.9, 4.0),
+    sy_range=(0.9, 4.0),
     radius=[0.3, 0.3, 0.6],  # per-robot radius [m]
 )
 
@@ -360,15 +360,15 @@ hetero_form1 = HeterogeneousFormationAgent(
 agents = [
 
 
+    ("HeteroForm2", hetero_form2,
+     np.array([3.135, 7.583, -1.57, 1.0, 1.0]),
+     np.array([3.135, 1.75, -1.57, 1.0, 1.0]),
+     "heterogeneous-formation"),
+
 
     ("HeteroForm1", hetero_form1,
      np.array([3.135, 1.167, 1.57, 1.0, 1.0]),
      np.array([3.135, 7.583, 1.57, 1.0, 1.0]),
-     "heterogeneous-formation"),
-
-    ("HeteroForm2", hetero_form2,
-     np.array([3.135, 7.583, -1.57, 1.0, 1.0]),
-     np.array([3.135, 1.75, -1.57, 1.0, 1.0]),
      "heterogeneous-formation"),
 
     ("waffle", waffle_,
@@ -505,17 +505,17 @@ def _complete_warmup(formation_agent, use_kinodynamic=False, kinodynamic_params=
 
 
 warmup_kino_params = {
-    'robot_types': hetero_form1.robot_types,
-    'v_max': hetero_form1.v_max_list,
-    'w_max': hetero_form1.omega_max_list,
-    'a_max': hetero_form1.a_max_list,
-    'alpha_max': hetero_form1.alpha_max_list,
+    'robot_types': hetero_form2.robot_types,
+    'v_max': hetero_form2.v_max_list,
+    'w_max': hetero_form2.omega_max_list,
+    'a_max': hetero_form2.a_max_list,
+    'alpha_max': hetero_form2.alpha_max_list,
     'N_steer': 8,
     'T_steer': 0.8,
 }
 
 warmup_time = _complete_warmup(
-    formation_agent=hetero_form1,
+    formation_agent=hetero_form2,
     use_kinodynamic=True,
     kinodynamic_params=warmup_kino_params
 )
@@ -627,8 +627,9 @@ for name, agent, start, goal, agent_type in agents:
         goal_sample_rate=0.35,
         neighbor_radius=2.0,
         precision=2,
-        seed=93, #101 #66 #616 #51 #25
-        debug=False,
+        # seed=395, #354 # 361 2F #371 #375 #395
+        seed=481, #422 433 449 459 475 481
+        debug=True,
         use_kinodynamic=use_kino,
         kinodynamic_params=kino_params,
     )
