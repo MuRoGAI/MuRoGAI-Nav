@@ -160,8 +160,8 @@ def generate_launch_description():
     return LaunchDescription([
         # burger1,
         burger2,
-        # burger3,
+        burger3,
         waffle,
-        tb4_1,
-        # firebird,
+        # tb4_1,
+        firebird,
     ])

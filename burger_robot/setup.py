@@ -12,6 +12,7 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name, 'data'), glob('data/*')),
+        (os.path.join('share', package_name, 'launch'), glob('launch/*')),
         (os.path.join('share', package_name, 'trajectory_logs'), glob('trajectory_logs/*')),
         (os.path.join('share', package_name, 'trajectory_logs1'), glob('trajectory_logs1/*')),
         (os.path.join('share', package_name, 'trajectory_logs2'), glob('trajectory_logs2/*')),
@@ -51,6 +52,8 @@ setup(
             'controller9 = burger_robot.controller9:main',
             'controller9_pub = burger_robot.controller9_pub:main',
             'controller9_pub1 = burger_robot.controller9_pub1:main',
+
+            'robot_test = burger_robot.robot_test:main',
         ],
     },
 )

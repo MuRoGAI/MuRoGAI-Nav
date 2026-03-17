@@ -8,125 +8,120 @@ import math
 from rclpy.qos import QoSProfile, ReliabilityPolicy
 
 
-class MultiRobotMover(Node):
+class SingleRobotMover(Node):
 
     def __init__(self):
-        super().__init__('multi_robot_mover')
+        super().__init__('single_robot_mover')
 
-        # Robot names
-        self.robots = ['burger1', 'burger2', 'burger3', 'waffle', 'firebird', 'tb4_1']
+        # Parameter
+        self.declare_parameter('robot', 'burger1')
+        self.declare_parameter('forward_distance', 1.0)
+        self.declare_parameter('backward_distance', 1.0)
+        self.declare_parameter('speed', 0.2)
+        self.robot = self.get_parameter('robot').value
 
-        # Distance goals
-        self.forward_distance = 1.0
-        self.backward_distance = -1.0
+        # Goals
+        self.forward_distance = self.get_parameter('forward_distance').value
+        self.backward_distance = self.get_parameter('backward_distance').value
+        self.speed = self.get_parameter('speed').value
 
-        # Velocity
-        self.speed = 0.2
+        # State
+        self.start_x = None
+        self.start_y = None
+        self.current_x = None
+        self.current_y = None
+        self.stage = 0
 
-        self.robot_data = {}
         qos_profile = QoSProfile(
             reliability=ReliabilityPolicy.BEST_EFFORT,
             depth=10
         )
 
-        for r in self.robots:
-            if not r == 'tb4_1': 
-                cmd_pub = self.create_publisher(
-                    Twist,
-                    f'/{r}/cmd_vel',
-                    10
-                )
+        # QoS handling
+        if self.robot == 'tb4_1':
+            self.cmd_pub = self.create_publisher(
+                Twist,
+                f'/{self.robot}/cmd_vel',
+                qos_profile
+            )
 
-                sub = self.create_subscription(
-                    Odometry,
-                    f'/{r}/odom',
-                    lambda msg, robot=r: self.odom_callback(msg, robot),
-                    10
-                )
-            else:
-                cmd_pub = self.create_publisher(
-                    Twist,
-                    f'/{r}/cmd_vel',
-                    qos_profile
-                )
-                sub = self.create_subscription(
-                    Odometry,
-                    f'/{r}/odom',
-                    self.odom_callback,
-                    qos_profile
-                )
+            self.sub = self.create_subscription(
+                Odometry,
+                f'/{self.robot}/odom',
+                self.odom_callback,
+                qos_profile
+            )
+        else:
+            self.cmd_pub = self.create_publisher(
+                Twist,
+                f'/{self.robot}/cmd_vel',
+                10
+            )
 
-            self.robot_data[r] = {
-                'cmd_pub': cmd_pub,
-                'start_x': None,
-                'start_y': None,
-                'stage': 0
-            }
+            self.sub = self.create_subscription(
+                Odometry,
+                f'/{self.robot}/odom',
+                self.odom_callback,
+                10
+            )
 
         self.timer = self.create_timer(0.1, self.control_loop)
 
-    def odom_callback(self, msg, robot):
+        self.get_logger().info(f"Controlling robot: {self.robot}")
+
+    def odom_callback(self, msg):
 
         x = msg.pose.pose.position.x
         y = msg.pose.pose.position.y
 
-        if self.robot_data[robot]['start_x'] is None:
-            self.robot_data[robot]['start_x'] = x
-            self.robot_data[robot]['start_y'] = y
+        if self.start_x is None:
+            self.start_x = x
+            self.start_y = y
 
-        self.robot_data[robot]['current_x'] = x
-        self.robot_data[robot]['current_y'] = y
+        self.current_x = x
+        self.current_y = y
 
-    def distance(self, r):
+    def distance(self):
 
-        dx = self.robot_data[r]['current_x'] - self.robot_data[r]['start_x']
-        dy = self.robot_data[r]['current_y'] - self.robot_data[r]['start_y']
+        dx = self.current_x - self.start_x
+        dy = self.current_y - self.start_y
 
         return math.sqrt(dx*dx + dy*dy)
 
     def control_loop(self):
 
-        for r in self.robots:
+        if self.current_x is None:
+            return
 
-            data = self.robot_data[r]
+        twist = Twist()
+        d = self.distance()
 
-            if 'current_x' not in data:
-                continue
+        # Forward
+        if self.stage == 0:
 
-            twist = Twist()
+            if d < self.forward_distance:
+                twist.linear.x = self.speed
+            else:
+                self.stage = 1
+                self.start_x = self.current_x
+                self.start_y = self.current_y
 
-            d = self.distance(r)
+        # Backward
+        elif self.stage == 1:
 
-            # Stage 0: move forward
-            if data['stage'] == 0:
+            if d < self.backward_distance:
+                twist.linear.x = -self.speed
+            else:
+                self.stage = 2
+                twist.linear.x = 0.0
 
-                if d < self.forward_distance:
-                    twist.linear.x = self.speed
-                else:
-                    data['stage'] = 1
-                    data['start_x'] = data['current_x']
-                    data['start_y'] = data['current_y']
-
-            # Stage 1: move backward
-            elif data['stage'] == 1:
-
-                if d < abs(self.backward_distance):
-                    twist.linear.x = -self.speed
-                else:
-                    data['stage'] = 2
-                    twist.linear.x = 0.0
-
-            data['cmd_pub'].publish(twist)
+        self.cmd_pub.publish(twist)
 
 
 def main():
-
     rclpy.init()
-
-    node = MultiRobotMover()
-
+    node = SingleRobotMover()
     rclpy.spin(node)
-
     node.destroy_node()
     rclpy.shutdown()
 
