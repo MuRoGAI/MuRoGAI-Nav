@@ -54,9 +54,11 @@ def generate_launch_description():
     world_file = os.path.join(
         pkg_shared,
         'worlds',
-        'empty2.world'
+        # 'empty2.world'
+        'food_court_5.sdf'
         # 'food_court1.sdf'
-        # 'food_court_5.sdf'
+        # 'food_court2.sdf'
+        # 'food_court-1.sdf'
     )
 
     start_gz_server_cmd = IncludeLaunchDescription(
@@ -136,59 +138,59 @@ def generate_launch_description():
     )
 
 
-    # robot2_launch = TimerAction(
-    #     period=7.0,
-    #     actions=[
-    #         IncludeLaunchDescription(
-    #             PythonLaunchDescriptionSource(yahboom_launch),
-    #             launch_arguments={
-    #                 'use_sim_time': use_sim_time,
-    #                 'robot_name': 'rosmaster_x3',
-    #                 'prefix': 'robot1',
-    #                 'use_ignition': use_ignition,
-    #                 'use_plugin': 'True',
-    #                 'use_ros2_control': 'False',
-    #                 'use_mock_hardware': 'False',
-    #                 'spawn_x': '5.0',
-    #                 'spawn_y': '15.0',
-    #                 'spawn_z': '0.05',
-    #                 'spawn_roll': '0.0',
-    #                 'spawn_pitch': '0.0',
-    #                 'spawn_yaw': '0.0',
-    #                 'use_rviz': use_multi_rviz,
-    #                 'plate_colour': 'purple',
-    #             }.items()
-    #         )
-    #     ]
-    # )
-
-
     robot2_launch = TimerAction(
-        period=9.0,
+        period=7.0,
         actions=[
             IncludeLaunchDescription(
-                PythonLaunchDescriptionSource(mobile_manipulator_launch),
+                PythonLaunchDescriptionSource(yahboom_launch),
                 launch_arguments={
                     'use_sim_time': use_sim_time,
-                    'robot_name': 'mobile_manipulator',
-                    'prefix': 'burger2',
+                    'robot_name': 'rosmaster_x3',
+                    'prefix': 'robot1',
                     'use_ignition': use_ignition,
-                    'use_hardware': 'False',
-                    'use_mock_hardware': 'False',
-                    'use_plugin': 'False',
+                    'use_plugin': 'True',
                     'use_ros2_control': 'False',
-                    'use_plugin_control': 'True',
-                    'spawn_x': '2.85',
-                    'spawn_y': '1.14',
+                    'use_mock_hardware': 'False',
+                    'spawn_x': '5.0',
+                    'spawn_y': '15.0',
                     'spawn_z': '0.05',
                     'spawn_roll': '0.0',
                     'spawn_pitch': '0.0',
-                    'spawn_yaw': '1.57',
+                    'spawn_yaw': '0.0',
                     'use_rviz': use_multi_rviz,
+                    'plate_colour': 'purple',
                 }.items()
             )
         ]
     )
+
+
+    # robot2_launch = TimerAction(
+    #     period=9.0,
+    #     actions=[
+    #         IncludeLaunchDescription(
+    #             PythonLaunchDescriptionSource(mobile_manipulator_launch),
+    #             launch_arguments={
+    #                 'use_sim_time': use_sim_time,
+    #                 'robot_name': 'mobile_manipulator',
+    #                 'prefix': 'burger2',
+    #                 'use_ignition': use_ignition,
+    #                 'use_hardware': 'False',
+    #                 'use_mock_hardware': 'False',
+    #                 'use_plugin': 'False',
+    #                 'use_ros2_control': 'False',
+    #                 'use_plugin_control': 'True',
+    #                 'spawn_x': '2.85',
+    #                 'spawn_y': '1.14',
+    #                 'spawn_z': '0.05',
+    #                 'spawn_roll': '0.0',
+    #                 'spawn_pitch': '0.0',
+    #                 'spawn_yaw': '1.57',
+    #                 'use_rviz': use_multi_rviz,
+    #             }.items()
+    #         )
+    #     ]
+    # )
 
 
 
@@ -351,10 +353,10 @@ def generate_launch_description():
         igntion_bridge_cmd,
 
         robot1_launch,
-        # robot2_launch,
+        robot2_launch,
         # robot3_launch,
         # robot4_launch,
-        # robot5_launch,
+        robot5_launch,
         # robot6_launch,
         # drone_launch,
         # drone1_launch,

@@ -434,7 +434,7 @@ class DummyPathPlannerPublisher(Node):
 #   }
 # }
     
-"F1": {
+  "F1": {
     "centroid_x": 2.0,
     "centroid_y": 8.0,
     "formation_yaw": 3.14,
@@ -447,18 +447,18 @@ class DummyPathPlannerPublisher(Node):
     "formation_yaw": 0.0,
     "desired_radius": 1.0,
     "robots": ["robot1", "robot2", "robot6"]
-  }
-}
-
-# "R1": [
-#     {
-#       "robot": "robot1",
-#       "x": 16.0,
-#       "y": 10.0,
-#       "yaw": 1.57
-#     }
-#   ]
+  },
 # }
+
+"R1": [
+    {
+      "robot": "robot1",
+      "x": 16.0,
+      "y": 10.0,
+      "yaw": 1.57
+    }
+  ]
+}
 
         #     "F1": {
         #         "centroid_x": 18.0,

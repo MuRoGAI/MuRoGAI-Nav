@@ -631,10 +631,10 @@ if __name__ == "__main__":
         steerer = HeterogeneousKinodynamicFormationSteering(
             P_star=P_star,
             robot_types=['diff-drive', 'holonomic', 'diff-drive'],
-            v_max=[0.8, 1.0, 0.8],      # Different speeds
-            w_max=[2.0, 0.0, 2.0],      # omega only for DD
-            a_max=[1.5, 2.0, 1.5],      # Per-robot accel limits (NEW)
-            alpha_max=[3.0, 0.0, 3.0],  # Angular accel for DD (NEW)
+            v_max=[0.22, 0.22, 0.22],      # Different speeds
+            w_max=[2.84, 2.84, 2.84],      # omega only for DD
+            a_max=[2.5, 2.5, 2.5],      # Per-robot accel limits (NEW)
+            alpha_max=[3.2, 3.2, 3.2],  # Angular accel for DD (NEW)
             N_steer=6,
             T_steer=0.8,
             max_iter=150,

@@ -6,6 +6,11 @@
     "robot4",
     "robot5",
     "robot6",
+    "robot7",
+    "robot8",
+    "robot9",
+    "robot10",
+    "robot11",
     "drone"
   ],
 
@@ -16,6 +21,11 @@
     "robot4": "Holonomic carry robot capable of omnidirectional movement for precise transport and cooperative delivery.",
     "robot5": "Holonomic carry robot capable of omnidirectional movement for precise transport and cooperative delivery.",
     "robot6": "Holonomic carry robot capable of omnidirectional movement for precise transport and cooperative delivery.",
+    "robot7": "Holonomic carry robot capable of omnidirectional movement for precise transport and cooperative delivery.",
+    "robot8": "Holonomic carry robot capable of omnidirectional movement for precise transport and cooperative delivery.",
+    "robot9": "Holonomic carry robot capable of omnidirectional movement for precise transport and cooperative delivery.",
+    "robot10": "Holonomic carry robot capable of omnidirectional movement for precise transport and cooperative delivery.",
+    "robot11": "Holonomic carry robot capable of omnidirectional movement for precise transport and cooperative delivery.",
     "drone" : "The drone is positioned at a place where it can observe most of the food court. It has camera mounted. Its primary job is to answer questions, it could be about the scene for awareness of Task Manager or other robots or anything else. "
   },
 
@@ -26,6 +36,11 @@
     "robot4": "Drive Type: Holonomic, Radius: 0.25 m, Payload: 10 kg, Mobility: Omnidirectional",
     "robot5": "Drive Type: Holonomic, Radius: 0.25 m, Payload: 10 kg, Mobility: Omnidirectional",
     "robot6": "Drive Type: Holonomic, Radius: 0.25 m, Payload: 10 kg, Mobility: Omnidirectional",
+    "robot7": "Drive Type: Holonomic, Radius: 0.25 m, Payload: 10 kg, Mobility: Omnidirectional",
+    "robot8": "Drive Type: Holonomic, Radius: 0.25 m, Payload: 10 kg, Mobility: Omnidirectional",
+    "robot9": "Drive Type: Holonomic, Radius: 0.25 m, Payload: 10 kg, Mobility: Omnidirectional",
+    "robot10": "Drive Type: Holonomic, Radius: 0.25 m, Payload: 10 kg, Mobility: Omnidirectional",
+    "robot11": "Drive Type: Holonomic, Radius: 0.25 m, Payload: 10 kg, Mobility: Omnidirectional",
     "drone" : "Payload: 1.5 kg, Speed: 0-3 m/s, Dimensions: 450 X 450 X 200 mm, Type: quadrotor UAV, "
   },
 
@@ -77,6 +92,48 @@
       "battery_state": "Full",
       "mode": "Idle"
     },
+
+    "robot7": {
+      "relative_position": "Free",
+      "relative_orientation": "Fully maneuverable",
+      "carry_state": "Empty",
+      "battery_state": "Full",
+      "mode": "Idle"
+    },
+
+    "robot8": {
+      "relative_position": "Free",
+      "relative_orientation": "Fully maneuverable",
+      "carry_state": "Empty",
+      "battery_state": "Full",
+      "mode": "Idle"
+    },
+
+    "robot9": {
+      "relative_position": "Free",
+      "relative_orientation": "Fully maneuverable",
+      "carry_state": "Empty",
+      "battery_state": "Full",
+      "mode": "Idle"
+    },
+
+    "robot10": {
+      "relative_position": "Free",
+      "relative_orientation": "Fully maneuverable",
+      "carry_state": "Empty",
+      "battery_state": "Full",
+      "mode": "Idle"
+    },
+
+    "robot11": {
+      "relative_position": "Free",
+      "relative_orientation": "Fully maneuverable",
+      "carry_state": "Empty",
+      "battery_state": "Full",
+      "mode": "Idle"
+    },
+
+ 
     "drone": {
       "relative_position": "Free",
       "relative_orientation": "Fully maneuverable",
@@ -136,7 +193,54 @@
       "colour": "orange",
       "type": "Holonomic Drive Robot"
     },
+
     "robot6":{
+      "radius":0.25,
+      "max_linear_velocity_x": 0.25,
+      "max_linear_velocity_y": 0.25,
+      "max_angular_velocity_z": 0.4,
+      "max_acceleration": 0.4,
+      "max_angular_acceleration": 3.5,
+      "colour": "purple",
+      "type": "Holonomic Drive Robot"
+    },
+    "robot7":{
+      "radius":0.25,
+      "max_linear_velocity_x": 0.25,
+      "max_linear_velocity_y": 0.25,
+      "max_angular_velocity_z": 0.4,
+      "max_acceleration": 0.4,
+      "max_angular_acceleration": 3.5,
+      "colour": "purple",
+      "type": "Holonomic Drive Robot"
+    },"robot8":{
+      "radius":0.25,
+      "max_linear_velocity_x": 0.25,
+      "max_linear_velocity_y": 0.25,
+      "max_angular_velocity_z": 0.4,
+      "max_acceleration": 0.4,
+      "max_angular_acceleration": 3.5,
+      "colour": "purple",
+      "type": "Holonomic Drive Robot"
+    },"robot9":{
+      "radius":0.25,
+      "max_linear_velocity_x": 0.25,
+      "max_linear_velocity_y": 0.25,
+      "max_angular_velocity_z": 0.4,
+      "max_acceleration": 0.4,
+      "max_angular_acceleration": 3.5,
+      "colour": "purple",
+      "type": "Holonomic Drive Robot"
+    },"robot10":{
+      "radius":0.25,
+      "max_linear_velocity_x": 0.25,
+      "max_linear_velocity_y": 0.25,
+      "max_angular_velocity_z": 0.4,
+      "max_acceleration": 0.4,
+      "max_angular_acceleration": 3.5,
+      "colour": "purple",
+      "type": "Holonomic Drive Robot"
+    },"robot11":{
       "radius":0.25,
       "max_linear_velocity_x": 0.25,
       "max_linear_velocity_y": 0.25,

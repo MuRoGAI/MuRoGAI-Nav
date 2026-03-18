@@ -75,8 +75,8 @@ class DifferentialDriveSteering:
     
     def __init__(
         self,
-        v_max: float = 1.0,         # Max forward velocity
-        v_min: float = -0.5,        # Max reverse velocity  
+        v_max: float = 0.26,         # Max forward velocity
+        v_min: float = -0.26,        # Max reverse velocity  
         omega_max: float = 2.0,     # Max angular velocity
         a_max: float = 2.0,         # Max linear acceleration  (NEW)
         alpha_max: float = 4.0,     # Max angular acceleration (NEW)

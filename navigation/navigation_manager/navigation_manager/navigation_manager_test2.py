@@ -136,12 +136,12 @@ class NavigationManager(Node):
                 "desired_radius": 1.0,
                 "robots": [ "robot1", "robot2" ]
             },
-            "R1": [
-                { "robot": "robot7", "x": 3.5, "y": 3.2, "yaw": 2.6 }
-            ],
-            "R2": [
-                { "robot": "robot10", "x":9.4, "y": 7.3, "yaw": 2.6 }
-            ],
+            "R1": { 
+                "robot": "robot7", "x": 3.5, "y": 3.2, "yaw": 2.6 
+            },
+            "R2": {
+                "robot": "robot10", "x":9.4, "y": 7.3, "yaw": 2.6 
+            },
             "F2": {
                 "centroid_x": 4.2,
                 "centroid_y": 5.0,
@@ -149,9 +149,9 @@ class NavigationManager(Node):
                 "desired_radius": 1.5,
                 "robots": [ "robot5", "robot4", "robot6" ]
             },
-            "R3": [
-                { "robot": "robot15", "x":6.4, "y": 2.5, "yaw": 0.0 }
-            ],
+            "R3": {
+                "robot": "robot15", "x":6.4, "y": 2.5, "yaw": 0.0 
+            },
         }
 
 

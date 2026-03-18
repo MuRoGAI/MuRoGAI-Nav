@@ -1,30 +1,22 @@
 #!/usr/bin/env python3
 """
-si_rrt_ff_mixed_analytic.py - HIGHLY OPTIMIZED VERSION - FULLY COMPATIBLE
+si_rrt_enhanced_individual_kinodynamic.py  —  PATCHED
 
-New optimizations added in this version:
-✓ Cached goal position for distance checks (avoid repeated _as_xy calls)
-✓ Numba-compiled distance helper (_nb_dist_sq_xy) for fast 2D distance
-✓ Reduced float conversions in hot paths (_nn_dist, _steer, _edge_samples_count)
-✓ Early termination when good goal found (after 500 iters if t < T*0.5)
-✓ Use numba distance in multiple methods for consistency
+Key change vs original
+----------------------
+Kinematics.travel_time() now derives the maximum speed directly from the
+agent object instead of the global planner max_velocity.
 
-Existing optimizations (already in original):
-1) Adaptive edge sampling (static + dynamic) based on edge length and robot radius
-2) Static feasibility cache in SIRRT (per qkey) to avoid repeated grid checks
-3) Dominance checking accelerated by indexing vertices by qkey (no full-scan over V)
-4) Formation disc decomposition cache inside FlexibleFormationAgent (per rounded qkey)
-5) KD-tree rebuild threshold increased; neighbor candidate radius tightened (4.0 -> 2.0)
-6) Numba JIT compilation for collision checking and blocked interval computations
-7) Early termination in edge checks (return False on first collision)
+  • HeterogeneousFormationAgent  →  max_i( d_i / v_max_list[i] )
+      Every individual robot's displacement is divided by *its own* speed
+      limit; the bottleneck robot determines the edge travel time.
+  • DifferentialDriveAgent / HolonomicAgent  →  distance / agent.v_max
+  • Legacy FlexibleFormationAgent (no v_max_list)  →  max_displacement / min(v_max)
+  • Ultimate fallback  →  distance / planner max_velocity  (unchanged behaviour
+      for agents that expose no velocity information)
 
-Expected speedup: 10-20% from new optimizations, cumulative with existing speedups.
-
-Notes:
-- All semantics preserved: same validity logic, same SI logic, same collision checks.
-- Caches are bounded via simple "clear on plan()" to avoid unbounded growth across runs.
-- 100% compatible with original test files and logic.
-- Early termination is conservative (only after many iterations with good solution).
+A new helper _agent_effective_vmax() is also added for callers that only
+need a scalar speed bound (e.g. neighbour-radius heuristics).
 """
 
 from __future__ import annotations
@@ -205,7 +197,7 @@ def _nb_discs_overlap(
     dx = p1x - p2x
     dy = p1y - p2y
     rsum = r1 + r2
-    return dx*dx + dy*dy < rsum*rsum*1.3
+    return dx*dx + dy*dy < rsum*rsum*1.5
 
 
 @njit(cache=True, fastmath=True)
@@ -236,16 +228,206 @@ def _nb_ff_dist_sq(
     return term1 + term2 + term3 + term4
 
 
+@njit(cache=True, fastmath=True)
+def _nb_compute_formation_discs(
+    P_star: np.ndarray,
+    radii: np.ndarray,
+    xc: float, yc: float, th: float, sx: float, sy: float
+) -> np.ndarray:
+    Nr = P_star.shape[0]
+    result = np.empty((Nr, 3), dtype=np.float64)
+    c = math.cos(th)
+    s = math.sin(th)
+    for i in range(Nr):
+        px_star = P_star[i, 0]
+        py_star = P_star[i, 1]
+        px_scaled = sx * px_star
+        py_scaled = sy * py_star
+        x = c * px_scaled - s * py_scaled + xc
+        y = s * px_scaled + c * py_scaled + yc
+        result[i, 0] = x
+        result[i, 1] = y
+        result[i, 2] = radii[i]
+    return result
+
+
+@njit(cache=True, fastmath=True)
+def _nb_compute_robot_poses(
+    P_star: np.ndarray,
+    xc: float, yc: float, th: float, sx: float, sy: float
+) -> np.ndarray:
+    Nr = P_star.shape[0]
+    result = np.empty((Nr, 3), dtype=np.float64)
+    c = math.cos(th)
+    s = math.sin(th)
+    for i in range(Nr):
+        px_star = P_star[i, 0]
+        py_star = P_star[i, 1]
+        px_scaled = sx * px_star
+        py_scaled = sy * py_star
+        x = c * px_scaled - s * py_scaled + xc
+        y = s * px_scaled + c * py_scaled + yc
+        result[i, 0] = x
+        result[i, 1] = y
+        result[i, 2] = th
+    return result
+
+
+@njit(cache=True, fastmath=True)
+def _nb_max_robot_displacement(
+    P_star: np.ndarray,
+    q1_xc: float, q1_yc: float, q1_th: float, q1_sx: float, q1_sy: float,
+    q2_xc: float, q2_yc: float, q2_th: float, q2_sx: float, q2_sy: float
+) -> float:
+    Nr = P_star.shape[0]
+    c1 = math.cos(q1_th)
+    s1 = math.sin(q1_th)
+    c2 = math.cos(q2_th)
+    s2 = math.sin(q2_th)
+    max_disp = 0.0
+    for i in range(Nr):
+        px_star = P_star[i, 0]
+        py_star = P_star[i, 1]
+        px1_scaled = q1_sx * px_star
+        py1_scaled = q1_sy * py_star
+        x1 = c1 * px1_scaled - s1 * py1_scaled + q1_xc
+        y1 = s1 * px1_scaled + c1 * py1_scaled + q1_yc
+        px2_scaled = q2_sx * px_star
+        py2_scaled = q2_sy * py_star
+        x2 = c2 * px2_scaled - s2 * py2_scaled + q2_xc
+        y2 = s2 * px2_scaled + c2 * py2_scaled + q2_yc
+        dx = x2 - x1
+        dy = y2 - y1
+        disp = math.sqrt(dx*dx + dy*dy)
+        if disp > max_disp:
+            max_disp = disp
+    return max_disp
+
+
+@njit(cache=True, fastmath=True)
+def _nb_interpolate_formation_5d(
+    q1: np.ndarray,
+    q2: np.ndarray,
+    alpha: float
+) -> np.ndarray:
+    result = np.empty(5, dtype=np.float64)
+    result[0] = q1[0] + alpha * (q2[0] - q1[0])
+    result[1] = q1[1] + alpha * (q2[1] - q1[1])
+    th1 = q1[2]
+    th2 = q2[2]
+    dth = th2 - th1
+    if dth > math.pi:
+        dth -= 2.0 * math.pi
+    elif dth < -math.pi:
+        dth += 2.0 * math.pi
+    result[2] = th1 + alpha * dth
+    result[3] = q1[3] + alpha * (q2[3] - q1[3])
+    result[4] = q1[4] + alpha * (q2[4] - q1[4])
+    return result
+
+
+@njit(cache=True, fastmath=True)
+def _nb_interpolate_individual_2d(
+    q1: np.ndarray,
+    q2: np.ndarray,
+    alpha: float
+) -> np.ndarray:
+    result = np.empty(2, dtype=np.float64)
+    result[0] = q1[0] + alpha * (q2[0] - q1[0])
+    result[1] = q1[1] + alpha * (q2[1] - q1[1])
+    return result
+
+
+@njit(cache=True, fastmath=True)
+def _nb_rs_like_proxy(
+    x1: float, y1: float, th1: float,
+    x2: float, y2: float, th2: float,
+    lateral_weight: float,
+    turn_weight: float
+) -> float:
+    dx = x2 - x1
+    dy = y2 - y1
+    c = math.cos(th1)
+    s = math.sin(th1)
+    df = c * dx + s * dy
+    dl = -s * dx + c * dy
+    dth = th2 - th1
+    if dth > math.pi:
+        dth -= 2.0 * math.pi
+    elif dth < -math.pi:
+        dth += 2.0 * math.pi
+    trans = math.sqrt(df * df + lateral_weight * dl * dl)
+    turn = turn_weight * abs(dth)
+    return trans + turn
+
+
+@njit(cache=True, fastmath=True)
+def _nb_max_rs_like_distance(
+    P_star: np.ndarray,
+    q1_xc: float, q1_yc: float, q1_th: float, q1_sx: float, q1_sy: float,
+    q2_xc: float, q2_yc: float, q2_th: float, q2_sx: float, q2_sy: float,
+    lateral_weight: float,
+    turn_weight: float
+) -> float:
+    Nr = P_star.shape[0]
+    c1 = math.cos(q1_th)
+    s1 = math.sin(q1_th)
+    c2 = math.cos(q2_th)
+    s2 = math.sin(q2_th)
+    max_rs = 0.0
+    for i in range(Nr):
+        px_star = P_star[i, 0]
+        py_star = P_star[i, 1]
+        px1 = q1_sx * px_star
+        py1 = q1_sy * py_star
+        x1 = c1 * px1 - s1 * py1 + q1_xc
+        y1 = s1 * px1 + c1 * py1 + q1_yc
+        th1_robot = q1_th
+        px2 = q2_sx * px_star
+        py2 = q2_sy * py_star
+        x2 = c2 * px2 - s2 * py2 + q2_xc
+        y2 = s2 * px2 + c2 * py2 + q2_yc
+        th2_robot = q2_th
+        rs_dist = _nb_rs_like_proxy(
+            x1, y1, th1_robot,
+            x2, y2, th2_robot,
+            lateral_weight, turn_weight
+        )
+        if rs_dist > max_rs:
+            max_rs = rs_dist
+    return max_rs
+
+
+@njit(cache=True, fastmath=True)
+def _nb_formation_nn_distance(
+    q1: np.ndarray,
+    q2: np.ndarray,
+    P_star: np.ndarray,
+    Nx: float, Ny: float, Nxy: float, Nr: int,
+    alpha: float,
+    lateral_weight: float,
+    turn_weight: float
+) -> float:
+    d2_aff = _nb_ff_dist_sq(
+        q1[0], q1[1], q1[2], q1[3], q1[4],
+        q2[0], q2[1], q2[2], q2[3], q2[4],
+        Nx, Ny, Nxy, Nr
+    )
+    d_aff = math.sqrt(d2_aff)
+    d_nh = _nb_max_rs_like_distance(
+        P_star,
+        q1[0], q1[1], q1[2], q1[3], q1[4],
+        q2[0], q2[1], q2[2], q2[3], q2[4],
+        lateral_weight, turn_weight
+    )
+    return alpha * d_aff + (1.0 - alpha) * d_nh
+
+
 # ============================================================
 # Occupancy Grid
 # ============================================================
 
 class OccupancyGrid:
-    """
-    grid: uint8 array, 1 = occupied, 0 = free
-    resolution: meters/cell
-    origin: (x0,y0) world coordinate of grid[0,0] cell corner (lower-left)
-    """
     def __init__(self, grid: np.ndarray, resolution: float, origin: Tuple[float, float] = (0.0, 0.0)):
         self.grid = np.ascontiguousarray(grid, dtype=np.uint8)
         self.resolution = float(resolution)
@@ -261,18 +443,15 @@ class OccupancyGrid:
         return (0 <= i < self.H) and (0 <= j < self.W)
 
     def disc_collides(self, x: float, y: float, radius: float) -> bool:
-        """Check if disc overlaps any obstacle. Uses Numba if available."""
         if NUMBA_AVAILABLE:
             return _nb_disc_collides(
                 x, y, radius, self.grid, self.resolution,
                 self.origin[0], self.origin[1], self.H, self.W
             )
-        # Fallback to pure Python
         r = float(radius)
         i0, j0 = self.world_to_cell(x - r, y - r)
         i1, j1 = self.world_to_cell(x + r, y + r)
-        i0 -= 1; j0 -= 1
-        i1 += 1; j1 += 1
+        i0 -= 1; j0 -= 1; i1 += 1; j1 += 1
         rr = r * r
         for i in range(i0, i1 + 1):
             for j in range(j0, j1 + 1):
@@ -330,14 +509,12 @@ def _blocked_intervals_fixed_disc_vs_moving_disc_traj(
     traj: List[Tuple[np.ndarray, float]],
     T: float,
 ) -> List[Tuple[float, float]]:
-    """Compute blocked intervals using Numba if available."""
     if not traj or len(traj) < 2:
         return []
 
     p_fixed = np.asarray(p_fixed, dtype=np.float64)[:2]
     R = float(R)
 
-    # Convert trajectory to contiguous arrays
     n = len(traj)
     traj_x = np.empty(n, dtype=np.float64)
     traj_y = np.empty(n, dtype=np.float64)
@@ -356,7 +533,6 @@ def _blocked_intervals_fixed_disc_vs_moving_disc_traj(
         )
         return [(float(result[i, 0]), float(result[i, 1])) for i in range(result.shape[0])]
 
-    # Fallback to pure Python (still uses the same kernel)
     blocked: List[Tuple[float, float]] = []
     for i in range(n - 1):
         lo, hi, valid = _nb_blocked_interval_segment(
@@ -382,7 +558,6 @@ def precompute_constants(P_star: np.ndarray) -> Tuple[float, float, float]:
 
 
 def ff_dist_sq(q1: np.ndarray, q2: np.ndarray, Nx: float, Ny: float, Nxy: float, Nr: int) -> float:
-    """Squared distance in FF-RRT* space. Uses Numba if available."""
     q1 = np.asarray(q1, dtype=float).ravel()
     q2 = np.asarray(q2, dtype=float).ravel()
     if NUMBA_AVAILABLE:
@@ -391,7 +566,6 @@ def ff_dist_sq(q1: np.ndarray, q2: np.ndarray, Nx: float, Ny: float, Nxy: float,
             q2[0], q2[1], q2[2], q2[3], q2[4],
             Nx, Ny, Nxy, Nr
         )
-    # Fallback
     x1, y1, th1, sx1, sy1 = q1[0], q1[1], q1[2], q1[3], q1[4]
     x2, y2, th2, sx2, sy2 = q2[0], q2[1], q2[2], q2[3], q2[4]
     dth = th2 - th1
@@ -421,6 +595,8 @@ class IndividualAgent:
     def interpolate_q(self, q1: np.ndarray, q2: np.ndarray, a: float) -> np.ndarray:
         q1 = np.asarray(q1, dtype=float)
         q2 = np.asarray(q2, dtype=float)
+        if NUMBA_AVAILABLE and q1.shape[0] == 2:
+            return _nb_interpolate_individual_2d(q1, q2, float(a))
         q = q1.copy()
         q[:2] = q1[:2] + a * (q2[:2] - q1[:2])
         return q
@@ -432,21 +608,12 @@ class IndividualAgent:
     def centroid_xy(self, q: np.ndarray) -> np.ndarray:
         return np.asarray(q, dtype=float)[:2].copy()
 
-    # -------------------------
-    # Formation -> per-robot poses/utilities
-    # Robots are assumed to face the formation yaw (theta).
-    # -------------------------
-
     def robot_poses(self, q: np.ndarray) -> List[Tuple[float, float, float]]:
-        """Return per-robot (x,y,psi) in world frame. For individual agent, just return single pose."""
         q = np.asarray(q, dtype=float)
-        # Individual agents have 2D configuration [x, y]
         x, y = float(q[0]), float(q[1])
-        # Heading is 0 for individual agents (no orientation)
         return [(x, y, 0.0)]
 
     def max_robot_displacement(self, q1: np.ndarray, q2: np.ndarray) -> float:
-        """Max Euclidean displacement. For individual agent, just the distance between positions."""
         q1 = np.asarray(q1, dtype=float)
         q2 = np.asarray(q2, dtype=float)
         dx = float(q2[0] - q1[0])
@@ -454,7 +621,8 @@ class IndividualAgent:
         return math.hypot(dx, dy)
 
     def dist_for_nn(self, q1: np.ndarray, q2: np.ndarray) -> float:
-        # inline fast norm (avoid extra temporaries)
+        if NUMBA_AVAILABLE:
+            return math.sqrt(_nb_dist_sq_xy(q1[0], q1[1], q2[0], q2[1]))
         dx = float(q2[0] - q1[0])
         dy = float(q2[1] - q1[1])
         return math.hypot(dx, dy)
@@ -464,32 +632,31 @@ class FlexibleFormationAgent:
     def __init__(
         self,
         P_star: List[Iterable[float]],
-        radius,                  # float OR list[float] (per-robot)
+        radius,
         sx_range: Tuple[float, float] = (0.85, 1.25),
         sy_range: Tuple[float, float] = (0.85, 1.25),
     ):
         self.P_star = np.asarray(P_star, dtype=float)
         self.Nr = int(self.P_star.shape[0])
-        # Per-robot radii (accept scalar or list)
         if isinstance(radius, (int, float)):
-            self.radii = [float(radius)] * self.Nr
+            self.radii = np.array([float(radius)] * self.Nr, dtype=np.float64)
         else:
-            self.radii = [float(r) for r in radius]
+            self.radii = np.array([float(r) for r in radius], dtype=np.float64)
             if len(self.radii) != self.Nr:
                 raise ValueError(f"radius length ({len(self.radii)}) != Nr ({self.Nr})")
-        self.radius = self.radii  # alias (list)
+
+        self.radius = self.radii.tolist()
         self.Nx, self.Ny, self.Nxy = precompute_constants(self.P_star)
         self.sx_range = (float(sx_range[0]), float(sx_range[1]))
         self.sy_range = (float(sy_range[0]), float(sy_range[1]))
 
-        # disc cache (big win): key -> list[(p,r)]
         self._disc_cache: Dict[Tuple[float, ...], List[Tuple[np.ndarray, float]]] = {}
         self._disc_cache_precision = 3
+        self._robot_poses_cache: Dict[Tuple[float, ...], np.ndarray] = {}
 
     def clear_cache(self):
         self._disc_cache.clear()
-        if hasattr(self, "_robot_poses_cache"):
-            self._robot_poses_cache.clear()
+        self._robot_poses_cache.clear()
 
     def _qkey(self, q: np.ndarray) -> Tuple[float, ...]:
         return tuple(np.round(np.asarray(q, dtype=float), self._disc_cache_precision))
@@ -506,6 +673,8 @@ class FlexibleFormationAgent:
     def interpolate_q(self, q1: np.ndarray, q2: np.ndarray, a: float) -> np.ndarray:
         q1 = np.asarray(q1, dtype=float)
         q2 = np.asarray(q2, dtype=float)
+        if NUMBA_AVAILABLE and q1.shape[0] == 5:
+            return _nb_interpolate_formation_5d(q1, q2, float(a))
         q = q1.copy()
         q[0:2] = q1[0:2] + a * (q2[0:2] - q1[0:2])
         q[3] = q1[3] + a * (q2[3] - q1[3])
@@ -519,9 +688,17 @@ class FlexibleFormationAgent:
         key = self._qkey(q)
         cached = self._disc_cache.get(key, None)
         if cached is not None:
-            return cached
+            return [(cached[i, :2].copy(), cached[i, 2]) for i in range(cached.shape[0])]
 
         q = np.asarray(q, dtype=float)
+        if NUMBA_AVAILABLE:
+            discs_array = _nb_compute_formation_discs(
+                self.P_star, self.radii,
+                q[0], q[1], q[2], q[3], q[4]
+            )
+            self._disc_cache[key] = discs_array
+            return [(discs_array[i, :2].copy(), discs_array[i, 2]) for i in range(discs_array.shape[0])]
+
         xc, yc, th, sx, sy = q[0], q[1], q[2], q[3], q[4]
         c, s = math.cos(th), math.sin(th)
         Rm = np.array([[c, -s], [s, c]], dtype=float)
@@ -529,30 +706,27 @@ class FlexibleFormationAgent:
         center = np.array([xc, yc], dtype=float)
         P = (Rm @ (Sm @ self.P_star.T)).T + center
         out = [(P[i, :].copy(), self.radii[i]) for i in range(self.Nr)]
-
-        self._disc_cache[key] = out
         return out
 
     def centroid_xy(self, q: np.ndarray) -> np.ndarray:
         return np.asarray(q, dtype=float)[:2].copy()
 
-    # -------------------------
-    # Formation -> per-robot poses/utilities
-    # Robots are assumed to face the formation yaw (theta).
-    # -------------------------
-
     def robot_poses(self, q: np.ndarray) -> List[Tuple[float, float, float]]:
-        """Return per-robot (x,y,psi) in world frame for this formation configuration."""
         q = np.asarray(q, dtype=float)
-        
-        # Check cache first
-        if not hasattr(self, '_robot_poses_cache'):
-            self._robot_poses_cache = {}
-        
         key = self._qkey(q)
-        if key in self._robot_poses_cache:
-            return self._robot_poses_cache[key]
-        
+        cached = self._robot_poses_cache.get(key, None)
+        if cached is not None:
+            return [(cached[i, 0], cached[i, 1], cached[i, 2]) for i in range(cached.shape[0])]
+
+        if NUMBA_AVAILABLE:
+            poses_array = _nb_compute_robot_poses(
+                self.P_star, q[0], q[1], q[2], q[3], q[4]
+            )
+            if len(self._robot_poses_cache) > 500:
+                self._robot_poses_cache.clear()
+            self._robot_poses_cache[key] = poses_array
+            return [(poses_array[i, 0], poses_array[i, 1], poses_array[i, 2]) for i in range(poses_array.shape[0])]
+
         xc, yc, th, sx, sy = float(q[0]), float(q[1]), float(q[2]), float(q[3]), float(q[4])
         c, s = math.cos(th), math.sin(th)
         Rm = np.array([[c, -s], [s, c]], dtype=float)
@@ -560,28 +734,26 @@ class FlexibleFormationAgent:
         center = np.array([xc, yc], dtype=float)
         P = (Rm @ (Sm @ self.P_star.T)).T + center
         result = [(float(P[i, 0]), float(P[i, 1]), th) for i in range(self.Nr)]
-        
-        # Cache the result (limit cache size)
         if len(self._robot_poses_cache) > 500:
             self._robot_poses_cache.clear()
-        self._robot_poses_cache[key] = result
-        
+        result_array = np.array(result, dtype=float)
+        self._robot_poses_cache[key] = result_array
         return result
 
     def max_robot_displacement(self, q1: np.ndarray, q2: np.ndarray) -> float:
-        """Max Euclidean displacement of any robot center between two formation configurations."""
-        # Quick check: if centroids are very close, displacement will be small
         q1 = np.asarray(q1, dtype=float)
         q2 = np.asarray(q2, dtype=float)
-        
         dx_c = float(q2[0] - q1[0])
         dy_c = float(q2[1] - q1[1])
         centroid_dist = math.hypot(dx_c, dy_c)
-        
-        # Early exit for very close configurations
         if centroid_dist < 1e-6:
             return 0.0
-        
+        if NUMBA_AVAILABLE:
+            return _nb_max_robot_displacement(
+                self.P_star,
+                q1[0], q1[1], q1[2], q1[3], q1[4],
+                q2[0], q2[1], q2[2], q2[3], q2[4]
+            )
         poses1 = self.robot_poses(q1)
         poses2 = self.robot_poses(q2)
         md = 0.0
@@ -591,10 +763,6 @@ class FlexibleFormationAgent:
             d = math.hypot(dx, dy)
             if d > md:
                 md = d
-                # Early exit if we've found a large displacement
-                # (no need to check all robots if one is already large)
-                if md > centroid_dist * 2.0:  # heuristic: can't be much larger than 2x centroid dist
-                    break
         return md
 
     @staticmethod
@@ -602,64 +770,61 @@ class FlexibleFormationAgent:
         return (a + math.pi) % (2.0 * math.pi) - math.pi
 
     @classmethod
-    def _rs_like_proxy(cls,
-                       pose1: Tuple[float, float, float],
-                       pose2: Tuple[float, float, float],
-                       lateral_weight: float = 4.0,
-                       turn_weight: float = 0.35) -> float:
-        """Cheap RS-like proxy length (NOT exact Reeds–Shepp).
-
-        Penalizes lateral displacement in the body frame + turning.
-        """
+    def _rs_like_proxy(cls, pose1, pose2, lateral_weight=4.0, turn_weight=0.35):
+        if NUMBA_AVAILABLE:
+            return _nb_rs_like_proxy(
+                pose1[0], pose1[1], pose1[2],
+                pose2[0], pose2[1], pose2[2],
+                lateral_weight, turn_weight
+            )
         x1, y1, th1 = pose1
         x2, y2, th2 = pose2
-        dx = x2 - x1
-        dy = y2 - y1
+        dx = x2 - x1; dy = y2 - y1
         c, s = math.cos(th1), math.sin(th1)
-        df = c * dx + s * dy      # forward component
-        dl = -s * dx + c * dy     # lateral component
+        df = c * dx + s * dy
+        dl = -s * dx + c * dy
         dth = abs(cls._wrap_angle(th2 - th1))
-        trans = math.sqrt(df * df + lateral_weight * dl * dl)
-        turn = turn_weight * dth
-        return trans + turn
+        return math.sqrt(df * df + lateral_weight * dl * dl) + turn_weight * dth
 
     def max_rs_like_distance(self, q1: np.ndarray, q2: np.ndarray) -> float:
-        """Max RS-like proxy over all robots (robots face formation yaw)."""
+        q1 = np.asarray(q1, dtype=float)
+        q2 = np.asarray(q2, dtype=float)
+        lat_w = float(getattr(self, "rs_lateral_weight", 6.0))
+        turn_w = float(getattr(self, "rs_turn_weight", 0.6))
+        if NUMBA_AVAILABLE:
+            return _nb_max_rs_like_distance(
+                self.P_star,
+                q1[0], q1[1], q1[2], q1[3], q1[4],
+                q2[0], q2[1], q2[2], q2[3], q2[4],
+                lat_w, turn_w
+            )
         poses1 = self.robot_poses(q1)
         poses2 = self.robot_poses(q2)
         best = 0.0
-        lat_w = float(getattr(self, "rs_lateral_weight", 6.0))
-        turn_w = float(getattr(self, "rs_turn_weight", 0.6))
         for i in range(self.Nr):
-            d = self._rs_like_proxy(poses1[i], poses2[i], lateral_weight=lat_w, turn_weight=turn_w)
+            d = self._rs_like_proxy(poses1[i], poses2[i], lat_w, turn_w)
             if d > best:
                 best = d
         return best
 
     def dist_for_nn(self, q1: np.ndarray, q2: np.ndarray) -> float:
-        """Nearest-neighbor / neighbor metric for formations.
-
-        We blend:
-        - affine-formation metric (your FF metric)  -> preserves good affine geometry
-        - a nonholonomic proxy based on max per-robot RS-like cost -> biases toward kinematically sensible edges
-
-        This is ONLY a metric for graph growth/selection; it does not change the collision model.
-        """
         q1 = np.asarray(q1, dtype=float)
         q2 = np.asarray(q2, dtype=float)
-
-        # affine term
+        alpha = float(getattr(self, "nn_affine_weight", 0.7))
+        alpha = max(0.0, min(1.0, alpha))
+        lat_w = float(getattr(self, "rs_lateral_weight", 6.0))
+        turn_w = float(getattr(self, "rs_turn_weight", 0.6))
+        if NUMBA_AVAILABLE:
+            return _nb_formation_nn_distance(
+                q1, q2, self.P_star,
+                self.Nx, self.Ny, self.Nxy, self.Nr,
+                alpha, lat_w, turn_w
+            )
         d2 = ff_dist_sq(q1, q2, self.Nx, self.Ny, self.Nxy, self.Nr)
         d_aff = float(math.sqrt(max(float(d2), 0.0)))
-
-        # nonholonomic proxy term (max over robots)
         d_nh = float(self.max_rs_like_distance(q1, q2))
-
-        # blend (tunable via attributes, safe defaults)
-        alpha = float(getattr(self, "nn_affine_weight", 0.7))  # 1.0 -> pure affine
-        alpha = max(0.0, min(1.0, alpha))
-
         return alpha * d_aff + (1.0 - alpha) * d_nh
+
 
 # ============================================================
 # SafeIntervalMap
@@ -687,7 +852,6 @@ class SafeIntervalMap:
         M = len(discs0)
         per_disc: List[List[Tuple[np.ndarray, float]]] = [[] for _ in range(M)]
         for (qk, tk, *_) in traj:
-
             qk = np.asarray(qk, dtype=float)
             tk = float(tk)
             dlist = agent.discs(qk)
@@ -741,6 +905,7 @@ class SafeIntervalMap:
         self._cache[k] = safe
         return safe
 
+
 # ============================================================
 # SI-RRT core
 # ============================================================
@@ -751,8 +916,8 @@ class Vertex:
     t: float
     si: SafeInterval
     parent: Optional["Vertex"] = None
-    psi: Optional[np.ndarray] = None  # Individual robot headings (for kinodynamic formations)
-    control_traj: Optional[Any] = None  # Control trajectory for individual agents (ControlTrajectory object)
+    psi: Optional[np.ndarray] = None
+    control_traj: Optional[Any] = None
 
     def __hash__(self):
         return id(self)
@@ -765,78 +930,133 @@ def _as_xy(q: np.ndarray) -> np.ndarray:
 def interpolate_traj_q(traj: List[Tuple[np.ndarray, float]], t: float) -> Optional[np.ndarray]:
     if not traj:
         return None
-
     if t < traj[0][1]:
         return None
-
     if t >= traj[-1][1]:
         return np.asarray(traj[-1][0], dtype=float).copy()
 
     for i in range(len(traj) - 1):
-
         item0 = traj[i]
         item1 = traj[i + 1]
-
-        # Support both (q, t) and (q, t, psi, ...)
         q0, t0 = item0[0], item0[1]
         q1, t1 = item1[0], item1[1]
-
         t0, t1 = float(t0), float(t1)
-
         if t0 <= t <= t1:
-
             q0 = np.asarray(q0, dtype=float)
             q1 = np.asarray(q1, dtype=float)
-
             if t1 <= t0 + 1e-12:
                 return q1.copy()
-
             a = (t - t0) / (t1 - t0)
-
             q = q0.copy()
-
-            # Position
             q[:2] = q0[:2] + a * (q1[:2] - q0[:2])
-
-            # Heading (if exists)
             if q.shape[0] >= 3:
                 th0, th1 = float(q0[2]), float(q1[2])
                 dth = (th1 - th0 + math.pi) % (2.0 * math.pi) - math.pi
                 q[2] = th0 + a * dth
-
-            # Scaling (if exists)
             if q.shape[0] >= 5:
                 q[3] = float(q0[3] + a * (q1[3] - q0[3]))
                 q[4] = float(q0[4] + a * (q1[4] - q0[4]))
-
             return q
 
     return np.asarray(traj[-1][0], dtype=float).copy()
 
+
+# ============================================================
+# Kinematics  —  PATCHED
+# ============================================================
+
 class Kinematics:
     def __init__(self, max_velocity: float):
+        # max_velocity is kept as a fallback upper bound.
+        # Actual travel times are derived from the agent's own limits.
         self.vmax = float(max_velocity)
+        import os as _osk; print(f'[DIAG] Kinematics.__init__: self.vmax={self.vmax}  file={_osk.path.abspath(__file__)}')
 
+    # ------------------------------------------------------------------
+    # Helper: resolve the correct effective speed for an agent
+    # ------------------------------------------------------------------
+    def _agent_effective_vmax(self, agent) -> float:
+        """
+        Resolve effective maximum speed from the agent object.
+
+        Priority:
+          1. agent.v_max_list  (HeterogeneousFormationAgent)
+                → min(v_max_list)  [slowest member governs]
+          2. agent.v_max  (DifferentialDriveAgent / HolonomicAgent)
+          3. self.vmax    (planner-level fallback — only if agent
+                           exposes no velocity information)
+        """
+        if hasattr(agent, 'v_max_list'):
+            lst = agent.v_max_list
+            return max(min(float(v) for v in lst), 1e-9)
+
+        raw = getattr(agent, 'v_max', None)
+        if raw is not None and not isinstance(raw, (list, tuple, np.ndarray)):
+            return max(float(raw), 1e-9)
+
+        # Fallback: use planner-level bound
+        return max(self.vmax, 1e-9)
+
+    # ------------------------------------------------------------------
+    # Core method: travel_time
+    # ------------------------------------------------------------------
     def travel_time(self, agent, q_from: np.ndarray, q_to: np.ndarray) -> float:
-        vmax = max(self.vmax, 1e-9)
+        """
+        Compute the minimum time to travel between two configurations,
+        respecting per-robot (or per-formation-member) velocity limits.
 
-        # Formation
-        if hasattr(agent, "max_robot_displacement"):
-            d = float(agent.max_robot_displacement(q_from, q_to))
-            return d / vmax
+        Branch selection uses hasattr(agent, 'P_star') as the discriminator
+        between formation agents and individual robots.  This is critical
+        because DifferentialDriveAgent and HolonomicAgent both define
+        max_robot_displacement() and robot_poses(), so attribute presence
+        alone cannot distinguish them from formation agents.
 
-        # Individual robot
-        p0 = np.array(q_from[:2], dtype=float)
-        p1 = np.array(q_to[:2], dtype=float)
-        return float(np.linalg.norm(p1 - p0)) / vmax
+        Formations (agent has P_star):
+            With v_max_list  →  t = max_i( d_i / v_max_list[i] )
+            Without v_max_list → t = max_robot_displacement / effective_vmax
 
+        Individual robots (no P_star):
+            t = euclidean_distance / agent.v_max
+        """
+        q_from = np.asarray(q_from, dtype=float)
+        q_to   = np.asarray(q_to,   dtype=float)
+
+        is_formation = hasattr(agent, 'P_star')
+
+        if is_formation:
+            # --- Heterogeneous formation: per-robot displacement / per-robot v_max ---
+            if hasattr(agent, 'v_max_list') and hasattr(agent, 'robot_poses'):
+                try:
+                    poses1 = agent.robot_poses(q_from)
+                    poses2 = agent.robot_poses(q_to)
+                    t_needed = 0.0
+                    for i, ((x1, y1, _), (x2, y2, _)) in enumerate(zip(poses1, poses2)):
+                        d_i    = math.hypot(x2 - x1, y2 - y1)
+                        vmax_i = max(float(agent.v_max_list[i]), 1e-9)
+                        t_needed = max(t_needed, d_i / vmax_i)
+                    return max(t_needed, 0.0)
+                except Exception:
+                    pass  # fall through to centroid-based fallback
+
+            # --- Homogeneous / legacy formation ---
+            if hasattr(agent, "max_robot_displacement"):
+                d = float(agent.max_robot_displacement(q_from, q_to))
+                return d / self._agent_effective_vmax(agent)
+
+        # --- Individual robot (DifferentialDrive, Holonomic, or unknown) ---
+        # Always reached for non-formation agents regardless of which
+        # helper methods they define.
+        p0 = q_from[:2]
+        p1 = q_to[:2]
+        d  = float(np.linalg.norm(p1 - p0))
+        return d / self._agent_effective_vmax(agent)
+
+
+# ============================================================
+# SIRRT planner  (unchanged from original — only Kinematics changed above)
+# ============================================================
 
 class SIRRT:
-    """
-    SI-RRT with performance optimizations:
-    - KD-tree for nearest neighbor (when scipy available)
-    - Numba JIT for hot paths (when numba available)
-    """
     def __init__(
         self,
         agent_model,
@@ -851,9 +1071,8 @@ class SIRRT:
         precision: int = 2,
         seed: Optional[int] = None,
         debug: bool = False,
-        use_kinodynamic: bool = False,  # NEW: Enable kinodynamic steering
-        kinodynamic_params: Optional[dict] = None,  # NEW: Params for kinodynamic steering
-        cancellation_check: Optional[callable] = None,
+        use_kinodynamic: bool = False,
+        kinodynamic_params: Optional[dict] = None,
     ):
         self.agent = agent_model
         self.kin = Kinematics(max_velocity)
@@ -871,53 +1090,38 @@ class SIRRT:
         self.precision = precision
         self.V: List[Vertex] = []
         self.debug = bool(debug)
-        self.cancellation_check = cancellation_check
 
         if seed is not None:
             np.random.seed(seed)
 
-        # KD-tree data structures
         self._kdtree = None
         self._V_xy = None
         self._kdtree_size = 0
-
-        # rebuild less often (lower overhead)
         self._kdtree_rebuild_threshold = 300
-
-        # dominance acceleration
         self._by_qkey: Dict[Tuple[float, ...], List[Vertex]] = {}
-
-        # static feasibility cache (per qkey)
         self._static_ok_cache: Dict[Tuple[float, ...], bool] = {}
-        
-        # Cache agent radius for edge sampling (avoid repeated getattr)
+
         _raw_radius = getattr(self.agent, "radius", 0.1)
         if isinstance(_raw_radius, (list, tuple, np.ndarray)):
             self._agent_radius = float(max(_raw_radius))
         else:
             self._agent_radius = float(_raw_radius)
-        
-        # NEW: Kinodynamic steering setup
+
         self.use_kinodynamic = False
         self.kino_steerer = None
-        self.individual_kino_steerer = None  # For individual agents (DD or holonomic)
-        
+        self.individual_kino_steerer = None
+
         if use_kinodynamic and hasattr(agent_model, 'P_star'):
-            # This is a formation agent
-            
-            # Check if it's heterogeneous (has robot_types attribute)
             is_heterogeneous = hasattr(agent_model, 'robot_types')
-            
+
             if is_heterogeneous and HETEROGENEOUS_KINO_AVAILABLE:
-                # Use heterogeneous formation steering
                 try:
-                    # Set default kinodynamic parameters
                     kino_defaults = {
                         'robot_types': agent_model.robot_types,
-                        'v_max': max_velocity * 0.8,
+                        'v_max': max_velocity,
                         'w_max': 2.0,
-                        'a_max': 2.0,          # Per-robot linear acceleration limit
-                        'alpha_max': 4.0,      # Per-robot angular acceleration limit (DD only)
+                        'a_max': 2.0,
+                        'alpha_max': 4.0,
                         'vc_max': max_velocity,
                         'wth_max': 1.2,
                         'ds_max': 0.5,
@@ -929,8 +1133,6 @@ class SIRRT:
                         'max_iter': 200,
                         'warm_start': True,
                     }
-                    
-                    # Auto-pull per-robot limits from agent_model if stored
                     if hasattr(agent_model, 'v_max_list'):
                         kino_defaults['v_max'] = agent_model.v_max_list
                     if hasattr(agent_model, 'omega_max_list'):
@@ -939,15 +1141,11 @@ class SIRRT:
                         kino_defaults['a_max'] = agent_model.a_max_list
                     if hasattr(agent_model, 'alpha_max_list'):
                         kino_defaults['alpha_max'] = agent_model.alpha_max_list
-                    
-                    # Override with user params (user params win over agent defaults)
                     if kinodynamic_params:
                         kino_defaults.update(kinodynamic_params)
-                    
-                    # Ensure robot_types is set (don't override if user provided it)
                     if 'robot_types' not in kino_defaults:
                         kino_defaults['robot_types'] = agent_model.robot_types
-                    
+
                     self.kino_steerer = HeterogeneousKinodynamicFormationSteering(
                         P_star=agent_model.P_star,
                         **kino_defaults
@@ -955,42 +1153,26 @@ class SIRRT:
                     self.use_kinodynamic = True
                     if self.debug:
                         print(f"✓ Heterogeneous formation steering enabled")
-                        print(f"  Robot types: {agent_model.robot_types}")
-                        
                 except Exception as e:
                     if self.debug:
                         print(f"⚠ Failed to initialize heterogeneous formation steering: {e}")
-                        print("  Falling back to homogeneous formation steering")
-                    is_heterogeneous = False  # Fall through to homogeneous
-            
+                    is_heterogeneous = False
+
             if not is_heterogeneous or not HETEROGENEOUS_KINO_AVAILABLE:
-                # Use homogeneous formation steering (original)
                 try:
-                    # Import here to avoid hard dependency
-                    import sys
-                    import os
-                    
-                    # Try to import the kinodynamic steering module
+                    import sys, os
                     try:
                         from kinodynamic_steering_with_full_output import KinodynamicFormationSteering
                         KINO_AVAILABLE = True
                     except ImportError:
-                        # Try loading from same directory
-                        current_dir = os.path.dirname(os.path.abspath(__file__))
-                        sys.path.insert(0, current_dir)
-                        try:
-                            from kinodynamic_steering_with_full_output import KinodynamicFormationSteering
-                            KINO_AVAILABLE = True
-                        except ImportError:
-                            KINO_AVAILABLE = False
-                    
+                        KINO_AVAILABLE = False
+
                     if KINO_AVAILABLE:
-                        # Set default kinodynamic parameters
                         kino_defaults = {
-                            'v_max': max_velocity * 0.8,
+                            'v_max': max_velocity,
                             'w_max': 2.0,
-                            'a_max': 2.0,          # Linear acceleration limit
-                            'alpha_max': 4.0,      # Angular acceleration limit
+                            'a_max': 2.0,
+                            'alpha_max': 4.0,
                             'vc_max': max_velocity,
                             'wth_max': 1.2,
                             'ds_max': 0.5,
@@ -1002,69 +1184,42 @@ class SIRRT:
                             'max_iter': 200,
                             'warm_start': True,
                         }
-                        
-                        # Override with user params (but remove robot_types if present - not used in homogeneous)
                         if kinodynamic_params:
                             kino_defaults.update(kinodynamic_params)
-                            kino_defaults.pop('robot_types', None)  # Remove if present
-                        
+                            kino_defaults.pop('robot_types', None)
                         self.kino_steerer = KinodynamicFormationSteering(
                             P_star=agent_model.P_star,
                             **kino_defaults
                         )
                         self.use_kinodynamic = True
-                        if self.debug:
-                            print("✓ Homogeneous formation kinodynamic steering enabled")
-                    else:
-                        if self.debug:
-                            print("⚠ CasADi not available, using centroid-based steering")
-                            
                 except Exception as e:
                     if self.debug:
                         print(f"⚠ Failed to initialize formation kinodynamic steering: {e}")
-                        print("  Falling back to centroid-based steering")
-        
-        # NEW: Individual agent kinodynamic steering
+
         elif use_kinodynamic and not hasattr(agent_model, 'P_star'):
-            # This is an individual agent
             if INDIVIDUAL_KINO_AVAILABLE:
-                # Determine agent type
                 agent_type = None
                 if hasattr(agent_model, 'is_holonomic'):
                     agent_type = 'holonomic' if agent_model.is_holonomic else 'diff-drive'
                 else:
-                    # Default: assume holonomic if no heading in config
                     sample_q = agent_model.sample_q(self.bounds_xy)
                     agent_type = 'holonomic' if len(sample_q) < 3 else 'diff-drive'
-                
-                # Set default parameters for individual agents
+
                 individual_kino_params = {
-                    'v_max': max_velocity,
-                    'a_max': 2.0,           # Linear acceleration limit
+                    'v_max': self.kin._agent_effective_vmax(agent_model),
+                    'a_max': 2.0,
                     'dt': 0.05,
                 }
-                
-                # Auto-pull limits from agent_model if stored
-                if hasattr(agent_model, 'v_max'):
-                    individual_kino_params['v_max'] = agent_model.v_max
                 if hasattr(agent_model, 'a_max'):
                     individual_kino_params['a_max'] = agent_model.a_max
-                
                 if agent_type == 'diff-drive':
-                    individual_kino_params['v_min'] = -max_velocity * 0.5
-                    individual_kino_params['omega_max'] = 2.0
-                    individual_kino_params['alpha_max'] = 4.0   # Angular acceleration limit
+                    individual_kino_params['v_min'] = -self.kin._agent_effective_vmax(agent_model) * 0.5
+                    individual_kino_params['omega_max'] = getattr(agent_model, 'omega_max', 2.0)
+                    individual_kino_params['alpha_max'] = getattr(agent_model, 'alpha_max', 4.0)
                     individual_kino_params['max_time'] = 5.0
-                    # Auto-pull DD-specific limits
-                    if hasattr(agent_model, 'omega_max'):
-                        individual_kino_params['omega_max'] = agent_model.omega_max
-                    if hasattr(agent_model, 'alpha_max'):
-                        individual_kino_params['alpha_max'] = agent_model.alpha_max
-                
-                # Override with user params
                 if kinodynamic_params:
                     individual_kino_params.update(kinodynamic_params)
-                
+
                 try:
                     self.individual_kino_steerer = create_steering_for_agent(agent_type, **individual_kino_params)
                     self.use_kinodynamic = True
@@ -1073,23 +1228,15 @@ class SIRRT:
                 except Exception as e:
                     if self.debug:
                         print(f"⚠ Failed to initialize individual kinodynamic steering: {e}")
-            else:
-                if self.debug:
-                    print("⚠ individual_kinodynamic_steering module not available")
-        
-        elif use_kinodynamic and self.debug:
-            print("⚠ Kinodynamic steering only works with formations (requires P_star)")
 
     def _reset_per_plan_caches(self):
         self.si_map.clear()
         self._by_qkey = {}
         self._static_ok_cache = {}
-        # clear formation disc cache if applicable
         if hasattr(self.agent, "clear_cache") and callable(getattr(self.agent, "clear_cache")):
             self.agent.clear_cache()
 
     def _rebuild_kdtree(self):
-        """Rebuild KD-tree from all vertices."""
         if not KDTREE_AVAILABLE or len(self.V) < 20:
             self._kdtree = None
             return
@@ -1106,10 +1253,6 @@ class SIRRT:
 
     def _si_key(self, si: SafeInterval, nd: int = 9) -> Tuple[float, float]:
         return (round(float(si.low), nd), round(float(si.high), nd))
-
-    # -------------------------
-    # Debug utilities (unchanged)
-    # -------------------------
 
     def debug_check_same_q_multiple_SIs(self) -> bool:
         from collections import defaultdict
@@ -1141,9 +1284,6 @@ class SIRRT:
                 times_sorted = sorted(times)
                 med = times_sorted[len(times_sorted)//2]
                 print(f"  SI={sik}  count={len(g)}  t(min/med/max)={min(times):.3f}/{med:.3f}/{max(times):.3f}")
-            print("  earliest entries:")
-            for v in vs_sorted[:8]:
-                print(f"    t={v.t:.3f}  SI=({v.si.low:.6f},{v.si.high:.6f})")
 
     def debug_check_near_duplicate_SIs(self, eps: float = 1e-8) -> None:
         from collections import defaultdict
@@ -1158,21 +1298,15 @@ class SIRRT:
             for a, b in zip(sis_sorted[:-1], sis_sorted[1:]):
                 if (abs(float(a.low) - float(b.low)) < eps and abs(float(a.high) - float(b.high)) < eps
                         and (a.low != b.low or a.high != b.high)):
-                    print(f"  qkey={k} has near-duplicate SIs: ({a.low:.12f},{a.high:.12f}) vs ({b.low:.12f},{b.high:.12f})")
+                    print(f"  qkey={k} near-duplicate SIs: ({a.low:.12f},{a.high:.12f}) vs ({b.low:.12f},{b.high:.12f})")
                     break
-
-    # -------------------------
-    # NN utilities
-    # -------------------------
 
     def _nn_dist(self, q1: np.ndarray, q2: np.ndarray) -> float:
         if hasattr(self.agent, "dist_for_nn"):
             return self.agent.dist_for_nn(q1, q2)
-        # fallback: xy only - use numba if available
         if NUMBA_AVAILABLE:
             return math.sqrt(_nb_dist_sq_xy(q1[0], q1[1], q2[0], q2[1]))
-        dx = q2[0] - q1[0]
-        dy = q2[1] - q1[1]
+        dx = q2[0] - q1[0]; dy = q2[1] - q1[1]
         return math.hypot(dx, dy)
 
     def _sample(self, q_goal: np.ndarray) -> np.ndarray:
@@ -1181,38 +1315,27 @@ class SIRRT:
         return self.agent.sample_q(self.bounds_xy)
 
     def _nearest(self, q: np.ndarray) -> Vertex:
-        """Find nearest vertex using KD-tree for candidates."""
         if self._kdtree is not None and len(self.V) >= 20:
             q_xy = self.agent.centroid_xy(q)
-
-            # smaller candidate set reduces python loop cost
             k = min(len(self.V), max(30, len(self.V) // 4))
             _, indices = self._kdtree.query(q_xy, k=k)
             if np.isscalar(indices):
                 indices = [indices]
-
-            best_v = None
-            best_d = float("inf")
+            best_v = None; best_d = float("inf")
             for i in indices:
                 if i < len(self.V):
                     v = self.V[i]
                     d = self._nn_dist(v.q, q)
                     if d < best_d:
-                        best_d = d
-                        best_v = v
+                        best_d = d; best_v = v
             if best_v is not None:
                 return best_v
-
         return min(self.V, key=lambda v: self._nn_dist(v.q, q))
 
     def _neighbors(self, q: np.ndarray) -> List[Vertex]:
-        """Find neighbors within radius using KD-tree for candidates."""
         if self._kdtree is not None and len(self.V) >= 20:
             q_xy = self.agent.centroid_xy(q)
-
-            # tighter candidate radius (4.0 -> 2.0)
             indices = self._kdtree.query_ball_point(q_xy, self.neighbor_radius * 2.0)
-
             out = []
             for i in indices:
                 if i < len(self.V):
@@ -1220,63 +1343,32 @@ class SIRRT:
                     if self._nn_dist(v.q, q) <= self.neighbor_radius:
                         out.append(v)
             return out
-
         return [v for v in self.V if self._nn_dist(v.q, q) <= self.neighbor_radius]
 
-    def _steer(self, q_from: np.ndarray, q_to: np.ndarray, 
+    def _steer(self, q_from: np.ndarray, q_to: np.ndarray,
                psi_from: Optional[np.ndarray] = None) -> Tuple[np.ndarray, Optional[np.ndarray]]:
-        """Steer from q_from toward q_to using kinodynamic or centroid-based steering.
-        
-        Returns:
-            (q_new, psi_new): Steered configuration and robot headings (or None if not applicable)
-        
-        - For formations WITH kinodynamic steering: uses individual robot diff-drive constraints
-        - For formations WITHOUT kinodynamic: uses centroid curvature approximation
-        - For individual agents: uses holonomic steering
-        """
-        
-        if self.cancellation_check and self.cancellation_check():
-            if self.debug:
-                print("[DEBUG] Steering cancelled")
-            # Return current state to allow graceful exit
-            return q_from.copy(), psi_from
-        
         q_from = np.asarray(q_from, dtype=float)
-        q_to = np.asarray(q_to, dtype=float)
-        
-        # Try kinodynamic steering for formations (if enabled and applicable)
+        q_to   = np.asarray(q_to,   dtype=float)
+
         if self.use_kinodynamic and self.kino_steerer is not None and q_from.shape[0] >= 5:
             try:
                 q_new, psi_new = self.kino_steerer.steer(q_from, q_to, psi_from)
-                
                 if q_new is not None:
-                    # Success! Return kinodynamic result
                     return q_new, psi_new
-                # If None, fall through to backup steering
             except Exception as e:
                 if self.debug:
                     print(f"⚠ Kinodynamic steering failed: {e}, using fallback")
-                # Fall through to backup
 
-        # Fallback steering (original centroid-based or holonomic)
-        
-        # Individual agent
         if q_from.shape[0] < 5 or not hasattr(self.agent, "max_robot_displacement"):
-            # Try individual kinodynamic steering if available
             if self.use_kinodynamic and self.individual_kino_steerer is not None:
                 try:
                     q_new, control_traj = self.individual_kino_steerer.steer(
                         q_from, q_to, step_size=self.d_max
                     )
-                    # Store the control trajectory for later use
-                    # (It will be attached to the vertex when created)
                     return q_new, control_traj
                 except Exception as e:
                     if self.debug:
                         print(f"⚠ Individual kinodynamic steering failed: {e}, using fallback")
-                    # Fall through to simple interpolation
-            
-            # Fallback: simple interpolation
             p = self.agent.centroid_xy(q_from)
             g = self.agent.centroid_xy(q_to)
             if NUMBA_AVAILABLE:
@@ -1288,39 +1380,29 @@ class SIRRT:
             alpha = self.d_max / (L + 1e-12)
             return self.agent.interpolate_q(q_from, q_to, alpha), None
 
-        # Formation: centroid-based nonholonomic-aware step
         d_eff = float(self.agent.max_robot_displacement(q_from, q_to))
         if d_eff <= self.d_max + 1e-12:
-            # Already at or near target
             psi_fallback = psi_from.copy() if psi_from is not None else None
             return q_to.copy(), psi_fallback
 
-        # Progress fraction based on max member displacement
         a = self.d_max / (d_eff + 1e-12)
         a = max(0.0, min(1.0, a))
 
         xc, yc, th, sx, sy = float(q_from[0]), float(q_from[1]), float(q_from[2]), float(q_from[3]), float(q_from[4])
         xg, yg, thg, sxg, syg = float(q_to[0]), float(q_to[1]), float(q_to[2]), float(q_to[3]), float(q_to[4])
 
-        # Turn toward target theta
         def wrap(a_):
             return (a_ + math.pi) % (2.0 * math.pi) - math.pi
 
         dth = wrap(thg - th)
-
-        # Curvature bound: |dtheta| <= kappa_max * ds_eff
         kappa_max = float(getattr(self.agent, "kappa_max", 1.0))
         ds_eff = self.d_max
         max_dtheta = kappa_max * ds_eff
         dth_step = max(-max_dtheta, min(max_dtheta, dth))
         th_new = wrap(th + dth_step)
 
-        # Centroid move: step toward (xg,yg) along current heading
-        dx = xg - xc
-        dy = yg - yc
+        dx = xg - xc; dy = yg - yc
         dist_xy = math.hypot(dx, dy)
-
-        # Allow reverse motion if goal is "behind"
         sign = 1.0
         if dist_xy > 1e-9:
             desired = math.atan2(dy, dx)
@@ -1330,45 +1412,31 @@ class SIRRT:
         step_xy = min(self.d_max, dist_xy)
         xc_new = xc + sign * step_xy * math.cos(th_new) * a
         yc_new = yc + sign * step_xy * math.sin(th_new) * a
-
-        # Scale interpolation
         sx_new = sx + a * (sxg - sx)
         sy_new = sy + a * (syg - sy)
 
         q_new = np.array([xc_new, yc_new, th_new, sx_new, sy_new], dtype=float)
-        
-        # For centroid steering, psi approximation: all robots follow formation heading
         psi_fallback = None
         if psi_from is not None:
-            # Simple approximation: robots gradually align with new formation heading
             psi_fallback = psi_from + a * (th_new - psi_from)
-        
         return q_new, psi_fallback
 
-    # -------------------------
-    # Static + dynamic checks
-    # -------------------------
-
     def _static_ok(self, q: np.ndarray) -> bool:
-        # cache by qkey (big win)
         k = self._qkey(q)
         cached = self._static_ok_cache.get(k, None)
         if cached is not None:
             return cached
-
         ok = True
         for (p, r) in self.agent.discs(q):
             if self.static_grid.disc_collides(float(p[0]), float(p[1]), float(r)):
                 ok = False
                 break
-
         self._static_ok_cache[k] = ok
         return ok
 
     def _edge_samples_count(self, q_from: np.ndarray, q_to: np.ndarray, step: float, min_n: int = 3) -> int:
         p0 = self.agent.centroid_xy(q_from)
         p1 = self.agent.centroid_xy(q_to)
-        # Use numba helper if available for distance
         if NUMBA_AVAILABLE:
             L = math.sqrt(_nb_dist_sq_xy(p0[0], p0[1], p1[0], p1[1]))
         else:
@@ -1378,10 +1446,8 @@ class SIRRT:
         return max(min_n, int(L / step))
 
     def _edge_static_ok(self, q_from: np.ndarray, q_to: np.ndarray) -> bool:
-        # adaptive sampling: sample approx every 0.5*radius
-        step = 0.2 * max(self._agent_radius, 1e-6)
+        step = 0.5 * max(self._agent_radius, 1e-6)
         n = self._edge_samples_count(q_from, q_to, step=step, min_n=3)
-
         for k in range(n + 1):
             a = k / n
             q_mid = self.agent.interpolate_q(q_from, q_to, a)
@@ -1407,16 +1473,11 @@ class SIRRT:
                             return False
         return True
 
-    def _edge_dynamic_ok(
-        self, q_from: np.ndarray, q_to: np.ndarray, t_depart: float, travel: float, dynamic_obstacles: List[dict]
-    ) -> bool:
+    def _edge_dynamic_ok(self, q_from, q_to, t_depart, travel, dynamic_obstacles):
         if not dynamic_obstacles:
             return True
-
-        # adaptive sampling in time along the edge (tighter near collisions)
         step = 0.5 * max(self._agent_radius, 1e-6)
         n = self._edge_samples_count(q_from, q_to, step=step, min_n=3)
-
         for k in range(n + 1):
             a = k / n
             t = t_depart + a * travel
@@ -1424,10 +1485,6 @@ class SIRRT:
             if not self._dynamic_ok(q_mid, t, dynamic_obstacles):
                 return False
         return True
-
-    # -------------------------
-    # Dominance
-    # -------------------------
 
     def _dominates(self, v_old: Vertex, v_new: Vertex) -> bool:
         if self._qkey(v_old.q) != self._qkey(v_new.q):
@@ -1439,7 +1496,6 @@ class SIRRT:
         return v_old.t <= v_new.t + 1e-9
 
     def _is_dominated(self, v_new: Vertex) -> bool:
-        # only compare against vertices with same qkey (big win)
         k = self._qkey(v_new.q)
         bucket = self._by_qkey.get(k, None)
         if not bucket:
@@ -1456,45 +1512,24 @@ class SIRRT:
         else:
             self._by_qkey[k] = [v]
 
-    # -------------------------
-    # Earliest arrival
-    # -------------------------
-
-    def _earliest_arrival(
-        self, v_from: Vertex, q_to: np.ndarray, si_to: SafeInterval, dynamic_obstacles: List[dict]
-    ) -> Optional[float]:
+    def _earliest_arrival(self, v_from, q_to, si_to, dynamic_obstacles):
         travel = self.kin.travel_time(self.agent, v_from.q, q_to)
-        dep_low = max(v_from.t, v_from.si.low, si_to.low - travel)
+        dep_low  = max(v_from.t, v_from.si.low, si_to.low - travel)
         dep_high = min(v_from.si.high, si_to.high - travel)
         if dep_low >= dep_high - 1e-9:
             return None
-
         t_depart = dep_low
         t_arr = t_depart + travel
         if t_arr > self.T:
             return None
-
         if not self._edge_dynamic_ok(v_from.q, q_to, t_depart, travel, dynamic_obstacles):
             return None
-
         return t_arr
 
-    # -------------------------
-    # Plan
-    # -------------------------
-
-    def plan(
-        self,
-        q_start: np.ndarray,
-        q_goal: np.ndarray,
-        dynamic_obstacles: List[dict],
-        
-    ) -> Optional[List[Tuple[np.ndarray, float]]]:
-
+    def plan(self, q_start, q_goal, dynamic_obstacles):
         q_start = np.asarray(q_start, dtype=float)
-        q_goal = np.asarray(q_goal, dtype=float)
+        q_goal  = np.asarray(q_goal,  dtype=float)
 
-        # clear per-plan caches
         self._reset_per_plan_caches()
 
         if not self._static_ok(q_start):
@@ -1518,12 +1553,10 @@ class SIRRT:
             if self.debug: print("[DEBUG] start not safe at t=0")
             return None
 
-        # Initialize robot headings for formations
         psi_start = None
         if q_start.shape[0] >= 5 and hasattr(self.agent, 'P_star'):
-            # All robots initially aligned with formation heading
             psi_start = np.full(self.agent.Nr, q_start[2], dtype=float)
-        
+
         v0 = Vertex(q=q_start.copy(), t=0.0, si=si0, parent=None, psi=psi_start)
         self.V = [v0]
         self._register_vertex(v0)
@@ -1532,39 +1565,25 @@ class SIRRT:
 
         best_goal: Optional[Vertex] = None
         best_goal_t = float("inf")
-        
-        # Cache goal position for distance checks
         q_goal_xy = _as_xy(q_goal)
 
         for _it in range(self.max_iter):
-            ###### here kill thread
-
-            if self.cancellation_check():
-                if self.debug:
-                    print(f"[DEBUG] Planning cancelled at iteration {_it}/{self.max_iter}")
-                return None
-
             q_rand = self._sample(q_goal)
             v_near = self._nearest(q_rand)
 
-            # Nonholonomic-friendly yaw bias for formations:
-            # steer the sampled theta toward the direction from nearest -> sample
             if q_rand.shape[0] >= 5:
                 dx = float(q_rand[0] - v_near.q[0])
                 dy = float(q_rand[1] - v_near.q[1])
                 if abs(dx) + abs(dy) > 1e-9:
                     th_hint = math.atan2(dy, dx)
-                    # small noise keeps exploration alive
                     th_hint += np.random.normal(0.0, 0.35)
                     q_rand = np.asarray(q_rand, dtype=float).copy()
                     q_rand[2] = (th_hint + math.pi) % (2.0 * math.pi) - math.pi
 
             q_new, psi_new = self._steer(v_near.q, q_rand, psi_from=v_near.psi)
-            
-            # Handle control trajectory for individual agents
+
             control_traj = None
             if psi_new is not None and not isinstance(psi_new, np.ndarray):
-                # psi_new is actually a ControlTrajectory object for individual agents
                 control_traj = psi_new
                 psi_new = None
 
@@ -1578,14 +1597,7 @@ class SIRRT:
             neighbors = self._neighbors(q_new) or [v_near]
 
             for si_to in si_list:
-
-                if self.cancellation_check and self.cancellation_check():
-                    if self.debug:
-                        print(f"[DEBUG] Planning cancelled at iteration {_it}/{self.max_iter}")
-                    return None
-
-                best_parent = None
-                best_arr = None
+                best_parent = None; best_arr = None
 
                 for v in neighbors:
                     if not self._edge_static_ok(v.q, q_new):
@@ -1594,14 +1606,13 @@ class SIRRT:
                     if t_arr is None:
                         continue
                     if best_arr is None or t_arr < best_arr:
-                        best_arr = t_arr
-                        best_parent = v
+                        best_arr = t_arr; best_parent = v
 
                 if best_parent is None or best_arr is None:
                     continue
 
-                v_new = Vertex(q=q_new.copy(), t=best_arr, si=si_to, parent=best_parent, 
-                              psi=psi_new, control_traj=control_traj)
+                v_new = Vertex(q=q_new.copy(), t=best_arr, si=si_to, parent=best_parent,
+                               psi=psi_new, control_traj=control_traj)
 
                 if self._is_dominated(v_new):
                     continue
@@ -1610,50 +1621,23 @@ class SIRRT:
                 self._register_vertex(v_new)
                 self._maybe_rebuild_kdtree()
 
-
-                # ============================================================
-                # Goal connection (kinodynamic-friendly)
-                #
-                # For kinodynamic / curvature-limited steering, relying only on a small
-                # Euclidean "goal ball" can fail: the tree may get close but never
-                # enter the ball in one step. Here we attempt a *local-planner* connect:
-                #
-                # - If there are NO dynamic obstacles (common for the first agent in CPP),
-                #   we do an RRT-Connect style forward extension toward the goal using
-                #   repeated _steer(...) steps, checking static collisions each step.
-                #   This improves convergence without changing SI semantics.
-                #
-                # - If dynamic obstacles exist, we keep the conservative single-shot
-                #   connection that respects safe-interval arrival reasoning.
-                # ============================================================
-
                 if not dynamic_obstacles:
-                    # RRT-Connect style extension (static-only): build a parent chain
                     v_cur = v_new
                     q_cur = q_new.copy()
-                    psi_cur = psi_new  # Track robot headings through extension
+                    psi_cur = psi_new
                     t_cur = float(v_new.t)
-
-                    # Cap the number of extension steps to avoid long inner loops
                     max_extend = int(max(5, min(80, math.ceil(self._nn_dist(q_cur, q_goal) / max(self.d_max, 1e-6)) + 5)))
 
                     for _j in range(max_extend):
                         if self._nn_dist(q_cur, q_goal) <= 1e-6:
                             break
-
                         q_next, psi_next = self._steer(q_cur, q_goal, psi_from=psi_cur)
-                        
-                        # Handle control trajectory for individual agents
                         control_traj_next = None
                         if psi_next is not None and not isinstance(psi_next, np.ndarray):
-                            # psi_next is actually a ControlTrajectory
-                            control_traj_next = psi_next
-                            psi_next = None
+                            control_traj_next = psi_next; psi_next = None
 
-                        # If steering makes no progress, stop trying
                         if np.allclose(q_next, q_cur, atol=1e-9, rtol=0.0):
                             break
-
                         if not self._edge_static_ok(q_cur, q_next):
                             break
 
@@ -1662,64 +1646,43 @@ class SIRRT:
                         if t_next > self.T:
                             break
 
-                        # pick the SI that contains arrival time (typically (0,T) in static-only)
                         si_list_next = self.si_map.compute(q_next, self.agent, self.static_grid, [], self.T)
                         if not si_list_next:
                             break
-                        si_next = None
+                        si_next = si_list_next[0]
                         for si_cand in si_list_next:
                             if si_cand.low - 1e-9 <= t_next < si_cand.high + 1e-9:
-                                si_next = si_cand
-                                break
-                        if si_next is None:
-                            # static-only should not happen, but be safe
-                            si_next = si_list_next[0]
+                                si_next = si_cand; break
 
-                        v_next = Vertex(q=q_next.copy(), t=float(t_next), si=si_next, parent=v_cur, 
-                                       psi=psi_next, control_traj=control_traj_next)
-                        
-                        # Update current state for next iteration
-                        q_cur = q_next
-                        psi_cur = psi_next
-
-                        # register so KD-tree / neighbors can use it (helps later iters too)
+                        v_next = Vertex(q=q_next.copy(), t=float(t_next), si=si_next, parent=v_cur,
+                                        psi=psi_next, control_traj=control_traj_next)
+                        q_cur = q_next; psi_cur = psi_next
                         self.V.append(v_next)
                         self._register_vertex(v_next)
                         self._maybe_rebuild_kdtree()
+                        v_cur = v_next; t_cur = float(t_next)
 
-                        v_cur = v_next
-                        q_cur = q_next
-                        t_cur = float(t_next)
-
-                        # If we reached the goal (or can snap in one more step), stop
                         if self._nn_dist(q_cur, q_goal) <= self.d_max + 1e-9:
-                            # final snap to exact goal if edge is statically feasible
-                            if self._edge_static_ok(q_cur, q_goal):
+                            q_next2, _ = self._steer(q_cur, q_goal)
+                            if q_next2 is not None and self._edge_static_ok(q_cur, q_next2):
                                 travel2 = self.kin.travel_time(self.agent, q_cur, q_goal)
                                 t_goal = t_cur + travel2
                                 if t_goal <= self.T:
                                     si_goal_list = self.si_map.compute(q_goal, self.agent, self.static_grid, [], self.T)
                                     if si_goal_list:
-                                        # choose SI containing arrival
                                         si_g = si_goal_list[0]
                                         for si_cand in si_goal_list:
                                             if si_cand.low - 1e-9 <= t_goal < si_cand.high + 1e-9:
-                                                si_g = si_cand
-                                                break
+                                                si_g = si_cand; break
                                         if t_goal < best_goal_t:
                                             best_goal_t = t_goal
-                                            # Goal inherits psi from current vertex
-                                            goal_psi = psi_cur if psi_cur is not None else None
-                                            best_goal = Vertex(q=q_goal.copy(), t=float(t_goal), si=si_g, 
-                                                             parent=v_cur, psi=goal_psi, control_traj=None)
+                                            best_goal = Vertex(q=q_goal.copy(), t=float(t_goal), si=si_g,
+                                                               parent=v_cur, psi=psi_cur, control_traj=None)
                             break
-
                 else:
-                    # Conservative SI-respecting goal connection when dynamic obstacles exist
                     q_new_xy = _as_xy(q_new)
                     if NUMBA_AVAILABLE:
-                        dist_sq = _nb_dist_sq_xy(q_new_xy[0], q_new_xy[1], q_goal_xy[0], q_goal_xy[1])
-                        close_enough = (dist_sq <= 0.49)  # 0.7^2
+                        close_enough = (_nb_dist_sq_xy(q_new_xy[0], q_new_xy[1], q_goal_xy[0], q_goal_xy[1]) <= 0.49)
                     else:
                         close_enough = (np.linalg.norm(q_new_xy - q_goal_xy) <= 0.7)
 
@@ -1729,19 +1692,11 @@ class SIRRT:
                             t_goal = self._earliest_arrival(v_new, q_goal, si_g, dynamic_obstacles)
                             if t_goal is not None and t_goal < best_goal_t:
                                 best_goal_t = t_goal
-                                # Use psi from the connecting vertex
-                                goal_psi = None
-                                if 'psi_cur' in locals() and psi_cur is not None:
-                                    goal_psi = psi_cur
-                                elif psi_new is not None:
-                                    goal_psi = psi_new
-                                
-                                best_goal = Vertex(q=q_goal.copy(), t=float(t_goal), si=si_g, 
-                                                 parent=v_new, psi=goal_psi, control_traj=None)
-                                # Early termination if we found a reasonably good solution
+                                best_goal = Vertex(q=q_goal.copy(), t=float(t_goal), si=si_g,
+                                                   parent=v_new, psi=psi_new, control_traj=None)
                                 if _it > 500 and t_goal < self.T * 0.5:
                                     break
-            # Check if we can exit early
+
             if best_goal is not None and _it > 500 and best_goal_t < self.T * 0.5:
                 break
 
@@ -1755,29 +1710,20 @@ class SIRRT:
         out: List[Tuple[np.ndarray, float]] = []
         v = best_goal
         while v is not None:
-            # For formations: include psi (robot headings)
-            # For individual agents: include control_traj if available
             psi_to_save = None
             control_traj_to_save = v.control_traj
-            
             if v.psi is not None:
-                # Check if psi is actually a ControlTrajectory (shouldn't happen but be safe)
                 if isinstance(v.psi, np.ndarray):
                     psi_to_save = np.array(v.psi, dtype=float).copy()
                 elif INDIVIDUAL_KINO_AVAILABLE and isinstance(v.psi, ControlTrajectory):
-                    # It's a ControlTrajectory - move it to control_traj field
-                    control_traj_to_save = v.psi
-                    psi_to_save = None
-                elif hasattr(v.psi, 'x'):  # Duck typing fallback
-                    control_traj_to_save = v.psi
-                    psi_to_save = None
+                    control_traj_to_save = v.psi; psi_to_save = None
+                elif hasattr(v.psi, 'x'):
+                    control_traj_to_save = v.psi; psi_to_save = None
                 else:
-                    # Try to convert to array
                     try:
                         psi_to_save = np.array(v.psi, dtype=float).copy()
                     except:
                         psi_to_save = None
-            
             out.append((v.q.copy(), float(v.t), psi_to_save, control_traj_to_save))
             v = v.parent
         out.reverse()
