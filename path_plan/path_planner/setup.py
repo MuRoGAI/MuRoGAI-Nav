@@ -30,6 +30,7 @@ setup(
         'console_scripts': [
             'path_planner_node = path_planner.path_planner_node8:main',
             'path_planner_node1 = path_planner.path_planner_node11:main',
+            'path_planner_node2 = path_planner.path_planner_node12:main',
 
         ],
     },

@@ -75,166 +75,269 @@ print("="*70 + "\n")
 # ===========================================================
 # GLOBAL SETTINGS
 # ===========================================================
-
 INFLATION_RADIUS = 0.0
 DRAW_INFLATED_FOOTPRINTS = True
 
 OUTPUT_DIR = "trajectory_logs"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
-
 CONTROL_DIR = "control_logs"
 os.makedirs(CONTROL_DIR, exist_ok=True)
 
-
-# INPUTS
-eg_formation = {
-    "F1": {
-        "centroid_x": 3.5,
-        "centroid_y": 6.3,
-        "formation_yaw": 1.2,
-        "desired_radius": 1.0,
-        "robots": [ "robot1", "robot2", "robot9" ]
-    },
-    "R1": { 
-        "robot": "robot7", "x": 3.5, "y": 3.2, "yaw": 2.6 
-    },
-    "R2": {
-        "robot": "robot10", "x":9.4, "y": 7.3, "yaw": 2.6 
-    },
-    "F2": {
-        "centroid_x": 4.2,
-        "centroid_y": 5.0,
-        "formation_yaw": 1.5,
-        "desired_radius": 1.5,
-        "robots": [ "robot5", "robot4", "robot6" ]
-    },
-    "R3": {
-        "robot": "robot15", "x":6.4, "y": 2.5, "yaw": 0.0 
-    },
-}
-
-map_path = "/home/suraj/murogai_nav/src/MuRoGAI-Nav/path_plan/path_planner/path_planner/10_103_a_outside_1.npy" # take it form pkg
-config_file_path = "/home/suraj/murogai_nav/src/MuRoGAI-Nav/chatty/config/robot_config_restaurant.json" # take it from pkg
- 
+map_path = "/home/multi-robot/murogai_nav/src/MuRoGAI-Nav/path_plan/path_planner/path_planner/10_103_a_outside_1.npy"
 res = 0.1
 
-
-
-config_data  = json.load(open(config_file_path, 'r'))
 grid = np.load(map_path)
 height, width = grid.shape
 height, width = height * res, width * res
-print(f"Grid width {width} ")
-print(f"Grid height {height} ")
-
 bounds = (np.array([0.0, 0.0]), np.array([height, width]))
 W = int(width / res)
 H = int(height / res)
 static_grid = OccupancyGrid(grid, res)
 
 # ===========================================================
-# Agents
+# CONFIG
 # ===========================================================
+config_file_path = "/home/multi-robot/murogai_nav/src/MuRoGAI-Nav/chatty/config/robot_config_103.json"
+config_data = json.load(open(config_file_path, 'r'))
+path_planner_cfg = config_data["path_planner"]
 
+# ===========================================================
+# DUMMY START POSES — replace with real odometry
+# ===========================================================
+# dummy_start_poses = {
+#     "robot1":  (3.705, 7.875, -1.57),
+#     "robot2":  (2.565, 7.875, -1.57),
+#     "robot3":  (2.0,   1.0,    0.0),
+#     "robot4":  (2.5,   1.0,    0.0),
+#     "robot5":  (3.0,   1.0,    0.0),
+#     "robot6":  (3.5,   1.0,    0.0),
+#     "robot7":  (4.0,   1.0,    0.0),
+#     "robot8":  (4.5,   1.0,    0.0),
+#     "robot9":  (3.135, 7.000),           # holonomic — no yaw
+#     "robot10": (5.5,   1.0,    0.0),
+#     "robot11": (6.0,   1.0,    0.0),
+# }
 
-
-
-# dd_robot1 = DifferentialDriveAgent(
-#     radius=0.25, v_max=0.16, omega_max=1.982,
-#     a_max=0.9, alpha_max=2.0, inflation=INFLATION_RADIUS,
-# )
-# dd_robot2 = DifferentialDriveAgent(
-#     radius=0.25, v_max=0.16, omega_max=1.5,
-#     a_max=0.9, alpha_max=1.5, inflation=INFLATION_RADIUS,
-# )
-
-# waffle_ = DifferentialDriveAgent(
-#     radius=0.25, v_max=0.26, omega_max=1.82,
-#     a_max=1.0, alpha_max=2.0, inflation=INFLATION_RADIUS,
-# )
-
-# hetero_form = HeterogeneousFormationAgent(
-#     P_star=[[-0.19, 0.57], [-0.19, -0.57], [0.38, 0.00]],
-#     robot_types=['diff-drive', 'diff-drive', 'holonomic'],
-#     v_max=[0.22, 0.26,0.8],       # per-robot linear velocity limit [m/s]
-#     omega_max=[2.0, 2.0, 0.0],   # per-robot angular velocity [rad/s]
-#     a_max=[0.9, 0.9, 0.9],          # per-robot linear accel [m/s^2]
-#     alpha_max=[2.0, 2.0, 0.0],      # per-robot angular accel [rad/s^2]
-#     sx_range=(1.0, 2.0),
-#     sy_range=(1.0, 2.0),
-#     radius=[0.3, 0.3, 0.6],  # per-robot radius [m]
-# )
-
-
-# hetero_form1 = HeterogeneousFormationAgent(
-#     P_star=[[-0.438, 0.569], [-0.437, -0.57], [0.438, -0.569], [0.437, 0.57]],
-#     robot_types=['diff-drive', 'diff-drive', 'diff-drive', 'diff-drive'],
-#     # Without this, v_max defaults to 1.0 -> v_max_list=[1.0,1.0,1.0]
-#     # and travel_time() divides by 1.0 instead of the real hardware limit.
-#     v_max=[0.22, 0.22, 0.22, 0.26],       # per-robot linear velocity limit [m/s]
-#     omega_max=[2.84, 2.84, 2.84, 1.82],   # per-robot angular velocity [rad/s]
-#     a_max=[1.0, 1.0, 1.0, 1.0],          # per-robot linear accel [m/s^2]
-#     alpha_max=[2.0, 2.0, 2.0, 2.0],      # per-robot angular accel [rad/s^2]
-#     sx_range=(1.0, 2.5),
-#     sy_range=(1.0, 2.5),
-#     radius=[0.2, 0.2, 0.2, 0.25],  # per-robot radius [m]
-# )
-
-# hetero_form2 = HeterogeneousFormationAgent(
-#     P_star=[[-0.291, 0.57], [-0.292, -0.569], [0.583, 0.00]],
-#     robot_types=['diff-drive', 'diff-drive', 'holonomic'],
-#     # Without this, v_max defaults to 1.0 -> v_max_list=[1.0,1.0,1.0]
-#     # and travel_time() divides by 1.0 instead of the real hardware limit.
-#     v_max=[0.31, 0.5, 0.8],       # per-robot linear velocity limit [m/s]
-#     omega_max=[1.9, 1.9, 0.0],   # per-robot angular velocity [rad/s]
-#     a_max=[0.9, 0.9, 0.9],          # per-robot linear accel [m/s^2]
-#     alpha_max=[2.0, 2.0, 0.0],      # per-robot angular accel [rad/s^2]
-#     sx_range=(1.0, 2.5),
-#     sy_range=(1.0, 2.5),
-#     radius=[0.3, 0.3, 0.6],  # per-robot radius [m]
-# )
-
-# holo_robot1 = HolonomicAgent(
-#     radius=0.60,
-#     v_max=0.8, a_max=2.0,
-# )
-
-agents = [
-
-
-
-    # ("HeteroForm1", hetero_form1,
-    #  np.array([3.135, 1.3125, 1.57, 1.0, 1.0]),
-    #  np.array([3.135, 7.583, 1.57, 1.0, 1.0]),
-    #  "heterogeneous-formation"),
-
-    # ("HeteroForm2", hetero_form2,
-    #  np.array([3.135, 7.583, -1.57, 1.0, 1.0]), # start point
-    #  np.array([3.135, 1.75, -1.57, 1.0, 1.0]),  # goal point
-    #  "heterogeneous-formation"),
-
-    # ("waffle", waffle_,
-    #  np.array([5.130, 4.375, 3.1415]), # strat pose
-    #  np.array([1.140, 4.375 , 3.1415]), goal pose
-    #  "diff-drive"),
-
-    #  ("DD1", dd_robot1,
-    #  np.array([0.57, 4.56, 0.0]),
-    #  np.array([3.42, 5.13, 0.0]),
-    #  "diff-drive"),
-]
-
-colors = {
-    "DD1": "tab:blue",
-    "DD2": "tab:cyan",
-    "Holo1": "tab:green",
-    "HeteroForm": "tab:purple",
-    "HeteroForm1": "tab:purple",
-    "HeteroForm2": "tab:orange",
-    "HeteroForm3": "tab:brown",
-    "Holo2": "tab:red",
-    "waffle": "tab:red",
+dummy_start_poses = {
+    "burger1" :  (2.565, 0.875,  1.57),
+    "burger2" :  (3.705, 0.875,  1.57),
+    "burger3" :  (3.135, 1.750,  1.57),
+    "waffle"  :  (5.130, 4.375,  3.14),
+    "tb4_1"   :  (3.705, 7.875, -1.57),
+    "firebird":  (2.565, 7.875, -1.57),
+    "go2"     :  (3.135, 7.000),            # holonomic — no yaw
 }
+
+
+# ===========================================================
+# INPUT — goal poses
+# ===========================================================
+# eg_formation = {
+#     "F1": {
+#         "centroid_x": 3.5,
+#         "centroid_y": 6.3,
+#         "formation_yaw": 1.2,
+#         "desired_radius": 1.0,
+#         "robots": ["robot1", "robot2", "robot9"]
+#     },
+#     "R1": {
+#         "robot": "robot7", "x": 3.5, "y": 3.2, "yaw": 2.6
+#     },
+#     "R2": {
+#         "robot": "robot10", "x": 9.4, "y": 7.3, "yaw": 2.6
+#     },
+#     "F2": {
+#         "centroid_x": 4.2,
+#         "centroid_y": 5.0,
+#         "formation_yaw": 1.5,
+#         "desired_radius": 1.5,
+#         "robots": ["robot5", "robot4", "robot6"]
+#     },
+#     "R3": {
+#         "robot": "robot15", "x": 6.4, "y": 2.5, "yaw": 0.0
+#     },
+# }
+
+eg_formation = {
+    "F1": {
+        "centroid_x": 3.135,
+        "centroid_y": 7.583,
+        "formation_yaw": 1.57,
+        "desired_radius": 1.0,
+        "robots": ["burger1", "burger2", "burger3"]
+    },
+    "F2": {
+        "centroid_x": 3.135,
+        "centroid_y": 1.75,
+        "formation_yaw": -1.57,
+        "desired_radius": 1.0,
+        "robots": ["tb4_1", "firebird", "go2"]
+    },
+    "R1": {
+        "robot": "waffle", "x": 1.140, "y": 4.375, "yaw": 3.14
+    },
+}
+
+# ===========================================================
+# HELPERS
+# ===========================================================
+def get_drive_type(robot_name: str) -> str:
+    cfg = path_planner_cfg.get(robot_name, {})
+    t = cfg.get("type", "Holonomic Drive Robot").lower()
+    return "diff-drive" if "differential" in t else "holonomic"
+
+
+def estimate_centroid_and_p_star(poses, theta, sx, sy, robot_types=None):
+    """
+    Estimate centroid and P_star from robot poses.
+    poses : list of (x, y, yaw) for diff-drive  OR  (x, y) for holonomic
+    theta : formation yaw at start
+    """
+    positions = []
+    for i, pose in enumerate(poses):
+        if robot_types and robot_types[i] == "diff-drive":
+            x, y, _ = pose
+        else:
+            x, y = pose[:2]
+        positions.append([x, y])
+    positions = np.array(positions)
+
+    centroid = np.mean(positions, axis=0)
+
+    R = np.array([
+        [math.cos(theta), -math.sin(theta)],
+        [math.sin(theta),  math.cos(theta)]
+    ])
+    R_inv = R.T
+    S_inv = np.diag([1.0 / sx, 1.0 / sy])
+
+    P_star = []
+    for pos in positions:
+        p = S_inv @ R_inv @ (pos - centroid)
+        P_star.append((float(p[0]), float(p[1])))
+
+    return centroid.tolist(), P_star
+
+
+def compute_formation_start(robot_names, robot_types, dummy_start_poses):
+    """
+    Compute formation start centroid and yaw from dummy start poses.
+    centroid_x = mean of all robot x
+    centroid_y = mean of all robot y
+    start_yaw  = mean of yaws of diff-drive robots (holonomic have no yaw)
+    """
+    xs, ys, yaws = [], [], []
+    for i, rname in enumerate(robot_names):
+        pose = dummy_start_poses.get(rname, (0.0, 0.0, 0.0))
+        xs.append(pose[0])
+        ys.append(pose[1])
+        if robot_types[i] == "diff-drive":
+            yaws.append(pose[2])
+
+    cx   = float(np.mean(xs))
+    cy   = float(np.mean(ys))
+    yaw  = float(np.mean(yaws)) if yaws else 0.0
+    return cx, cy, yaw
+
+
+def compute_p_star_from_dummy_poses(robot_names, start_yaw, robot_types,
+                                     dummy_start_poses, sx=1.0, sy=1.0):
+    """
+    Compute P_star from actual dummy start poses using start_yaw.
+    """
+    poses = [dummy_start_poses.get(r, (0.0, 0.0, 0.0)) for r in robot_names]
+    _, P_star = estimate_centroid_and_p_star(poses, start_yaw, sx, sy, robot_types)
+    return P_star
+
+
+# ===========================================================
+# AUTO-BUILD agents
+# ===========================================================
+agents = []
+colors = {}
+
+for key, val in eg_formation.items():
+
+    # ── FORMATION (F*) ──────────────────────────────────────
+    if key.startswith("F"):
+        robot_names = val["robots"]
+        robot_types, v_max_list, omega_max_list = [], [], []
+        a_max_list, alpha_max_list, radius_list  = [], [], []
+
+        for rname in robot_names:
+            cfg   = path_planner_cfg.get(rname, {})
+            drive = get_drive_type(rname)
+            robot_types.append(drive)
+            v_max_list.append(cfg.get("max_linear_velocity_x", 0.25))
+            omega_max_list.append(cfg.get("max_angular_velocity_z", 0.4) if drive == "diff-drive" else 0.0)
+            a_max_list.append(cfg.get("max_acceleration", 0.4))
+            alpha_max_list.append(cfg.get("max_angular_acceleration", 2.0) if drive == "diff-drive" else 0.0)
+            radius_list.append(cfg.get("radius", 0.25))
+
+        # start centroid and yaw from dummy poses
+        start_cx, start_cy, start_yaw = compute_formation_start(
+            robot_names, robot_types, dummy_start_poses
+        )
+
+        # P_star from start poses using start_yaw
+        p_star = compute_p_star_from_dummy_poses(
+            robot_names       = robot_names,
+            start_yaw         = start_yaw,
+            robot_types       = robot_types,
+            dummy_start_poses = dummy_start_poses,
+        )
+
+        agent_obj = HeterogeneousFormationAgent(
+            P_star     = p_star,
+            robot_types= robot_types,
+            v_max      = v_max_list,
+            omega_max  = omega_max_list,
+            a_max      = a_max_list,
+            alpha_max  = alpha_max_list,
+            sx_range   = (1.0, 2.5),
+            sy_range   = (1.0, 2.5),
+            radius     = radius_list,
+        )
+
+        start_state = np.array([start_cx, start_cy, start_yaw, 1.0, 1.0])
+        goal_state  = np.array([val["centroid_x"], val["centroid_y"],
+                                 val["formation_yaw"], 1.0, 1.0])
+
+        first_cfg   = path_planner_cfg.get(robot_names[0], {})
+        colors[key] = first_cfg.get("colour", "tab:purple")
+
+        agents.append((key, agent_obj, start_state, goal_state, "heterogeneous-formation"))
+
+    # ── INDIVIDUAL ROBOT (R*) ────────────────────────────────
+    elif key.startswith("R"):
+        rname = val["robot"]
+        cfg   = path_planner_cfg.get(rname, {})
+        drive = get_drive_type(rname)
+
+        if drive == "diff-drive":
+            agent_obj = DifferentialDriveAgent(
+                radius    = cfg.get("radius", 0.25),
+                v_max     = cfg.get("max_linear_velocity_x", 0.12),
+                omega_max = cfg.get("max_angular_velocity_z", 0.4),
+                a_max     = cfg.get("max_acceleration", 0.05),
+                alpha_max = cfg.get("max_angular_acceleration", 0.3),
+                inflation = INFLATION_RADIUS,
+            )
+        else:
+            agent_obj = HolonomicAgent(
+                radius = cfg.get("radius", 0.25),
+                v_max  = cfg.get("max_linear_velocity_x", 0.25),
+                a_max  = cfg.get("max_acceleration", 0.4),
+            )
+
+        raw_start   = dummy_start_poses.get(rname, (0.0, 0.0, 0.0))
+        start_state = np.array([raw_start[0], raw_start[1],
+                                 raw_start[2] if len(raw_start) == 3 else 0.0])
+        goal_state  = np.array([val["x"], val["y"], val["yaw"]])
+        colors[key] = cfg.get("colour", "tab:blue")
+
+        agents.append((key, agent_obj, start_state, goal_state, drive))
+
 
 
 def extend_traj_to_T(traj, T):
@@ -346,21 +449,45 @@ def _complete_warmup(formation_agent, use_kinodynamic=False, kinodynamic_params=
     return total_time
 
 
-warmup_kino_params = {
-    'robot_types': hetero_form1.robot_types,
-    'v_max': hetero_form1.v_max_list,
-    'w_max': hetero_form1.omega_max_list,
-    'a_max': hetero_form1.a_max_list,
-    'alpha_max': hetero_form1.alpha_max_list,
-    'N_steer': 8,
-    'T_steer': 0.8,
-}
+# warmup_kino_params = {
+#     'robot_types': hetero_form1.robot_types,
+#     'v_max': hetero_form1.v_max_list,
+#     'w_max': hetero_form1.omega_max_list,
+#     'a_max': hetero_form1.a_max_list,
+#     'alpha_max': hetero_form1.alpha_max_list,
+#     'N_steer': 8,
+#     'T_steer': 0.8,
+# }
 
-warmup_time = _complete_warmup(
-    formation_agent=hetero_form1,
-    use_kinodynamic=True,
-    kinodynamic_params=warmup_kino_params
+# warmup_time = _complete_warmup(
+#     formation_agent=hetero_form1,
+#     use_kinodynamic=True,
+#     kinodynamic_params=warmup_kino_params
+# )
+
+first_formation = next(
+    (agent_obj for label, agent_obj, start, goal, atype in agents
+     if atype == "heterogeneous-formation"),
+    None
 )
+warmup_time = 0.0
+if first_formation is not None:
+    warmup_kino_params = {
+        'robot_types': first_formation.robot_types,
+        'v_max'      : first_formation.v_max_list,
+        'w_max'      : first_formation.omega_max_list,
+        'a_max'      : first_formation.a_max_list,
+        'alpha_max'  : first_formation.alpha_max_list,
+        'N_steer'    : 8,
+        'T_steer'    : 0.8,
+    }
+    print(f"\nRunning warmup for first formation agent")
+    warmup_time = _complete_warmup(
+        formation_agent    = first_formation,
+        use_kinodynamic    = True,
+        kinodynamic_params = warmup_kino_params,
+    )
+    print(f"  warmup_time = {warmup_time:.4f} s")
 
 # ===========================================================
 # Planning
@@ -469,8 +596,8 @@ for name, agent, start, goal, agent_type in agents:
         goal_sample_rate=0.35,
         neighbor_radius=2.0,
         precision=2,
-        seed=360, #101 #66 #616 #51 #352
-        debug=False,
+        seed=411, #101 #66 #616 #51 #352
+        debug=True,
         use_kinodynamic=use_kino,
         kinodynamic_params=kino_params,
     )

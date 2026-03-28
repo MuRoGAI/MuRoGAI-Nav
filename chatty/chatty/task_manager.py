@@ -301,7 +301,7 @@ class TaskManager(Node):
 
             " - ONLY resume tasks for robots whose status is marked as IN PROGRESS at the time of the event. Do NOT resume for any robot whose status is TASKS COMPLETE. These robots or team can get new task which they are yet to complete or next in line in previous plan. Don't give task which were completed again. Resume must be strictly based on the current status — not task history.\n"
             "   - Use the keyword `resume` to instruct the robot to continue its previous task.\n"
-            "   - Example: Robot: Resume task descrption of tasks which were in progress \n"
+            "   - Example: Robot: Resume task description of tasks which were in progress \n"
             "   - Do NOT resume tasks marked as TASK COMPLETE. \n"
             "   - Do NOT reassign already completed tasks unless explicitly asked by human. \n"
             "   - Do NOT assume a robot is idle if its task status says TASK COMPLETE.  \n"

@@ -4912,3 +4912,22 @@ Robot2 tasks: go to table3
 Robot3 tasks: go to table2
 multirobot_list: []
 singlerobot_list: [Robot1, Robot2, Robot3]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Human: what gpt model are u
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Task Manager:
+I'm designed to assist with task management for robots. How can I help you today?
+[Time: Hours: 00, Minutes: 00, Seconds: 26] Human: ywah but u can also answer questions
+[Time: Hours: 00, Minutes: 00, Seconds: 28] Task Manager:
+Yes, I can assist with answering questions as well. How can I help you?
+[Time: Hours: 00, Minutes: 00, Seconds: 39] Human: so waht gpt model are u
+[Time: Hours: 00, Minutes: 00, Seconds: 41] Task Manager:
+I'm a specialized AI designed for task management and coordination among robots.
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 35] Human: i am testing the system for every llm model so i would rellay like to knoe what model are u
+[Time: Hours: 00, Minutes: 00, Seconds: 38] Task Manager:
+I'm a task manager AI designed to coordinate and manage tasks for a team of robots.
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 02] Human: hi
+[Time: Hours: 00, Minutes: 00, Seconds: 02] Task Manager:
+Invalid model selection

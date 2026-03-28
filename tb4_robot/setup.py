@@ -27,6 +27,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'teleop = tb4_robot.teleop:main',
         ],
     },
 )

@@ -1,8 +1,5 @@
 {
-  "robot_names": [
-    "differential_drive_robot_with_carrier",
-    "differential_drive_robot_with_arm"
-  ],
+  "robot_names": ["differential_drive_robot_with_carrier", "differential_drive_robot_with_arm" ],
 
   "robot_capabilities": {
     "differential_drive_robot_with_carrier": "Can carry collected waste or items. Follows planned routes on indoor flat surfaces. Equipped with GPS, standard camera, and a storage bin. Cannot manipulate objects but supports cleaning operations. Carrier robot should follow cleaning zones and receive collected items from the arm robot. Carrier robot can transport trash to the disposal bin once its container is full.",

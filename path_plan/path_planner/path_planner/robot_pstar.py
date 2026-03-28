@@ -45,29 +45,29 @@ def estimate_centroid_and_p_star(poses, theta, sx, sy, robot_types=None):
 
 
 
-poses = [
-    (2.565, 0.875, 1.57),
-    (3.705, 0.875, 1.57),
-    (3.135, 1.75, 1.57),
-    # (3.705, 1.75, 1.57),
-    # (2.565, 1.75, 1.57)
-]
+# poses = [
+#     (2.565, 0.875, 1.57),
+#     (3.705, 0.875, 1.57),
+#     (3.135, 1.75, 1.57),
+#     # (3.705, 1.75, 1.57),
+#     # (2.565, 1.75, 1.57)
+# ]
 
-theta = 1.57
-sx = 1.0
-sy = 1.0
+# theta = 1.57
+# sx = 1.0
+# sy = 1.0
 
-robot_types = ["diff-drive", "diff-drive", "diff-drive"]
-# robot_types = ["diff-drive", "diff-drive", "diff-drive", "diff-drive"]
+# robot_types = ["diff-drive", "diff-drive", "diff-drive"]
+# # robot_types = ["diff-drive", "diff-drive", "diff-drive", "diff-drive"]
 
-centroid, p_star = estimate_centroid_and_p_star(
-    poses, theta, sx, sy, robot_types
-)
+# centroid, p_star = estimate_centroid_and_p_star(
+#     poses, theta, sx, sy, robot_types
+# )
 
-print("Estimated centroid:", centroid)
+# print("Estimated centroid:", centroid)
 
-for i, p in enumerate(p_star):
-    print(f"Robot {i} P_star: {p}")
+# for i, p in enumerate(p_star):
+#     print(f"Robot {i} P_star: {p}")
 
 
 

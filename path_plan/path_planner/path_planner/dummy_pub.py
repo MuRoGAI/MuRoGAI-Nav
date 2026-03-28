@@ -434,30 +434,50 @@ class DummyPathPlannerPublisher(Node):
 #   }
 # }
     
-  "F1": {
-    "centroid_x": 2.0,
-    "centroid_y": 8.0,
-    "formation_yaw": 3.14,
-    "desired_radius": 1.0,
-    "robots": ["robot3", "robot4", "robot5"]
-  },
-  "F2": {
-    "centroid_x": 12.0,
-    "centroid_y": 16.0,
-    "formation_yaw": 0.0,
-    "desired_radius": 1.0,
-    "robots": ["robot1", "robot2", "robot6"]
-  },
+#   "F1": {
+#     "centroid_x": 2.0,
+#     "centroid_y": 8.0,
+#     "formation_yaw": 3.14,
+#     "desired_radius": 1.0,
+#     "robots": ["robot3", "robot4", "robot5"]
+#   },
+#   "F2": {
+#     "centroid_x": 12.0,
+#     "centroid_y": 16.0,
+#     "formation_yaw": 0.0,
+#     "desired_radius": 1.0,
+#     "robots": ["robot1", "robot2", "robot6"]
+#   },
+
+
+# "R1": [
+#     {
+#       "robot": "robot1",
+#       "x": 16.0,
+#       "y": 10.0,
+#       "yaw": 1.57
+#     }
+#   ]
 # }
 
-"R1": [
-    {
-      "robot": "robot1",
-      "x": 16.0,
-      "y": 10.0,
-      "yaw": 1.57
-    }
-  ]
+
+    "F1": {
+        "centroid_x": 3.135,
+        "centroid_y": 7.583,
+        "formation_yaw": 1.57,
+        "desired_radius": 1.0,
+        "robots": ["burger1", "burger2", "burger3"]
+    },
+    "F2": {
+        "centroid_x": 3.135,
+        "centroid_y": 1.75,
+        "formation_yaw": -1.57,
+        "desired_radius": 1.0,
+        "robots": ["tb4_1", "firebird", "go2"]
+    },
+    "R1": {
+        "robot": "waffle", "x": 1.140, "y": 4.375, "yaw": 3.14
+    },
 }
 
         #     "F1": {

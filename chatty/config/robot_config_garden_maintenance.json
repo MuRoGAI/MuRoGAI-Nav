@@ -1,9 +1,5 @@
 {
-  "robot_names": [
-    "robot_dog_with_scissors",
-    "differential_drive_robot_with_arm",
-    "dustbin_mobile_robot"
-  ],
+  "robot_names": ["robot_dog_with_scissors", "differential_drive_robot_with_arm", "dustbin_mobile_robot"],
 
   "robot_capabilities": {
     "robot_dog_with_scissors": "Can walk on uneven terrain, jump small steps, and reach tight spots in the garden. Equipped with scissors tool for trimming grass, small bushes, and overgrown edges. Has depth camera, standard camera, and GPS. Cannot carry large waste. Robot dog with scissors should handle trimming around rocks, plant bases, and narrow areas. robot dog can perform trimming actions.",

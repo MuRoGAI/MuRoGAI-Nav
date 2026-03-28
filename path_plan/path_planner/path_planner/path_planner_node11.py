@@ -30,6 +30,7 @@ from rclpy.node import Node
 from ament_index_python.packages import get_package_share_directory
 
 from nav_msgs.msg import Odometry
+
 from path_planner_interface.msg import (
     PathPlannerRequest,
     RobotTrajectory,
@@ -290,7 +291,7 @@ class PathPlannerNode(Node):
         #     "robot5": (16.0, 10.0, 0.0, 0.0),
         #     "robot6": (15.0, 9.0, 0.0, 0.0),
         # }
-        self.offsets = {
+        self.default_pose = {
             "robot1": (4.0, 9.0, 0.0, 0.0),
             "robot2": (4.0, 7.0, 0.0, 0.0),
             "robot3": (19.0, 12.0, 3.14, 0.0),
@@ -339,7 +340,7 @@ class PathPlannerNode(Node):
             self.get_logger().info(f"Subscribed to {topic_name}")
             
             # Initialize using offsets as fallback
-            offset_x, offset_y, offset_yaw, timestamp = self.offsets.get(robot_name, (0.0, 0.0, 0.0, 0.0))
+            offset_x, offset_y, offset_yaw, timestamp = self.default_pose.get(robot_name, (0.0, 0.0, 0.0, 0.0))
             self.robot_current_poses[robot_name] = {
                 'x': offset_x,
                 'y': offset_y,
