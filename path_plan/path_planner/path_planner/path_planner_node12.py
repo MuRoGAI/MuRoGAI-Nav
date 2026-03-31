@@ -17,7 +17,8 @@ import json
 import math
 import time
 import csv
-
+import sys
+sys.modules['si_rrt_enhanced_individual_kinodynamic'] = sys.modules[__name__]
 import numpy as np
 import rclpy
 from rclpy.node import Node
@@ -169,7 +170,7 @@ class PathPlannerNode(Node):
         self.declare_parameter("goal_sample_rate",    0.22)
         self.declare_parameter("neighbor_radius",     1.5)
         self.declare_parameter("precision",           4)
-        self.declare_parameter("seed",                747)
+        self.declare_parameter("seed",                2)
         self.declare_parameter("debug",               True)
 
         self.declare_parameter("n_steer",               8)
@@ -203,26 +204,45 @@ class PathPlannerNode(Node):
             default_pkg="chatty",
             default_relative_path="config/robot_config_103.json",
         )
-        self.output_dir = self._resolve_dir(
+        # ── base dirs (never written to directly) ─────────────────────
+        self._base_output_dir = self._resolve_dir(
             "output_dir",
             default_pkg="path_planner",
             default_relative_path="trajectory_logs",
         )
-        self.control_dir = self._resolve_dir(
+        self._base_control_dir = self._resolve_dir(
             "control_dir",
             default_pkg="path_planner",
             default_relative_path="control_logs",
         )
-        self.image_dir = self._resolve_dir(
+        self._base_image_dir = self._resolve_dir(
             "image_dir",
             default_pkg="path_planner",
             default_relative_path="path_images",
         )
 
+        # ── determine run index (run_001, run_002, ...) ───────────────
+        # Scan existing run_NNN folders across all three base dirs and
+        # pick the next available index so nothing is ever overwritten.
+        self._run_index    = self._next_run_index()
+        run_tag            = f"run_{self._run_index:03d}"
+        self.get_logger().info(f"This session: {run_tag}")
+
+        # ── per-run dirs (created now; requests get sub-dirs later) ───
+        self.output_dir  = os.path.join(self._base_output_dir,  run_tag)
+        self.control_dir = os.path.join(self._base_control_dir, run_tag)
+        self.image_dir   = os.path.join(self._base_image_dir,   run_tag)
+        os.makedirs(self.output_dir,  exist_ok=True)
+        os.makedirs(self.control_dir, exist_ok=True)
+        os.makedirs(self.image_dir,   exist_ok=True)
+
+        # ── request counter (incremented on each plan request) ────────
+        self._request_index = 0
+
         self.get_logger().info("Resolving other parameters...")
 
-        self.save_map  = self.get_parameter('save_map').value
-        self.save_path = self.get_parameter('save_path').value
+        self.save_map   = self.get_parameter('save_map').value
+        self.save_path  = self.get_parameter('save_path').value
 
         self.inflation_radius        = self.get_parameter("inflation_radius").value
         self.draw_inflated_footprints = self.get_parameter("draw_inflated_footprints").value
@@ -250,9 +270,6 @@ class PathPlannerNode(Node):
         self.default_max_angular_velocity     = self.get_parameter('default_max_angular_velocity').value
         self.default_max_angular_acceleration = self.get_parameter('default_max_angular_acceleration').value
 
-        if self.save_map:
-            self._save_map_image()
-
         # ── load config + map ──────────────────────────────────────────
         self.config_data      = self._load_json(self.config_file_path)
         self.path_planner_cfg = self.config_data.get("path_planner", {})
@@ -263,13 +280,13 @@ class PathPlannerNode(Node):
             self.get_logger().info(f"Loaded {len(self.robot_names)} robots: {self.robot_names}")
 
         self.default_pose = {
-            "robot1": (4.0,  9.0,  0.0,  0.0),
-            "robot2": (4.0,  7.0,  0.0,  0.0),
-            "robot3": (19.0, 12.0, 3.14, 0.0),
-            "robot4": (20.0, 11.0, 3.14, 0.0),
-            "robot5": (20.0, 13.0, 3.14, 0.0),
-            "robot6": (5.0,  8.0,  0.0,  0.0),
-            "drone" : (2.5,  5.0,  0.0,  0.0),
+            "burger1" : (2.565, 0.875,  1.57,  0.0),
+            "burger2" : (3.705, 0.875,  1.57,  0.0),
+            "burger3" : (3.135, 1.75,   1.57,  0.0),
+            "waffle"  : (5.13,  4.375,  3.14, 0.0),
+            "tb4_1"   : (3.705, 7.875, -1.57, 0.0),
+            "firebird": (2.565, 7.875, -1.57, 0.0),
+            "go2"     : (3.135, 7.0,   -1.57, 0.0),
         }
 
         self.get_logger().info("Loading map...")
@@ -315,6 +332,10 @@ class PathPlannerNode(Node):
             callback_group=self._plan_cbg,
         )
 
+        # ── save map image once at startup ────────────────────────────
+        if self.save_map:
+            self._save_map_image()
+
         self.get_logger().info(
             "PathPlannerNode ready — waiting for /path_planner/request"
         )
@@ -322,6 +343,26 @@ class PathPlannerNode(Node):
     # ──────────────────────────────────────────────────────────────────
     # Parameter / file helpers
     # ──────────────────────────────────────────────────────────────────
+
+    def _next_run_index(self) -> int:
+        """
+        Scan all three base dirs for existing run_NNN folders and return
+        the next unused index.  This guarantees a fresh folder even if
+        the node is restarted multiple times without clearing outputs.
+        """
+        import re
+        pattern = re.compile(r'^run_(\d+)$')
+        max_idx = 0
+        for base in (self._base_output_dir,
+                     self._base_control_dir,
+                     self._base_image_dir):
+            if not os.path.isdir(base):
+                continue
+            for entry in os.listdir(base):
+                m = pattern.match(entry)
+                if m:
+                    max_idx = max(max_idx, int(m.group(1)))
+        return max_idx + 1
 
     def _resolve_dir(self, param_name: str, default_pkg: str,
                      default_relative_path: str) -> str:
@@ -448,16 +489,31 @@ class PathPlannerNode(Node):
             self.get_logger().error(f"Failed to parse plan_json: {e}")
             return
 
+        # ── increment request counter and build subdirs ────────────────
+        self._request_index += 1
+        req_tag = f"request_{self._request_index:03d}"
         self.get_logger().info(
-            f"Received plan request with {len(formation_data)} agent(s)"
+            f"Received plan request with {len(formation_data)} agent(s) "
+            f"[{req_tag}]"
         )
-        self._do_plan(formation_data)
+
+        req_output_dir  = os.path.join(self.output_dir,  req_tag)
+        req_control_dir = os.path.join(self.control_dir, req_tag)
+        req_image_dir   = os.path.join(self.image_dir,   req_tag)
+        os.makedirs(req_output_dir,  exist_ok=True)
+        os.makedirs(req_control_dir, exist_ok=True)
+        os.makedirs(req_image_dir,   exist_ok=True)
+
+        self._do_plan(formation_data, req_output_dir, req_control_dir, req_image_dir)
 
     # ──────────────────────────────────────────────────────────────────
     # Core planning pipeline  (ported from standalone script)
     # ──────────────────────────────────────────────────────────────────
 
-    def _do_plan(self, formation: dict):
+    def _do_plan(self, formation: dict,
+                 req_output_dir: str,
+                 req_control_dir: str,
+                 req_image_dir: str):
         """
         Build agents from the incoming formation dict, run SIRRT for
         each agent sequentially (adding each planned trajectory as a
@@ -780,7 +836,7 @@ class PathPlannerNode(Node):
             self.get_logger().error("No trajectories were planned — aborting save")
             return
 
-        # ── 5.  Save control CSVs ───────────────────────────
+        # ── 5.  Save control CSVs ────────────────────────────
         if self.save_path:
             self._save_control_csvs(trajectories, agent_info, control_trajectories)
 
@@ -900,7 +956,7 @@ class PathPlannerNode(Node):
         self.get_logger().info(f"WARMUP COMPLETE: {total_time:.2f}s total")
         self.get_logger().info("=" * 60)
         return total_time
-    
+
     # ──────────────────────────────────────────────────────────────────
     # Save helpers
     # ──────────────────────────────────────────────────────────────────

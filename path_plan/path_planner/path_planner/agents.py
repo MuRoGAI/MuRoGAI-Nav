@@ -111,7 +111,7 @@ class HeterogeneousFormationAgent:
 
         self._disc_cache = {}
 
-        from si_rrt_enhanced_individual_kinodynamic import precompute_constants
+        from path_planner.si_rrt_enhanced_individual_kinodynamic import precompute_constants
         self.Nx, self.Ny, self.Nxy = precompute_constants(self.P_star)
 
         print(f"Heterogeneous formation: {robot_types}")
