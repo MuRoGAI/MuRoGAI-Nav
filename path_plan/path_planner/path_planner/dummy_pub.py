@@ -468,16 +468,19 @@ class DummyPathPlannerPublisher(Node):
     #     "desired_radius": 1.0,
     #     "robots": ["burger1", "burger2", "burger3"]
     # },
-    # "F2": {
-    #     "centroid_x": 3.135,
-    #     "centroid_y": 1.75,
-    #     "formation_yaw": -1.57,
-    #     "desired_radius": 1.0,
-    #     "robots": ["tb4_1", "firebird", "go2"]
-    # },
-    "R1": {
-        "robot": "waffle", "x": 1.140, "y": 4.375, "yaw": 3.14
+    "F2": {
+        "centroid_x": 3.135,
+        "centroid_y": 1.75,
+        "formation_yaw": -1.57,
+        "desired_radius": 1.0,
+        "robots": ["tb4_1", "firebird", "go2"]
     },
+    # "R1": {
+    #     "robot": "waffle", "x": 1.140, "y": 4.375, "yaw": 3.14
+    # },
+    # "R2": {
+    #     "robot": "burger1", "x": 5.13, "y": 4.375, "yaw": 3.14
+    # },
 }
 
 #     "F1": {

@@ -119,13 +119,13 @@ path_planner_cfg = config_data["path_planner"]
 # }
 
 dummy_start_poses = {
-    "burger1" :  (2.565, 0.875,  1.57),
-    "burger2" :  (3.705, 0.875,  1.57),
-    "burger3" :  (3.135, 1.750,  1.57),
-    "waffle"  :  (5.130, 4.375,  3.14),
-    "tb4_1"   :  (3.705, 7.875, -1.57),
-    "firebird":  (2.565, 7.875, -1.57),
-    "go2"     :  (3.135, 7.000),            # holonomic — no yaw
+    "burger1" : (2.565, 0.875,  1.57),
+    "burger2" : (3.705, 0.875,  1.57),
+    "burger3" : (3.135, 1.75,   1.57),
+    "waffle"  : (5.13,  4.375,  3.14),
+    "tb4_1"   : (3.705, 7.875, -1.57),
+    "firebird": (2.565, 7.875, -1.57),
+    "go2"     : (3.135, 7.0),
 }
 
 
@@ -166,16 +166,16 @@ eg_formation = {
         "desired_radius": 1.0,
         "robots": ["burger1", "burger2", "burger3"]
     },
-    "F2": {
-        "centroid_x": 3.135,
-        "centroid_y": 1.75,
-        "formation_yaw": -1.57,
-        "desired_radius": 1.0,
-        "robots": ["tb4_1", "firebird", "go2"]
-    },
-    "R1": {
-        "robot": "waffle", "x": 1.140, "y": 4.375, "yaw": 3.14
-    },
+    # "F2": {
+    #     "centroid_x": 3.135,
+    #     "centroid_y": 1.75,
+    #     "formation_yaw": -1.57,
+    #     "desired_radius": 1.0,
+    #     "robots": ["tb4_1", "firebird", "go2"]
+    # },
+    # "R1": { 
+    #     "robot": "waffle", "x": 1.140, "y": 4.375, "yaw": 3.14
+    # },
 }
 
 # ===========================================================
@@ -286,6 +286,8 @@ for key, val in eg_formation.items():
             robot_types       = robot_types,
             dummy_start_poses = dummy_start_poses,
         )
+
+        print("P Star: ", p_star)
 
         agent_obj = HeterogeneousFormationAgent(
             P_star     = p_star,
