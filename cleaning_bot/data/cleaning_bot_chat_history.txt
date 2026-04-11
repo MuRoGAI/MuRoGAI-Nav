@@ -1,8 +1,8 @@
-[Time: Hours: 00, Minutes: 00, Seconds: 06] Task Manager:
-[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: clean the area
 [Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
-[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Human: clean goto sink
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
 Independent Tasks:
-Cleaning Bot tasks: clean the area
+Cleaning_bot tasks: go to sink
 multirobot_list: []
-singlerobot_list: [Cleaning Bot]
+singlerobot_list: [Cleaning_bot]

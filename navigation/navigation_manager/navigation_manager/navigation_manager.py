@@ -59,7 +59,7 @@ class NavigationManager(Node):
         # Resolve and load files (SIMPLIFIED)
         # --------------------------------------------------
         self.config_file_path = self.resolve_file(
-            "config_file", "chatty", "config/robot_config_restaurant.json"
+            "config_file", "chatty", "config/robot_config_restaurant2.json"
         )
         self.map_metadata_path = self.resolve_file(
             "map_metadata_file", "navigation_manager", "data/restaurant_5.json"
@@ -84,6 +84,22 @@ class NavigationManager(Node):
         # --------------------------------------------------
         self.robot_goal_memory = {}
 
+        self.default_pose = {
+            # "burger1" : (2.565, 0.875,  1.57),
+            # "burger2" : (3.705, 0.875,  1.57),
+            # "burger3" : (3.135, 1.75,   1.57),
+            # "waffle"  : (5.13,  4.375,  3.14),
+            # "tb4_1"   : (3.705, 7.875, -1.57),
+            # "firebird": (2.565, 7.875, -1.57),
+            # "go2"     : (3.135, 7.0,   -1.57),
+
+            "delivery_bot1"  : (5.0, 7.5, 0.0),
+            "delivery_bot2"  : (5.0, 4.5, 0.0),
+            "delivery_bot3"  : (7.0, 6.0, 0.0),
+            "cleaning_robot" : (19.0, 15.0,  3.14),
+
+        }
+
         robot_names = self.config_data.get("robot_names", [])
 
         if not robot_names:
@@ -103,6 +119,14 @@ class NavigationManager(Node):
 
                 self.robot_odom_subs_[robot_name] = sub
 
+                default = self.default_pose.get(robot_name, (0.0, 0.0, 0.0))
+                self.robot_latest_pose_[robot_name] = {
+                    'x':         default[0],
+                    'y':         default[1],
+                    'yaw':       default[2],
+                }
+
+
         eg_formation = {
             "F1": {
                 "centroid_x": 3.5,
@@ -111,12 +135,12 @@ class NavigationManager(Node):
                 "desired_radius": 1.0,
                 "robots": [ "robot1", "robot2" ]
             },
-            "R1": [
-                { "robot": "robot7", "x": 3.5, "y": 3.2, "yaw": 2.6 }
-            ],
-            "R2": [
-                { "robot": "robot10", "x":9.4, "y": 7.3, "yaw": 2.6 }
-            ],
+            "R1": { 
+                "robot": "robot7", "x": 3.5, "y": 3.2, "yaw": 2.6 
+            },
+            "R2": {
+                "robot": "robot10", "x":9.4, "y": 7.3, "yaw": 2.6 
+            },
             "F2": {
                 "centroid_x": 4.2,
                 "centroid_y": 5.0,
@@ -124,9 +148,9 @@ class NavigationManager(Node):
                 "desired_radius": 1.5,
                 "robots": [ "robot5", "robot4", "robot6" ]
             },
-            "R3": [
-                { "robot": "robot15", "x":6.4, "y": 2.5, "yaw": 0.0 }
-            ],
+            "R3": {
+                "robot": "robot15", "x":6.4, "y": 2.5, "yaw": 0.0 
+            },
         }
 
 
@@ -176,6 +200,11 @@ class NavigationManager(Node):
             "   While generating goal pose for formation the goal pose of the EVERY robot in formation SHOULD NOT collide with any object. "
             "   It is always better to keep give distance from your calculated goal. Factor of Safety. "
             "   You can use the 'rotation' of each object in the Map metadata information to check the in which direction the object is faced. "
+            # "   The output must be in the json type. "
+            # "   Orientation of robot or formation should point towards the object. "
+            # "   Position of robot should be within 2 meters PROXIMITY to the object and NOT directly on the object. "
+            # "   Robot should not collide with the object. "
+            # "   Formation centroid can lie on the object. "
             
             f" Example format: {json.dumps(eg_formation)}."
             "  In all field of teh output like x, y, yaw, you have to say where the robot should go not where robot is. "
@@ -459,6 +488,18 @@ class NavigationManager(Node):
             formation_robots=formation_robots
         )
 
+    def extract_json_from_llm(self, text: str):
+        try:
+            start = text.find('{')
+            end = text.rfind('}')
+            if start == -1 or end == -1:
+                raise ValueError("No JSON object found")
+
+            json_str = text[start:end+1]
+            return json.loads(json_str)
+
+        except Exception as e:
+            raise ValueError(f"Failed to extract JSON: {e}")
 
 
     def request_plan(self, trigger: str, robot_name: str, goal, formation_robots):
@@ -531,7 +572,7 @@ class NavigationManager(Node):
         # Validate and publish
         # --------------------------------------------------
         try:
-            plan_json = json.loads(llm_response)
+            plan_json = self.extract_json_from_llm(llm_response)
 
             robot_names_in_plan = self.extract_robot_names_from_plan(plan_json)
 

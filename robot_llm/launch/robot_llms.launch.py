@@ -4,76 +4,72 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
 
-    robot1_node = Node(
-        package='burger_robot',
-        executable='burger_robot_llm',
-        name='robot1_node',
-        parameters=[{'robot_name': 'robot1'}],
+    delivery_bot1_node = Node(
+        package='delivery_bot',
+        executable='delivery_bot_llm',
+        name='delivery_bot1_node',
+        parameters=[{
+            'robot_name': 'delivery_bot1',
+            'robot_type': 'Differential Drive'
+        }],
         output='screen',
     )
 
-    robot2_node = Node(
-        package='burger_robot',
-        executable='burger_robot_llm',
-        name='robot2_node',
-        parameters=[{'robot_name': 'robot2'}],
+    delivery_bot2_node = Node(
+        package='delivery_bot',
+        executable='delivery_bot_llm',
+        name='delivery_bot2_node',
+        parameters=[{
+            'robot_name': 'delivery_bot2',
+            'robot_type': 'Differential Drive'
+        }],
         output='screen',
     )
 
-    robot3_node = Node(
-        package='burger_robot',
-        executable='burger_robot_llm',
-        name='robot3_node',
-        parameters=[{'robot_name': 'robot3'}],
+    delivery_bot3_node = Node(
+        package='delivery_bot',
+        executable='delivery_bot_llm',
+        name='delivery_bot3_node',
+        parameters=[{
+            'robot_name': 'delivery_bot3',
+            'robot_type': 'Holonomic Drive'
+        }],
         output='screen',
     )
 
-    robot4_node = Node(
-        package='yahboom_llm',
-        executable='yahboom_llm',
-        name='robot4_node',
-        parameters=[{'robot_name': 'robot4'}],
+    cleaning_bot_node = Node(
+        package='cleaning_bot',
+        executable='cleaning_bot_llm',
+        name='cleaning_bot_node',
+        parameters=[{
+            'robot_name': 'cleaning_bot',
+            'robot_type': 'Holonomic Drive'
+        }],
         output='screen',
     )
 
-    robot5_node = Node(
-        package='yahboom_llm',
-        executable='yahboom_llm',
-        name='robot5_node',
-        parameters=[{'robot_name': 'robot5'}],
-        output='screen',
-    )
+    # drone_llm = Node(
+    #     package='drone',
+    #     executable='drone_llm',
+    #     name='drone_node',
+    #     parameters=[{
+    #         'robot_name': 'drone'
+    #     }],
+    #     output='screen',
+    # )
 
-    robot6_node = Node(
-        package='yahboom_llm',
-        executable='yahboom_llm',
-        name='robot6_node',
-        parameters=[{'robot_name': 'robot6'}],
-        output='screen',
-    )
-
-    drone_llm = Node(
-        package='drone',
-        executable='drone_llm',
-        name='drone_node',
-        parameters=[{'robot_name': 'drone'}],
-        output='screen',
-    )
-
-    team_node = Node(
-        package='robot_llm',
-        executable='team_llm_node3',
-        name='team_node',
-        output='screen',
-    )
+    # team_node = Node(
+    #     package='robot_llm',
+    #     executable='team_llm_node3',
+    #     name='team_node',
+    #     output='screen',
+    # )
 
     return LaunchDescription([
-        robot1_node,
-        robot2_node,
-        robot3_node,
-        robot4_node,
-        robot5_node,
-        robot6_node,
-        drone_llm,
-        team_node,
+        delivery_bot1_node,
+        delivery_bot2_node,
+        delivery_bot3_node,
+        cleaning_bot_node,
+        # drone_llm,
+        # team_node,
     ])

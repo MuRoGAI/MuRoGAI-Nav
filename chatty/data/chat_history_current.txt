@@ -1,4 +1,7 @@
 *********     NEW EXPERIMNET           ********* 
-[Time: Hours: 00, Minutes: 00, Seconds: 02] Human: hi
-[Time: Hours: 00, Minutes: 00, Seconds: 02] Task Manager:
-Invalid model selection
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Human: clean goto sink
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink
+multirobot_list: []
+singlerobot_list: [Cleaning_bot]

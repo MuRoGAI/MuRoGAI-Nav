@@ -824,8 +824,8 @@ class RobotLLMNode(Node):
         self.get_logger().error("ROS shutdown during navigation wait")
         return False
 
-    def Goto(self, goal: str, formation: list = None) -> bool:
-        self.goto(goal, formation)
+    # def Goto(self, goal: str, formation: list = None) -> bool:
+    #     self.goto(goal, formation)
 
     def goto(self, goal: str, formation: list = None) -> bool:
         """

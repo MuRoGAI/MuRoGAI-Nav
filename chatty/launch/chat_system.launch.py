@@ -21,7 +21,7 @@ def generate_launch_description():
     )
 
     config_file_arg = DeclareLaunchArgument(
-        'config_file', default_value='robot_config_restaurant', description='Config file name'
+        'config_file', default_value='robot_config_restaurant2', description='Config file name'
     )
 
     enable_audio_input_arg = DeclareLaunchArgument(

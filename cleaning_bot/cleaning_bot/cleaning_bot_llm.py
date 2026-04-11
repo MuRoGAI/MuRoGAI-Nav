@@ -1,29 +1,29 @@
 #!/usr/bin/env python3
 
+import os
 import json
 import time
-import subprocess
-
 import openai
+
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String, Bool
+
 from dataclasses import dataclass
-import os
 from rclpy.callback_groups import (
     MutuallyExclusiveCallbackGroup,
     ReentrantCallbackGroup
 )
 from ament_index_python.packages import get_package_share_directory
 
-from robot_interface.srv import GotoPoseHolonomic
-
-
+from navigation_manager_interface.msg import NavigationRobotRequest, RobotGoalStatus, CancelNavigationRequest
 
 ROBOT_NAME   = 'cleaning_bot'
-ROBOT_TYPE   = 'Holonomic Drive Robot'
-NODE_NAME    = 'cleaning_bot_llm_node'
+ROBOT_TYPE   = 'Differential Drive Robot'
+NODE_NAME    = ROBOT_NAME + '_llm_node'
 PACKAGE_NAME = 'cleaning_bot'
+
+MODEL = 'gpt-4o'
 
 
 class TaskCancelledException(Exception):
@@ -41,11 +41,18 @@ class TestOption:
 
 option_list = [
     TestOption(
-        name='Clean',
+        name='Goto',
         id=0,
-        description='Navigate along the predefined cleaning path to clean the area.',
-        example_code="node.clean()"
-    )
+        # description='Navigate to any location. when it is a team task, you must specify formation robots as a list.',
+        description='Navigate to any location.',
+        example_code="node.goto(goal='fridge')"
+    ),
+    # TestOption(
+    #     name='Find',
+    #     id=1,
+    #     description='Find and locate any object or person in the environment.',
+    #     example_code="node.find('chair')"
+    # )
 ]
 
 
@@ -65,7 +72,21 @@ class RobotLLMNode(Node):
         # ---- Parameters ----
         self.declare_parameter('robot_name', ROBOT_NAME)
         self.robot_name: str = self.get_parameter('robot_name').value
+
+        self.declare_parameter('robot_type', ROBOT_TYPE)
+        self.robot_type: str = self.get_parameter('robot_type').value
+
         robot_task_topic = f'{self.robot_name}_task_status'
+
+        self.declare_parameter("config_file", "robot_config_restaurant2")
+        cfg_file_name = self.get_parameter("config_file").get_parameter_value().string_value
+        self.config_file = cfg_file_name + '.json'
+        
+        package_share = get_package_share_directory("chatty")
+        cfg_path = os.path.join(package_share, "config", self.config_file)
+
+        with open(cfg_path, 'r') as f:
+            self.robot_config = json.load(f)
 
         RobotLLMNode._instance = self
 
@@ -77,6 +98,10 @@ class RobotLLMNode(Node):
         self._task_cancelled = False  # Simple boolean flag
         # ============================================
 
+        # ========== GOAL STATUS FLAG ==========
+        self._goal_reached = None  # None=waiting, True=success, False=failed
+        # ======================================
+
         # GROUPS
         self.single_group = MutuallyExclusiveCallbackGroup()
         self.seq_group = MutuallyExclusiveCallbackGroup()
@@ -87,8 +112,10 @@ class RobotLLMNode(Node):
         self.pub_robot_states = self.create_publisher(String, '/robot_states', 10)
         self.pub_robot_task = self.create_publisher(String, robot_task_topic, 10)
 
-        self._goto_client = self.create_client(GotoPoseHolonomic, "/r1/goto_pose", callback_group=self.multi_group)
-        self._cancel_goto_pub = self.create_publisher(Bool, "/r1/cancel_goto_pose_goal", 10)
+        # self._goto_client = self.create_client(GotoPoseHolonomic, "/r1/goto_pose", callback_group=self.multi_group)
+        # self._cancel_goto_pub = self.create_publisher(Bool, "/r1/cancel_goto_pose_goal", 10)
+        self._request_goto_pub = self.create_publisher(NavigationRobotRequest, '/navigation/request', 10)
+        self._cancel_goto_pub = self.create_publisher(CancelNavigationRequest, "/navigation/cancel", 10)
 
         # ---- Subscriptions ----
         self.sub_robot_states = self.create_subscription(
@@ -113,6 +140,10 @@ class RobotLLMNode(Node):
         # )
         self.sub_chat_task_status = self.create_subscription(
             String, '/chat/task_status', self.on_chat_task_status, 10
+        )
+
+        self.goal_status_sub_ = self.create_subscription(
+            RobotGoalStatus, "/controller/goal_status", self.goal_status_callback, 10
         )
 
         # ---- Timer Callbacks ----
@@ -205,14 +236,15 @@ class RobotLLMNode(Node):
                 for key, value in data.get("robot_tasks", {}).items()
             }
 
-            robot_name = self.robot_name
             robot_names = list(robot_tasks.keys())
-            for name in robot_names:
-                if self.robot_name in name:
-                    robot_name = name
-                    break
 
-            robot_task = robot_tasks.get(robot_name, "").strip()
+            if self.robot_name not in robot_names:
+                self.get_logger().debug(
+                    f"Exact key {self.robot_name} not found in robot_tasks. Ignoring message."
+                )
+                return
+
+            robot_task = robot_tasks.get(self.robot_name, "").strip()
             self.get_logger().debug(f"{self.robot_name} task fetched [1]")
 
             if not robot_task:
@@ -228,7 +260,7 @@ class RobotLLMNode(Node):
                 self.get_logger().debug(robot_task)
                 return
             
-            elif "stop" in robot_task.lower():
+            if "stop" in robot_task.lower():
                 self.get_logger().info(f"{self.robot_name} task: {robot_task}")
                 self.robot_task_interrupted(robot_task)
                 self.stop_tasks()
@@ -295,6 +327,28 @@ class RobotLLMNode(Node):
         """Update current time from /current_time topic."""
         self.get_logger().debug(f'Received /current_time: {msg.data}')
         self.current_time = msg.data
+
+    def goal_status_callback(self, msg: RobotGoalStatus) -> None:
+        """Handle goal status updates from navigation controller."""
+        robot_name = msg.robot_name
+        goal_reached = msg.goal_reached
+
+        if robot_name == self.robot_name:
+            self._goal_reached = goal_reached
+            
+            if goal_reached:
+                self.get_logger().info(f'{self.robot_name}: Navigation goal reached successfully')
+                self.update_robot_state({
+                    "last_goal_status": "reached",
+                    "last_goal_timestamp": time.time()
+                })
+            else:
+                self.get_logger().warn(f'{self.robot_name}: Navigation goal failed')
+                self.update_robot_state({
+                    "last_goal_status": "failed",
+                    "last_goal_timestamp": time.time()
+                })
+
 
     # -------------------- Helpers (optional) --------------------
 
@@ -445,15 +499,12 @@ class RobotLLMNode(Node):
         return
 
     def stop_tasks(self) -> None:
-        """Stop all robot tasks by setting cancellation flag."""
+        """Stop all robot tasks (stub function)."""
         self.get_logger().info("Stopping all robot tasks...")
-
-        # ========== SET CANCELLATION FLAG ==========
-        self._task_cancelled = True
-        # ===========================================
 
         msg = Bool()
         msg.data = True
+        self._cancel_find_pub.publish(msg)
         self._cancel_goto_pub.publish(msg)
 
         self.get_logger().info("Cancel request sent to /goto/cancel")
@@ -501,7 +552,7 @@ class RobotLLMNode(Node):
 
         try:
             response = openai.chat.completions.create(
-                model="gpt-4o",
+                model=MODEL,
                 messages=[
                     {'role': 'system', 'content': prompt},
                     {'role': 'user', 'content': task}
@@ -538,9 +589,77 @@ class RobotLLMNode(Node):
         self.get_logger().warn("Returning (None, None) due to LLM failure")
         return None, None
 
+    def build_robot_context_from_config(self) -> str:
+        """
+        Convert robot configuration JSON into a structured natural-language context
+        for LLM consumption (no raw dumping).
+        """
+        cfg = self.robot_config
+        lines = []
+
+        # -------------------------------------------------
+        # Robot names
+        # -------------------------------------------------
+        robot_names = cfg.get("robot_names", [])
+        if robot_names:
+            lines.append(
+                f"The system contains the following robots: {', '.join(robot_names)}."
+            )
+
+        # -------------------------------------------------
+        # Robot capabilities
+        # -------------------------------------------------
+        robot_caps = cfg.get("robot_capabilities", {})
+        if robot_caps:
+            lines.append("Robot capabilities:")
+            for name, desc in robot_caps.items():
+                lines.append(f"- {name}: {desc}")
+
+        # -------------------------------------------------
+        # Robot morphology
+        # -------------------------------------------------
+        robot_morph = cfg.get("robot_morphology", {})
+        if robot_morph:
+            lines.append("Physical and morphological constraints:")
+            for name, desc in robot_morph.items():
+                lines.append(f"- {name}: {desc}")
+
+        # -------------------------------------------------
+        # Robot states
+        # -------------------------------------------------
+        robot_states = cfg.get("robot_states", {})
+        if robot_states:
+            lines.append("Current robot states:")
+            for name, state_dict in robot_states.items():
+                state_desc = ", ".join(
+                    [f"{k.replace('_', ' ')}: {v}" for k, v in state_dict.items()]
+                )
+                lines.append(f"- {name}: {state_desc}")
+
+        # -------------------------------------------------
+        # Task-specific rules
+        # -------------------------------------------------
+        task_rules = cfg.get("task_specific_rules", [])
+        if task_rules:
+            lines.append("Task-specific operational rules:")
+            for rule in task_rules:
+                lines.append(f"- {rule}")
+
+        # -------------------------------------------------
+        # Task replanning rules
+        # -------------------------------------------------
+        replanning_rules = cfg.get("task_replanning_rules", [])
+        if replanning_rules:
+            lines.append("Task replanning and failure handling rules:")
+            for rule in replanning_rules:
+                lines.append(f"- {rule}")
+
+        return "\n".join(lines)
+
     def execute_task(self, task: str) -> None:
         """Execute the given robot task using LLM decision-making."""
         chat_history = self.read_chat_history()
+        robot_context = self.build_robot_context_from_config()
 
         try:
             self.get_logger().info("Building system action messages")
@@ -553,14 +672,16 @@ class RobotLLMNode(Node):
             self.get_logger().info("Building system messages")
             
             prompt = (
-                f"You are a robot control system controlling a {ROBOT_TYPE} named '{self.robot_name}'. "
+                f"You are a robot control system controlling a {self.robot_type} named '{self.robot_name}'. "
                 "You must generate python code to perform the task. "
                 "Based on the given task, generate code using available actions."
+                f"Robot system context:\n{robot_context}\n"
                 f"Recent Tasks (History): {chat_history} "
                 f"Current States of All Robots: {self.robot_states} "
                 f"Available Actions: {available_actions} "
                 "Using the class reference name same as the example is important. "
                 "Use the name 'node' to refer to the RobotLLMNode instance. "
+                "To serve anything to anyone first goto stall and then goto the person. "
             )
 
             self.get_logger().debug(f"Prompt message: {prompt}")
@@ -585,187 +706,219 @@ class RobotLLMNode(Node):
             self.get_logger().error("Failed to generate valid code for the task.")
             self.robot_task_interrupted(task)
 
-    def goto_service(self, x: float, y: float, yaw_deg: float) -> bool:
-        """Call Holonomic GoTo service and wait without blocking the executor."""
+    def find(self, target: str) -> bool:
+        """
+        Find and locate a target object or person.
+        
+        Args:
+            target: Name of the object or person to find (e.g., 'chair', 'person', 'cup')
+        
+        Returns:
+            bool: True if target found, False otherwise
+        """
         # ========== CHECK CANCELLATION ==========
         self.check_cancelled()
         # ========================================
-
-        self.get_logger().info(f"Holonomic robot moving to x={x}, y={y}, yaw={yaw_deg}°...")
-
-        if not self._goto_client.wait_for_service(timeout_sec=5.0):
-            self.get_logger().error("GotoPoseHolonomic service NOT available!")
-            return False
-
-        req = GotoPoseHolonomic.Request()
-        req.x = x
-        req.y = y
-        req.yaw_deg = yaw_deg
-
-        future = self._goto_client.call_async(req)
-        self.get_logger().info("Waiting for holonomic service response...")
-
-        deadline = time.time() + 1000000.0
-        while rclpy.ok() and not future.done():
+        
+        self.get_logger().info(f"Starting search for: {target}")
+        
+        # Update robot state: Search started
+        self.update_robot_state({
+            "current_task": "find",
+            "task_status": "searching",
+            "search_target": target,
+            "activity": f"Searching for {target}"
+        })
+        
+        # Simulate searching process
+        self.get_logger().info(f"Scanning environment for {target}...")
+        
+        # Update state: Actively scanning
+        self.update_robot_state({
+            "task_status": "scanning",
+            "scan_started_at": time.time(),
+            "activity": f"Actively scanning for {target}"
+        })
+        
+        # Simulate search time with cancellation checks
+        search_duration = 3.0  # seconds
+        start_time = time.time()
+        
+        while time.time() - start_time < search_duration:
             # ========== CHECK CANCELLATION IN LOOP ==========
             self.check_cancelled()
             # ================================================
-            time.sleep(0.05)
-            if time.time() > deadline:
-                self.get_logger().error("Holonomic goto service call TIMED OUT!")
-                return False
-
-        try:
-            res = future.result()
-        except Exception as e:
-            self.get_logger().error(f"Holonomic goto service call FAILED: {e}")
-            return False
-
-        if not res.accepted:
-            self.get_logger().warn(f"Holonomic goto NOT accepted: {res.message}")
-            return False
-
-        if res.success:
-            self.get_logger().info(f"Holonomic goto SUCCESS: {res.message}")
+            time.sleep(0.5)
+            self.get_logger().debug(f"Still searching for {target}...")
+        
+        # Simulate find result (dummy - always succeeds for now)
+        found = True
+        
+        if found:
+            self.get_logger().info(f"Successfully found {target}")
+            
+            # Update state: Target found
+            self.update_robot_state({
+                "task_status": "target_found",
+                "search_result": "success",
+                "found_target": target,
+                "found_at": time.time(),
+                "target_location": "unknown",  # In real implementation, this would be actual coordinates
+                "activity": f"Found {target}"
+            })
             return True
+        else:
+            self.get_logger().warn(f"Failed to find {target}")
+            
+            # Update state: Target not found
+            self.update_robot_state({
+                "task_status": "target_not_found",
+                "search_result": "failed",
+                "searched_for": target,
+                "search_failed_at": time.time(),
+                "activity": f"Could not locate {target}"
+            })
+            return False
 
-        self.get_logger().warn(f"Holonomic goto FAILED: {res.message}")
-        return False
-
-    def remove_cube(self):
-        cmd = [
-            'ign', 'service', '-s', '/world/food_court/remove',
-            '--reqtype', 'ignition.msgs.Entity',
-            '--reptype', 'ignition.msgs.Boolean',
-            '--timeout', '1000',
-            '--req', 'name: "small_cube", type: 2'
-        ]
+    def wait_for_goto_complete(self, goal: str, timeout: float = 120.0) -> bool:
+        """
+        Wait for goto navigation to complete.
         
-        result = subprocess.run(cmd, capture_output=True, text=True)
-        print(f"Remove result: {result.stdout}")
-        return result.returncode == 0
-
-    def clean(self) -> None:
-        """Cleaning task with cancellation support and state updates."""
-        self.get_logger().info(f"Starting restaurant cleaning task...")
+        Args:
+            goal: The goal location being navigated to
+            timeout: Maximum time to wait in seconds (default: 120s)
         
-        # Update state: Task started
-        self.update_robot_state({
-            "current_task": "clean_restaurant",
-            "task_status": "in_progress",
-            "cleaning_progress": "0/6",
-            "cleaning_description": "Cleaning restaurant floor areas"
-        })
+        Returns:
+            bool: True if goal reached, False if failed or timed out
+        """
+        self.get_logger().info(f"Waiting for navigation to {goal} to complete (timeout={timeout}s)...")
         
-        cleaning_locations = [
-            (11.0, -3.0, 0.0),
-            (4.0, -3.0, 0.0),
-            (-3.5, -3.0, 0.0),
-            (-3.5, 3.0, 0.0),
-            (11.0, 3.0, 0.0),
-            (11.0, 0.0, 0.0)
-        ]
+        # Reset goal status flag before waiting
+        self._goal_reached = None
         
-        for idx, (x, y, yaw) in enumerate(cleaning_locations):
+        start_time = time.time()
+        deadline = start_time + timeout
+        
+        while rclpy.ok():
             # ========== CHECK CANCELLATION ==========
-            self.check_cancelled()
+            try:
+                self.check_cancelled()
+            except TaskCancelledException:
+                self.get_logger().warn("Navigation cancelled during wait")
+                return False
             # ========================================
             
-            # Update state: Navigating to location
-            self.update_robot_state({
-                "task_status": "navigating",
-                "target_location": f"cleaning_point_{idx + 1}",
-                "target_coords": {"x": x, "y": y, "yaw": yaw},
-                "cleaning_progress": f"{idx}/6"
-            })
-            
-            self.get_logger().info(f"Navigating to cleaning location {idx + 1} at x={x}, y={y}, yaw={yaw}°")
-            success = self.goto_service(x=x, y=y, yaw_deg=yaw)
-            
-            if not success:
-                self.get_logger().error(f"Failed to reach cleaning location {idx + 1}. Aborting cleaning task.")
-                
-                # Update state: Navigation failed
-                self.update_robot_state({
-                    "task_status": "failed",
-                    "failure_reason": f"navigation_failed_at_location_{idx + 1}",
-                    "cleaning_progress": f"{idx}/6"
-                })
-                
-                self.robot_task_interrupted("clean")
-                return
-            
-            # Update state: Arrived at location, starting cleaning
-            self.update_robot_state({
-                "task_status": "cleaning_area",
-                "current_location": f"cleaning_point_{idx + 1}",
-                "current_coords": {"x": x, "y": y, "yaw": yaw},
-                "activity": "Cleaning restaurant floor"
-            })
-            
-            self.get_logger().info(f"Cleaning restaurant area at location {idx + 1}...")
-            
-            # Special handling for location 2 (obstacle encountered)
-            if idx == 1:
-                self.get_logger().info("Obstacle (small_cube) detected during cleaning - attempting removal...")
-                
-                # Update state: Removing obstacle
-                self.update_robot_state({
-                    "task_status": "removing_obstacle",
-                    "obstacle_type": "small_cube",
-                    "activity": "Removing obstacle blocking cleaning path"
-                })
-                
-                remove_success = self.remove_cube()
-                
-                if remove_success:
-                    self.get_logger().info("Obstacle removed successfully. Continuing restaurant cleaning.")
-                    
-                    # Update state: Obstacle removed, continuing cleaning
-                    self.update_robot_state({
-                        "obstacle_removed": True,
-                        "obstacle_removal_location": f"cleaning_point_{idx + 1}",
-                        "obstacle_removal_status": "Success",
-                        "activity": "Resumed cleaning after obstacle removal"
-                    })
+            # Check if we've received a goal status update
+            if self._goal_reached is not None:
+                if self._goal_reached:
+                    elapsed = time.time() - start_time
+                    self.get_logger().info(f"Navigation to {goal} completed successfully in {elapsed:.2f}s")
+                    return True
                 else:
-                    self.get_logger().warn("Failed to remove obstacle. Continuing with remaining cleaning areas.")
-                    
-                    # Update state: Obstacle removal failed, but continuing
-                    self.update_robot_state({
-                        "obstacle_removed": False,
-                        "obstacle_removal_failed": True,
-                        "obstacle_removal_status": "Failed",
-                        "activity": "Continuing cleaning (obstacle removal failed)"
-                    })
+                    self.get_logger().warn(f"Navigation to {goal} failed")
+                    return False
             
-            # Simulate cleaning time
-            self.get_logger().info(f"Cleaning restaurant floor at location {idx + 1}...")
-            time.sleep(2.0)
+            # Check timeout
+            if time.time() > deadline:
+                elapsed = time.time() - start_time
+                self.get_logger().error(f"Navigation to {goal} timed out after {elapsed:.2f}s")
+                return False
             
-            # Update state: Location cleaned
-            self.update_robot_state({
-                "task_status": "in_progress",
-                "cleaning_progress": f"{idx + 1}/6",
-                f"location_{idx + 1}_cleaned": True,
-                f"location_{idx + 1}_cleaned_at": time.time(),
-                "activity": f"Completed cleaning at point {idx + 1}"
-            })
-            
-            self.get_logger().info(f"Restaurant area {idx + 1} cleaned successfully.")
+            # Sleep briefly to avoid busy waiting
+            time.sleep(0.1)
         
-        # Update state: All cleaning completed
+        self.get_logger().error("ROS shutdown during navigation wait")
+        return False
+
+    def Goto(self, goal: str, formation: list = None) -> bool:
+        self.goto(goal, formation)
+
+    def goto(self, goal: str, formation: list = None) -> bool:
+        """
+        Navigate to a goal location, optionally with formation.
+        
+        Args:
+            goal: Target location name (e.g., 'fridge', 'table', 'counter')
+            formation: Optional list of robot names to form a formation (default: None/empty list)
+        
+        Returns:
+            bool: True if navigation succeeded, False otherwise
+        """
+        # ========== CHECK CANCELLATION ==========
+        self.check_cancelled()
+        # ========================================
+        
+        self.get_logger().info(f"Requesting navigation to goal: {goal}")
+        
+        # Update robot state: Navigation requested
         self.update_robot_state({
-            "task_status": "completed",
-            "cleaning_progress": "6/6",
-            "all_locations_cleaned": True,
-            "completion_timestamp": time.time(),
-            "activity": "Restaurant cleaning completed successfully"
+            "current_task": "goto",
+            "task_status": "requesting_navigation",
+            "target_goal": goal,
+            "activity": f"Navigating to {goal}"
         })
         
-        self.get_logger().info("Restaurant cleaning task completed successfully.")
-        self.robot_task_completed("clean")
-        return
+        # Create navigation request message
+        msg = NavigationRobotRequest()
+        msg.robot_name = self.robot_name
+        msg.goal = goal
+        
+        # Handle formation parameter
+        if formation is None:
+            msg.formation_robots = []
+        elif isinstance(formation, list):
+            msg.formation_robots = formation
+            self.get_logger().info(f"Formation requested with robots: {formation}")
+        else:
+            self.get_logger().warn(f"Invalid formation type: {type(formation)}. Expected list. Using empty list.")
+            msg.formation_robots = []
+        
+        # Update state with formation info if applicable
+        if msg.formation_robots:
+            self.update_robot_state({
+                "formation_active": True,
+                "formation_robots": msg.formation_robots,
+                "formation_role": "leader"
+            })
+        
+        # Publish navigation request
+        self._request_goto_pub.publish(msg)
+        
+        self.get_logger().info(
+            f"Navigation request sent: robot={msg.robot_name}, goal={msg.goal}, "
+            # f"formation={msg.formation_robots if msg.formation_robots else 'None'}"
+        )
+        
+        # Update state: Navigation in progress
+        self.update_robot_state({
+            "task_status": "navigating",
+            "navigation_requested_at": time.time()
+        })
+        
+        # Wait for navigation to complete
+        success = self.wait_for_goto_complete(goal)
+        
+        # Update state based on result
+        if success:
+            self.get_logger().info(f"Navigation to {goal} completed successfully")
+            self.update_robot_state({
+                "task_status": "navigation_completed",
+                "navigation_result": "success",
+                "current_location": goal,
+                "arrived_at": time.time(),
+                "activity": f"Arrived at {goal}"
+            })
+            return True
+        else:
+            self.get_logger().error(f"Navigation to {goal} failed or timed out")
+            self.update_robot_state({
+                "task_status": "navigation_failed",
+                "navigation_result": "failed",
+                "failed_goal": goal,
+                "failure_time": time.time(),
+                "activity": f"Failed to reach {goal}"
+            })
+            return False
 
 def execute_python_code(code: str, node=None):
     """Execute generated Python code safely with cancellation support."""
@@ -805,6 +958,8 @@ def main(args=None):
 
     try:
         executor.spin()
+    except KeyboardInterrupt:
+        node.get_logger().info("Keyboard interrupt received")
     finally:
         node.destroy_node()
         rclpy.shutdown()

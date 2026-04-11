@@ -12,8 +12,8 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name, 'data'), glob('data/*')),
-        (os.path.join('share', package_name, 'saved_paths'), glob('saved_paths/*')),
-        (os.path.join('share', package_name, 'trajectory_logs'), glob('trajectory_logs/*')),
+        # (os.path.join('share', package_name, 'saved_paths'), glob('saved_paths/*')),
+        # (os.path.join('share', package_name, 'trajectory_logs'), glob('trajectory_logs/*')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -31,6 +31,11 @@ setup(
             'path_planner_node = path_planner.path_planner_node8:main',
             'path_planner_node1 = path_planner.path_planner_node11:main',
             'path_planner_node2 = path_planner.path_planner_node12:main',
+
+
+            'path_planner_node4 = path_planner.path_planner_node14:main',
+            'path_writer = path_planner.path_writer:main',
+            'path_request_reciever = path_planner.path_request_reciever:main',
 
         ],
     },

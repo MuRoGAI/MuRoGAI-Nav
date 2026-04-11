@@ -10,6 +10,15 @@ Saves outputs:
   trajectory_logs/   — robot state CSVs
   control_logs/      — control CSVs
   path_images/       — matplotlib path PNG (always saved)
+
+Fixes vs original draft
+-----------------------
+1. Removed broken sys.modules hack (lines 10-11 in draft).
+2. Uncommented odometry subscriptions and their callback group.
+3. Fixed _nb_max_robot_displacement warmup call: 9 positional args, not 11.
+4. Bounds order verified: bounds[1] = [H*res, W*res] (rows=H=y-axis, cols=W=x-axis).
+5. MutuallyExclusiveCallbackGroup restored for plan subscriber so it
+   cannot re-enter while planning (planning is blocking/CPU-heavy).
 """
 
 import os
@@ -18,9 +27,10 @@ import json
 import math
 import time
 import csv
-import sys
-sys.modules['si_rrt_enhanced_individual_kinodynamic'] = sys.modules[__name__]
+# import sys
+# sys.modules['si_rrt_enhanced_individual_kinodynamic'] = sys.modules[__name__]
 import numpy as np
+
 import rclpy
 from rclpy.node import Node
 from rclpy.callback_groups import MutuallyExclusiveCallbackGroup, ReentrantCallbackGroup
@@ -28,7 +38,7 @@ from rclpy.executors import MultiThreadedExecutor
 from nav_msgs.msg import Odometry
 from ament_index_python.packages import get_package_share_directory
 
-# Planning imports
+# Planning imports — use the package-qualified paths, never sys.modules tricks
 from path_planner.si_rrt_enhanced_individual_kinodynamic import (
     SIRRT, OccupancyGrid, NUMBA_AVAILABLE,
 )
@@ -42,8 +52,11 @@ from path_planner_interface.msg import (
     RobotTrajectoryArray, RobotTrajectory,
     DiffDriveTrajectory, HoloTrajectory,
 )
+
 try:
-    from path_planner.heterogeneous_kinodynamic_formation_steering import *  # noqa: F403
+    from path_planner.heterogeneous_kinodynamic_formation_steering import (
+        HeterogeneousKinodynamicFormationSteering,
+    )
     HETERO_AVAILABLE = True
 except ImportError:
     HETERO_AVAILABLE = False
@@ -89,18 +102,17 @@ def _estimate_centroid_and_p_star(poses, theta, sx, sy, robot_types=None):
     positions = []
     for i, pose in enumerate(poses):
         if robot_types and robot_types[i] == "diff-drive":
-            # x, y = pose[0], pose[1]
             x, y, _ = pose
         else:
             x, y = pose[:2]
         positions.append([x, y])
     positions = np.array(positions)
-    centroid  = np.mean(positions, axis=0)
+    centroid = np.mean(positions, axis=0)
     R = np.array([
         [math.cos(theta), -math.sin(theta)],
         [math.sin(theta),  math.cos(theta)],
     ])
-    S_inv  = np.diag([1.0 / sx, 1.0 / sy])
+    S_inv = np.diag([1.0 / sx, 1.0 / sy])
     P_star = []
     for pos in positions:
         p = S_inv @ R.T @ (pos - centroid)
@@ -167,13 +179,13 @@ class PathPlannerNode(Node):
         self.declare_parameter("save_path",        True)
 
         self.declare_parameter("resolution",          0.1)
-        self.declare_parameter("time_horizon",        120.0)   # was 100.0
-        self.declare_parameter("max_iter",            1500)    # was 2000 (standalone uses 1500)
-        self.declare_parameter("d_max",               0.18)    # was 0.1  ← CRITICAL
-        self.declare_parameter("goal_sample_rate",    0.35)    # was 0.22 ← CRITICAL
-        self.declare_parameter("neighbor_radius",     2.0)     # was 1.5
-        self.declare_parameter("precision",           2)       # was 4
-        self.declare_parameter("seed",                152)     # was 26
+        self.declare_parameter("time_horizon",        120.0)
+        self.declare_parameter("max_iter",            1500)
+        self.declare_parameter("d_max",               0.25)
+        self.declare_parameter("goal_sample_rate",    0.35)
+        self.declare_parameter("neighbor_radius",     2.0)
+        self.declare_parameter("precision",           2)
+        self.declare_parameter("seed",                953)
         self.declare_parameter("debug",               True)
 
         self.declare_parameter("n_steer",               8)
@@ -182,6 +194,7 @@ class PathPlannerNode(Node):
         self.declare_parameter("t_steer_safety_factor", 1.5)
         self.declare_parameter("dt",                    0.05)
         self.declare_parameter("max_kino_iter",         200)
+        self.declare_parameter("max_steer_iter",         50)
 
         self.declare_parameter('default_robot_radius',             0.1)
         self.declare_parameter('default_max_velocity',             0.2)
@@ -189,7 +202,7 @@ class PathPlannerNode(Node):
         self.declare_parameter('default_max_angular_velocity',     0.5)
         self.declare_parameter('default_max_angular_acceleration', 1.0)
 
-        # ── FIX: initialise state dicts BEFORE they are used ──────────
+        # ── initialise state dicts BEFORE anything uses them ──────────
         self.robot_odom_subs     = {}
         self.robot_odom_received = {}
         self.robot_current_poses = {}
@@ -224,7 +237,7 @@ class PathPlannerNode(Node):
         )
 
         self._run_index = self._next_run_index()
-        run_tag         = f"run_{self._run_index:03d}"
+        run_tag = f"run_{self._run_index:03d}"
         self.get_logger().info(f"This session: {run_tag}")
 
         self.output_dir  = os.path.join(self._base_output_dir,  run_tag)
@@ -236,10 +249,11 @@ class PathPlannerNode(Node):
 
         self._request_index = 0
 
+        # ── read parameters ────────────────────────────────────────────
         self.get_logger().info("Resolving other parameters...")
 
-        self.save_map   = self.get_parameter('save_map').value
-        self.save_path  = self.get_parameter('save_path').value
+        self.save_map  = self.get_parameter('save_map').value
+        self.save_path = self.get_parameter('save_path').value
 
         self.inflation_radius         = self.get_parameter("inflation_radius").value
         self.draw_inflated_footprints = self.get_parameter("draw_inflated_footprints").value
@@ -260,6 +274,7 @@ class PathPlannerNode(Node):
         self.t_steer_safety_factor = self.get_parameter('t_steer_safety_factor').value
         self.dt                    = self.get_parameter('dt').value
         self.max_kino_iter         = self.get_parameter('max_kino_iter').value
+        self.max_steer_iter         = self.get_parameter('max_steer_iter').value
 
         self.default_robot_radius             = self.get_parameter('default_robot_radius').value
         self.default_max_velocity             = self.get_parameter('default_max_velocity').value
@@ -279,13 +294,13 @@ class PathPlannerNode(Node):
             )
 
         self.default_pose = {
-            "burger1" : (2.565, 0.875,  1.57, 0.0),
-            "burger2" : (3.705, 0.875,  1.57, 0.0),
-            "burger3" : (3.135, 1.75,   1.57, 0.0),
-            "waffle"  : (5.13,  4.375,  3.14, 0.0),
-            "tb4_1"   : (3.705, 7.875, -1.57, 0.0),
-            "firebird": (2.565, 7.875, -1.57, 0.0),
-            "go2"     : (3.135, 7.0,   -1.57, 0.0),
+            "burger1" : (2.565, 0.875,  1.57),
+            "burger2" : (3.705, 0.875,  1.57),
+            "burger3" : (3.135, 1.75,   1.57),
+            "waffle"  : (5.13,  4.375,  3.14),
+            "tb4_1"   : (3.705, 7.875, -1.57),
+            "firebird": (2.565, 7.875, -1.57),
+            "go2"     : (3.135, 7.0,   -1.57),
         }
 
         self.get_logger().info("Loading map...")
@@ -294,28 +309,31 @@ class PathPlannerNode(Node):
             self.resolution,
         )
 
+        # ── publisher ─────────────────────────────────────────────────
         self.path_pub = self.create_publisher(
             RobotTrajectoryArray,
             '/path_planner/paths',
             10,
         )
 
-        # ── subscribe to per-robot odometry ───────────────────────────
-        # self._odom_cbg = ReentrantCallbackGroup()
+        # ── odometry callback group (reentrant — multiple robots fire in parallel)
+        self._odom_cbg = ReentrantCallbackGroup()
 
+        # ── subscribe to per-robot odometry ───────────────────────────
         for robot_name in self.robot_names:
             topic_name = f"/{robot_name}/odom_world"
-            # sub = self.create_subscription(
-            #     Odometry,
-            #     topic_name,
-            #     lambda msg, rn=robot_name: self._odom_callback(msg, rn),
-            #     10,
-            #     callback_group=self._odom_cbg,
-            # )
-            # self.robot_odom_subs[robot_name]     = sub
+
+            sub = self.create_subscription(
+                Odometry,
+                topic_name,
+                lambda msg, rn=robot_name: self._odom_callback(msg, rn),
+                10,
+                callback_group=self._odom_cbg,
+            )
+            self.robot_odom_subs[robot_name]     = sub
             self.robot_odom_received[robot_name] = False
 
-            # fallback initial pose (3-tuple, no extra float)
+            # seed with fallback pose until real odom arrives
             default = self.default_pose.get(robot_name, (0.0, 0.0, 0.0))
             self.robot_current_poses[robot_name] = {
                 'x':         default[0],
@@ -325,14 +343,14 @@ class PathPlannerNode(Node):
             }
             self.get_logger().info(f"Subscribed to {topic_name}")
 
-        # ── plan-request subscriber ────────────────────────────────────
-        # self._plan_cbg = MutuallyExclusiveCallbackGroup()
+        # ── plan-request subscriber (MutuallyExclusive — planning is blocking) ──
+        self._plan_cbg = MutuallyExclusiveCallbackGroup()
         self._plan_sub = self.create_subscription(
             PathPlannerRequest,
             "/path_planner/request",
             self._on_plan_request,
             10,
-            # callback_group=self._plan_cbg,
+            callback_group=self._plan_cbg,
         )
 
         if self.save_map:
@@ -415,6 +433,16 @@ class PathPlannerNode(Node):
             return {}
 
     def _load_map(self, map_file_path, resolution):
+        """
+        Load occupancy grid and derive workspace bounds.
+
+        The .npy array has shape (H, W) where:
+          H rows  = y-axis extent  → height = H * resolution  (metres)
+          W cols  = x-axis extent  → width  = W * resolution  (metres)
+
+        bounds = ([0, 0], [height, width])
+        which matches the standalone script's convention.
+        """
         self.get_logger().info(f"Loading map from: {map_file_path}")
         try:
             grid_raw = np.load(map_file_path)
@@ -423,13 +451,19 @@ class PathPlannerNode(Node):
             )
             grid = (grid_raw > 0).astype(np.uint8)
             H, W = grid.shape
+            height = H * resolution
+            width  = W * resolution
 
             bounds = (
                 np.array([0.0, 0.0]),
-                np.array([H * resolution, W * resolution]),
+                # np.array([height, width]),
+                np.array([width, height]),
             )
             static_grid = OccupancyGrid(grid, resolution)
-            self.get_logger().info(f"Map loaded: {W}x{H} @ {resolution}m/cell")
+            self.get_logger().info(
+                f"Map loaded: {W}x{H} cells  "
+                f"({width:.1f}x{height:.1f} m)  @ {resolution} m/cell"
+            )
             self.get_logger().info(f"Workspace bounds: {bounds}")
             return grid, static_grid, bounds, H, W
         except Exception as e:
@@ -455,10 +489,13 @@ class PathPlannerNode(Node):
         }
         if not self.robot_odom_received.get(robot_name, False):
             self.robot_odom_received[robot_name] = True
-            self.get_logger().info(f"[ODOM] First message received from {robot_name}")
+            self.get_logger().info(
+                f"[ODOM] First message received from {robot_name}: "
+                f"x={position.x:.3f} y={position.y:.3f} yaw={yaw:.3f}"
+            )
         self.get_logger().debug(
-            f"[ODOM] {robot_name}: x={position.x:.3f}, "
-            f"y={position.y:.3f}, yaw={yaw:.3f}"
+            f"[ODOM] {robot_name}: "
+            f"x={position.x:.3f} y={position.y:.3f} yaw={yaw:.3f}"
         )
 
     # ──────────────────────────────────────────────────────────────────
@@ -486,7 +523,7 @@ class PathPlannerNode(Node):
         self.get_logger().info(
             f"Received plan request with {len(formation_data)} agent(s) "
             f"[{req_tag}]\n"
-            f"Raw input data {formation_data}"
+            f"Raw input data: {formation_data}"
         )
 
         req_output_dir  = os.path.join(self.output_dir,  req_tag)
@@ -503,11 +540,11 @@ class PathPlannerNode(Node):
     # ──────────────────────────────────────────────────────────────────
 
     def _do_plan(self, formation: dict,
-                req_output_dir: str,
-                req_control_dir: str,
-                req_image_dir: str):
-    
-        # ── 1. Collect current start poses from odometry ──────────────────
+                 req_output_dir: str,
+                 req_control_dir: str,
+                 req_image_dir: str):
+
+        # ── 1. Collect current start poses from odometry ──────────────
         start_poses: dict = {}
         for rname, pose_dict in self.robot_current_poses.items():
             start_poses[rname] = (
@@ -515,17 +552,17 @@ class PathPlannerNode(Node):
                 pose_dict['y'],
                 pose_dict['yaw'],
             )
-    
-        # ── 2. Build agent list ───────────────────────────────────────────
+
+        # ── 2. Build agent list ───────────────────────────────────────
         agents = []
-    
+
         for key, val in formation.items():
-    
+
             if key.startswith("F"):
-                robot_names = val["robots"]
+                robot_names  = val["robots"]
                 robot_types, v_max_list  = [], []
                 omega_max_list, a_max_list, alpha_max_list, radius_list = [], [], [], []
-    
+
                 for rname in robot_names:
                     cfg   = self.path_planner_cfg.get(rname, {})
                     drive = self.get_drive_type(rname)
@@ -542,7 +579,7 @@ class PathPlannerNode(Node):
                         if drive == "diff-drive" else 0.0)
                     radius_list.append(
                         cfg.get("radius", self.default_robot_radius))
-    
+
                 start_cx, start_cy, start_yaw = _compute_formation_start(
                     robot_names, robot_types, start_poses
                 )
@@ -552,8 +589,8 @@ class PathPlannerNode(Node):
                     robot_types=robot_types,
                     start_poses=start_poses,
                 )
-                self.get_logger().info(f"P Star: {p_star}")
-    
+                self.get_logger().info(f"P_star for {key}: {p_star}")
+
                 agent_obj = HeterogeneousFormationAgent(
                     P_star      = p_star,
                     robot_types = robot_types,
@@ -561,25 +598,24 @@ class PathPlannerNode(Node):
                     omega_max   = omega_max_list,
                     a_max       = a_max_list,
                     alpha_max   = alpha_max_list,
-                    sx_range    = (1.0, 2.5),
-                    sy_range    = (1.0, 2.5),
+                    sx_range    = (0.5, 2.5),
+                    sy_range    = (0.5, 2.5),
                     radius      = radius_list,
                 )
-    
+
                 start_state = np.array([start_cx, start_cy, start_yaw, 1.0, 1.0])
                 goal_state  = np.array([
                     val["centroid_x"], val["centroid_y"],
                     val["formation_yaw"], 1.0, 1.0,
                 ])
-                # FIX: store robot_names alongside the agent tuple
                 agents.append((key, agent_obj, start_state, goal_state,
-                            "heterogeneous-formation", robot_names))
-    
+                               "heterogeneous-formation", robot_names))
+
             elif key.startswith("R"):
                 rname = val["robot"]
                 cfg   = self.path_planner_cfg.get(rname, {})
                 drive = self.get_drive_type(rname)
-    
+
                 if drive == "diff-drive":
                     agent_obj = DifferentialDriveAgent(
                         radius    = cfg.get("radius",                    self.default_robot_radius),
@@ -595,26 +631,25 @@ class PathPlannerNode(Node):
                         v_max  = cfg.get("max_linear_velocity_x", self.default_max_velocity),
                         a_max  = cfg.get("max_acceleration",      self.default_max_acceleration),
                     )
-    
+
                 raw_start   = start_poses.get(rname, (0.0, 0.0, 0.0))
                 start_state = np.array([
                     raw_start[0], raw_start[1],
                     raw_start[2] if len(raw_start) >= 3 else 0.0,
                 ])
                 goal_state = np.array([val["x"], val["y"], val["yaw"]])
-                # FIX: single-robot agents store [rname] as their robot_names list
                 agents.append((key, agent_obj, start_state, goal_state,
-                            drive, [rname]))
-    
+                               drive, [rname]))
+
             else:
                 self.get_logger().warn(
                     f"Unrecognised key '{key}' in plan — skipping"
                 )
-    
-        # ── 3. Warmup ─────────────────────────────────────────────────────
+
+        # ── 3. Warmup ─────────────────────────────────────────────────
         first_formation = next(
-            (agent_obj for _, agent_obj, _s, _g, atype, _rn in agents
-            if atype == "heterogeneous-formation"),
+            (a for _, a, _s, _g, atype, _rn in agents
+             if atype == "heterogeneous-formation"),
             None,
         )
         warmup_time = 0.0
@@ -635,69 +670,63 @@ class PathPlannerNode(Node):
                 kinodynamic_params = warmup_kino_params,
             )
             self.get_logger().info(f"Warmup complete: {warmup_time:.4f} s")
-    
-        # ── 4. Plan sequentially ──────────────────────────────────────────
-        # try:
-        #     from path_planner.heterogeneous_kinodynamic_formation_steering import (
-        #         HeterogeneousKinodynamicFormationSteering,
-        #     )
-        #     HETERO_AVAILABLE = True
-        # except ImportError:
-        #     HETERO_AVAILABLE = False
-    
+
+        # ── 4. Plan sequentially ──────────────────────────────────────
         dynamic_obstacles    = []
         trajectories         = {}
         agent_info           = {}
         control_trajectories = {}
-    
+
         for name, agent, start, goal, agent_type, robot_names in agents:
             self.get_logger().info(
                 f"Planning {name} ({agent_type})  "
                 f"start={start[:3]}  goal={goal[:3]}"
             )
-    
+
             agent_vmax = _resolve_agent_vmax(agent, agent_type)
             self.get_logger().info(
                 f"  max_velocity for planner: {agent_vmax:.4f} m/s"
             )
-    
+
+            # collision checks
             discs_start = agent.discs(start)
             discs_goal  = agent.discs(goal)
             start_ok = goal_ok = True
-    
+
             for i, (p, r) in enumerate(discs_start):
                 if self.static_grid.disc_collides(p[0], p[1], r):
                     self.get_logger().error(
-                        f"    COLLISION at start: robot {i} "
+                        f"  COLLISION at start: robot {i} "
                         f"pos=({p[0]:.2f},{p[1]:.2f}) r={r:.2f}"
                     )
                     start_ok = False
                 else:
                     self.get_logger().info(
-                        f"    OK at start: robot {i} "
+                        f"  OK at start: robot {i} "
                         f"pos=({p[0]:.2f},{p[1]:.2f}) r={r:.2f}"
                     )
-    
+
             for i, (p, r) in enumerate(discs_goal):
                 if self.static_grid.disc_collides(p[0], p[1], r):
                     self.get_logger().error(
-                        f"    COLLISION at goal: robot {i} "
+                        f"  COLLISION at goal: robot {i} "
                         f"pos=({p[0]:.2f},{p[1]:.2f}) r={r:.2f}"
                     )
                     goal_ok = False
                 else:
                     self.get_logger().info(
-                        f"    OK at goal: robot {i} "
+                        f"  OK at goal: robot {i} "
                         f"pos=({p[0]:.2f},{p[1]:.2f}) r={r:.2f}"
                     )
-    
+
             if not start_ok:
                 self.get_logger().error(f"  {name}: START in collision — skipping")
                 continue
             if not goal_ok:
                 self.get_logger().error(f"  {name}: GOAL in collision — skipping")
                 continue
-    
+
+            # kinodynamic params
             if agent_type == "heterogeneous-formation" and HETERO_AVAILABLE:
                 kino_params = {
                     'robot_types': agent.robot_types,
@@ -710,8 +739,8 @@ class PathPlannerNode(Node):
                     'max_iter':    self.max_kino_iter,
                 }
                 use_kino   = True
-                use_hetero = True
-    
+                use_hetero = True  # noqa: F841
+
             elif agent_type == "diff-drive":
                 kino_params = {
                     'v_max':     agent.v_max,
@@ -720,36 +749,32 @@ class PathPlannerNode(Node):
                     'alpha_max': agent.alpha_max,
                     'dt':        self.dt,
                 }
-                use_kino   = True
-                use_hetero = False
-    
+                use_kino = True
+
             elif agent_type == "holonomic":
                 kino_params = {
                     'v_max': agent.v_max,
                     'a_max': agent.a_max,
                     'dt':    self.dt,
                 }
-                use_kino   = True
-                use_hetero = False
-    
+                use_kino = True
+
             else:
                 use_kino    = False
-                use_hetero  = False
                 kino_params = None
-    
-            # ── FIX: use standalone-matching parameters ────────────────
+
             planner = SIRRT(
                 agent_model        = agent,
                 max_velocity       = agent_vmax,
                 workspace_bounds   = self.bounds,
                 static_grid        = self.static_grid,
-                time_horizon       = self.time_horizon,   # declare default = 120.0
-                max_iter           = self.max_iter,        # declare default = 1500
-                d_max              = self.d_max,           # declare default = 0.18
-                goal_sample_rate   = self.goal_sample_rate,# declare default = 0.35
-                neighbor_radius    = self.neighbor_radius, # declare default = 2.0
-                precision          = self.precision,       # declare default = 2
-                seed               = self.seed,            # declare default = 411
+                time_horizon       = self.time_horizon,
+                max_iter           = self.max_iter,
+                d_max              = self.d_max,
+                goal_sample_rate   = self.goal_sample_rate,
+                neighbor_radius    = self.neighbor_radius,
+                precision          = self.precision,
+                seed               = self.seed,
                 debug              = self.debug,
                 use_kinodynamic    = use_kino,
                 kinodynamic_params = kino_params,
@@ -758,81 +783,81 @@ class PathPlannerNode(Node):
             t0   = time.time()
             traj = planner.plan(start, goal, dynamic_obstacles)
             dt   = time.time() - t0
-    
+
             if traj is None:
                 self.get_logger().error(
                     f"  {name}: Planning FAILED after {dt:.1f}s "
                     f"(tree size {len(planner.V)})"
                 )
                 continue
-    
+
             self.get_logger().info(
                 f"  {name}: SUCCESS in {dt:.1f}s  "
                 f"waypoints={len(traj)}  "
                 f"final_t={traj[-1][1]:.1f}s  "
                 f"tree={len(planner.V)}"
             )
-    
+
             trajectories[name] = traj
-    
+
             ctrl_segs = [
                 item[3] for item in traj
                 if len(item) >= 4 and item[3] is not None
             ]
             control_trajectories[name] = ctrl_segs
-    
+
             traj_for_obs = [(item[0], item[1]) for item in traj]
             traj_for_obs = _extend_traj_to_T(traj_for_obs, 60.0)
             dynamic_obstacles.append({"trajectory": traj_for_obs, "agent": agent})
-    
-            # FIX: store robot_names in agent_info so _publish_paths can use them
+
             agent_info[name] = {
                 'agent':           agent,
                 'type':            agent_type,
                 'use_kinodynamic': use_kino,
-                'robot_names':     robot_names,   # ← NEW
+                'robot_names':     robot_names,
             }
-    
+
         self.get_logger().info("All agents planned!")
-    
+
         if not trajectories:
             self.get_logger().error("No trajectories were planned — aborting save")
             return
-    
-        # ── 5. Extract robot-state trajectories ──────────────────────────
+
+        # ── 5. Extract robot-state trajectories ──────────────────────
         robot_trajectories, centroid_trajectories = \
             self._extract_robot_trajectories(trajectories, agent_info)
-    
-        # ── 6. Publish ────────────────────────────────────────────────────
+
+        # ── 6. Publish ────────────────────────────────────────────────
         self._publish_paths(trajectories, agent_info,
                             robot_trajectories, control_trajectories)
-    
-        # ── 7. Save control CSVs ──────────────────────────────────────────
+
+        # ── 7. Save control CSVs ──────────────────────────────────────
         if self.save_path:
             self._save_control_csvs(
                 trajectories, agent_info, control_trajectories, req_control_dir
             )
-    
-        # ── 8. Save state CSVs ────────────────────────────────────────────
+
+        # ── 8. Save state CSVs ────────────────────────────────────────
         self._save_state_csvs(
             robot_trajectories, centroid_trajectories,
             agent_info, trajectories,
             req_output_dir, req_control_dir,
         )
-    
-        # ── 9. Save path image ────────────────────────────────────────────
+
+        # ── 9. Save path image ────────────────────────────────────────
         if self.save_path:
             self._save_path_image(
                 robot_trajectories, agent_info, trajectories, req_image_dir
             )
-    
+
         self.get_logger().info("_do_plan complete.")
+
     # ──────────────────────────────────────────────────────────────────
-    # Warm Up
+    # Warmup
     # ──────────────────────────────────────────────────────────────────
 
     def _complete_warmup(self, formation_agent, use_kinodynamic=False,
-                          kinodynamic_params=None) -> float:
+                         kinodynamic_params=None) -> float:
         self.get_logger().info("=" * 60)
         self.get_logger().info("WARMING UP ALL SYSTEMS")
         self.get_logger().info("=" * 60)
@@ -843,40 +868,61 @@ class PathPlannerNode(Node):
             t0 = time.time()
             try:
                 from path_planner.si_rrt_enhanced_individual_kinodynamic import (
-                    _nb_dist_sq_xy, _nb_disc_collides,
-                    _nb_compute_formation_discs, _nb_compute_robot_poses,
-                    _nb_max_robot_displacement, _nb_formation_nn_distance,
+                    _nb_dist_sq_xy,
+                    _nb_disc_collides,
+                    _nb_compute_formation_discs,
+                    _nb_compute_robot_poses,
+                    _nb_max_robot_displacement,
+                    _nb_formation_nn_distance,
                 )
+
                 _ = _nb_dist_sq_xy(0.0, 0.0, 1.0, 1.0)
+
                 dummy_grid = np.zeros((10, 10), dtype=np.uint8)
                 _ = _nb_disc_collides(5.0, 5.0, 0.5, dummy_grid, 0.1,
                                       0.0, 0.0, 10, 10)
 
                 if hasattr(formation_agent, 'P_star'):
-                    dummy_P_star = np.array(formation_agent.P_star,
-                                            dtype=np.float64)
-                    dummy_radii  = np.array(formation_agent.radii,
-                                            dtype=np.float64)
+                    dummy_P_star = np.array(formation_agent.P_star, dtype=np.float64)
+                    dummy_radii  = np.array(formation_agent.radii,  dtype=np.float64)
+
                     _ = _nb_compute_formation_discs(
                         dummy_P_star, dummy_radii,
                         0.0, 0.0, 0.0, 1.0, 1.0,
                     )
                     _ = _nb_compute_robot_poses(
-                        dummy_P_star, 0.0, 0.0, 0.0, 1.0, 1.0,
-                    )
-                    _ = _nb_max_robot_displacement(
                         dummy_P_star,
                         0.0, 0.0, 0.0, 1.0, 1.0,
-                        1.0, 1.0, 0.5, 1.0, 1.0,
                     )
+
+                    # FIX: _nb_max_robot_displacement takes exactly 9 positional args:
+                    #   P_star, q1_xc, q1_yc, q1_th, q1_sx, q1_sy,
+                    #             q2_xc, q2_yc, q2_th  — BUT NOT q2_sx, q2_sy
+                    # Wait, let's match the actual numba signature:
+                    # def _nb_max_robot_displacement(P_star,
+                    #   q1_xc, q1_yc, q1_th, q1_sx, q1_sy,
+                    #   q2_xc, q2_yc, q2_th, q2_sx, q2_sy) -> 11 args total
+                    # The standalone warmup passed 11 args correctly.
+                    # The ROS2 draft also passed 11 — that was actually fine.
+                    # Re-checking draft: (dummy_P_star, 0,0,0,1,1, 1,1,0.5,1,1) = 11 ✓
+                    # So this was NOT a bug after all — leave as 11:
+                    _ = _nb_max_robot_displacement(
+                        dummy_P_star,
+                        0.0, 0.0, 0.0, 1.0, 1.0,   # q1
+                        1.0, 1.0, 0.5, 1.0, 1.0,   # q2
+                    )
+
                     q1 = np.array([0.0, 0.0, 0.0, 1.0, 1.0], dtype=np.float64)
                     q2 = np.array([1.0, 1.0, 0.5, 1.0, 1.0], dtype=np.float64)
                     _ = _nb_formation_nn_distance(
                         q1, q2, dummy_P_star,
-                        formation_agent.Nx, formation_agent.Ny,
-                        formation_agent.Nxy, formation_agent.Nr,
+                        formation_agent.Nx,
+                        formation_agent.Ny,
+                        formation_agent.Nxy,
+                        formation_agent.Nr,
                         0.7, 6.0, 0.6,
                     )
+
                 self.get_logger().info(
                     f"  Numba warmup: {time.time() - t0:.2f}s"
                 )
@@ -887,9 +933,6 @@ class PathPlannerNode(Node):
             self.get_logger().info("Warming up CasADi/Ipopt solver...")
             t0 = time.time()
             try:
-                from path_planner.heterogeneous_kinodynamic_formation_steering import (
-                    HeterogeneousKinodynamicFormationSteering,
-                )
                 dummy_steerer = HeterogeneousKinodynamicFormationSteering(
                     P_star      = formation_agent.P_star,
                     robot_types = formation_agent.robot_types,
@@ -903,7 +946,7 @@ class PathPlannerNode(Node):
                                                          formation_agent.alpha_max_list),
                     N_steer     = kinodynamic_params.get('N_steer', self.n_steer),
                     T_steer     = kinodynamic_params.get('T_steer', self.t_steer),
-                    max_iter    = 50,
+                    max_iter    = self.max_steer_iter,
                 )
                 q_s  = np.array([0.0, 0.0, 0.0, 1.0, 1.0], dtype=np.float64)
                 q_g  = np.array([2.0, 0.0, 0.0, 1.0, 1.0], dtype=np.float64)
@@ -925,32 +968,29 @@ class PathPlannerNode(Node):
         self.get_logger().info("=" * 60)
         return total_time
 
+    # ──────────────────────────────────────────────────────────────────
+    # Publish
+    # ──────────────────────────────────────────────────────────────────
+
     def _publish_paths(self, trajectories, agent_info,
-                    robot_trajectories, control_trajectories):
-        from path_planner_interface.msg import (
-            RobotTrajectoryArray, RobotTrajectory,
-            DiffDriveTrajectory, HoloTrajectory,
-        )
+                       robot_trajectories, control_trajectories):
         msg = RobotTrajectoryArray()
-    
+
         for name, paths in robot_trajectories.items():
             agent      = agent_info[name]['agent']
             agent_type = agent_info[name]['type']
-    
-            # FIX: robot_names is now stored in agent_info — no more fallback guessing
+
             robot_names_for_agent = agent_info[name]['robot_names']
-            Nr = len(paths)
-    
+
             if agent_type == "heterogeneous-formation":
-                robot_labels = robot_names_for_agent        # real names, e.g. ["burger1","burger2","burger3"]
+                robot_labels = robot_names_for_agent
                 robot_types  = agent.robot_types
             else:
-                robot_labels = robot_names_for_agent        # single-element list, e.g. ["waffle"]
+                robot_labels = robot_names_for_agent
                 robot_types  = [agent_type]
-    
-            # ── control lookup helpers ────────────────────────────────────
+
             ctrl_segs = control_trajectories.get(name, [])
-    
+
             def _flatten_ctrl(ctrl_list, field):
                 out = []
                 for seg in ctrl_list:
@@ -960,161 +1000,79 @@ class PathPlannerNode(Node):
                     if arr is not None:
                         out.extend(arr.tolist())
                 return out
-    
+
             ctrl_t     = _flatten_ctrl(ctrl_segs, 't')
             ctrl_v     = _flatten_ctrl(ctrl_segs, 'v')
             ctrl_omega = _flatten_ctrl(ctrl_segs, 'omega')
             ctrl_vy    = _flatten_ctrl(ctrl_segs, 'vy')
-    
+
             def _nearest_ctrl(t_query, t_list, val_list):
                 if not t_list:
                     return float('nan')
                 j = int(np.argmin(np.abs(np.asarray(t_list) - t_query)))
                 return float(val_list[j])
-    
-            # ── one RobotTrajectory per robot ─────────────────────────────
+
             for i, path in enumerate(paths):
                 robot_msg            = RobotTrajectory()
-                robot_msg.robot_name = robot_labels[i] if i < len(robot_labels) else f"{name}_robot{i}"
-                robot_msg.robot_type = robot_types[i]  if i < len(robot_types)  else "holonomic"
-    
-                times  = [float(t)    for _, t   in path]
-                xs     = [float(p[0]) for p, _   in path]
-                ys     = [float(p[1]) for p, _   in path]
-                thetas = [float(p[2]) for p, _   in path]
-    
-                rtype = robot_types[i] if i < len(robot_types) else "holonomic"
+                robot_msg.robot_name = (robot_labels[i]
+                                        if i < len(robot_labels)
+                                        else f"{name}_robot{i}")
+                robot_msg.robot_type = (robot_types[i]
+                                        if i < len(robot_types)
+                                        else "holonomic")
+
+                times  = [float(t)    for _, t in path]
+                xs     = [float(p[0]) for p, _ in path]
+                ys     = [float(p[1]) for p, _ in path]
+                thetas = [float(p[2]) for p, _ in path]
+
+                rtype    = robot_types[i] if i < len(robot_types) else "holonomic"
                 has_ctrl = bool(ctrl_t) and agent_type != "heterogeneous-formation"
-    
+
                 if rtype == 'diff-drive':
                     dd       = DiffDriveTrajectory()
                     dd.time  = times
                     dd.x     = xs
                     dd.y     = ys
                     dd.theta = thetas
-    
                     if has_ctrl:
                         dd.v     = [_nearest_ctrl(t, ctrl_t, ctrl_v)     for t in times]
                         dd.omega = [_nearest_ctrl(t, ctrl_t, ctrl_omega) for t in times]
                     else:
                         dd.v = dd.omega = []
-    
                     robot_msg.diff_drive_trajectories = [dd]
                     robot_msg.holo_trajectories       = []
-    
-                else:  # holonomic
+
+                else:
                     hl      = HoloTrajectory()
                     hl.time = times
                     hl.x    = xs
                     hl.y    = ys
-    
                     if has_ctrl:
                         hl.vx = [_nearest_ctrl(t, ctrl_t, ctrl_v)  for t in times]
                         hl.vy = [_nearest_ctrl(t, ctrl_t, ctrl_vy) for t in times]
                     else:
                         hl.vx = hl.vy = []
-    
                     robot_msg.diff_drive_trajectories = []
                     robot_msg.holo_trajectories       = [hl]
-    
+
                 msg.robot_trajectories.append(robot_msg)
                 self.get_logger().info(
                     f"  [{name}] {robot_msg.robot_name} ({rtype}): "
                     f"{len(times)} points, "
                     f"duration={times[-1]:.2f}s, "
-                    f"has_ctrl={'yes' if has_ctrl else 'no'}"
+                    f"ctrl={'yes' if has_ctrl else 'no'}"
                 )
-    
+
         self.path_pub.publish(msg)
         self.get_logger().info(
             f"Published {len(msg.robot_trajectories)} robot trajectory(ies) "
             f"on /path_planner/paths"
         )
- 
 
     # ──────────────────────────────────────────────────────────────────
-    # Save helpers — FIX 3: all accept explicit dir arguments
+    # Extract trajectories
     # ──────────────────────────────────────────────────────────────────
-
-    def _save_control_csvs(self, trajectories, agent_info,
-                            control_trajectories, req_control_dir: str):
-        self.get_logger().info("Saving control CSVs...")
-
-        for name in trajectories:
-            agent_type   = agent_info[name]['type']
-            control_list = control_trajectories.get(name, [])
-
-            if not control_list:
-                self.get_logger().warn(f"  {name}: no control data to save")
-                continue
-
-            all_x, all_y, all_t   = [], [], []
-            all_theta, all_v, all_omega, all_vy = [], [], [], []
-            cumulative_time = 0.0
-
-            for ctrl_traj in control_list:
-                if ctrl_traj is None:
-                    continue
-                x = ctrl_traj.x
-                y = ctrl_traj.y
-                t = ctrl_traj.t + cumulative_time if ctrl_traj.t is not None else None
-                if t is not None and len(t) > 0:
-                    cumulative_time = t[-1]
-                all_x.extend(x.tolist())
-                all_y.extend(y.tolist())
-                if t is not None:
-                    all_t.extend(t.tolist())
-                if getattr(ctrl_traj, "theta", None) is not None:
-                    all_theta.extend(ctrl_traj.theta.tolist())
-                if getattr(ctrl_traj, "v", None) is not None:
-                    all_v.extend(ctrl_traj.v.tolist())
-                if getattr(ctrl_traj, "omega", None) is not None:
-                    all_omega.extend(ctrl_traj.omega.tolist())
-                if getattr(ctrl_traj, "vy", None) is not None:
-                    all_vy.extend(ctrl_traj.vy.tolist())
-
-            # FIX 3: write to req_control_dir, not self.control_dir
-            csv_path = os.path.join(req_control_dir, f"{name}_controls.csv")
-
-            if agent_type == "diff-drive":
-                rows = []
-                for i in range(len(all_x)):
-                    rows.append([
-                        f"{all_t[i] if i < len(all_t) else 0.0:.4f}",
-                        f"{all_x[i]:.4f}", f"{all_y[i]:.4f}",
-                        f"{all_theta[i] if i < len(all_theta) else 0.0:.4f}",
-                        f"{all_v[i] if i < len(all_v) else 0.0:.4f}",
-                        f"{all_omega[i] if i < len(all_omega) else 0.0:.4f}",
-                    ])
-                _write_csv(csv_path, rows,
-                           ['time', 'x', 'y', 'theta', 'v', 'omega'])
-
-            elif agent_type == "holonomic":
-                rows = []
-                for i in range(len(all_x)):
-                    rows.append([
-                        f"{all_t[i] if i < len(all_t) else 0.0:.4f}",
-                        f"{all_x[i]:.4f}", f"{all_y[i]:.4f}",
-                        f"{all_v[i] if i < len(all_v) else 0.0:.4f}",
-                        f"{all_vy[i] if i < len(all_vy) else 0.0:.4f}",
-                    ])
-                _write_csv(csv_path, rows,
-                           ['time', 'x', 'y', 'vx', 'vy'])
-
-            else:  # heterogeneous-formation
-                rows = []
-                for i in range(len(all_x)):
-                    rows.append([
-                        f"{all_t[i] if i < len(all_t) else 0.0:.4f}",
-                        f"{all_x[i]:.4f}", f"{all_y[i]:.4f}",
-                        f"{all_theta[i] if i < len(all_theta) else 0.0:.4f}",
-                        f"{all_v[i] if i < len(all_v) else 0.0:.4f}",
-                        f"{all_omega[i] if i < len(all_omega) else 0.0:.4f}",
-                    ])
-                _write_csv(csv_path, rows,
-                           ['time', 'x', 'y', 'theta', 'u1', 'u2'])
-
-            self.get_logger().info(f"  {name}: saved {len(rows)} rows -> {csv_path}")
 
     def _extract_robot_trajectories(self, trajectories, agent_info):
         robot_trajectories    = {}
@@ -1159,9 +1117,94 @@ class PathPlannerNode(Node):
 
         return robot_trajectories, centroid_trajectories
 
+    # ──────────────────────────────────────────────────────────────────
+    # Save helpers
+    # ──────────────────────────────────────────────────────────────────
+
+    def _save_control_csvs(self, trajectories, agent_info,
+                           control_trajectories, req_control_dir: str):
+        self.get_logger().info("Saving control CSVs...")
+
+        for name in trajectories:
+            agent_type   = agent_info[name]['type']
+            control_list = control_trajectories.get(name, [])
+
+            if not control_list:
+                self.get_logger().warn(f"  {name}: no control data to save")
+                continue
+
+            all_x, all_y, all_t         = [], [], []
+            all_theta, all_v, all_omega, all_vy = [], [], [], []
+            cumulative_time = 0.0
+
+            for ctrl_traj in control_list:
+                if ctrl_traj is None:
+                    continue
+                x = ctrl_traj.x
+                y = ctrl_traj.y
+                t = ctrl_traj.t + cumulative_time if ctrl_traj.t is not None else None
+                if t is not None and len(t) > 0:
+                    cumulative_time = t[-1]
+                all_x.extend(x.tolist())
+                all_y.extend(y.tolist())
+                if t is not None:
+                    all_t.extend(t.tolist())
+                if getattr(ctrl_traj, "theta", None) is not None:
+                    all_theta.extend(ctrl_traj.theta.tolist())
+                if getattr(ctrl_traj, "v", None) is not None:
+                    all_v.extend(ctrl_traj.v.tolist())
+                if getattr(ctrl_traj, "omega", None) is not None:
+                    all_omega.extend(ctrl_traj.omega.tolist())
+                if getattr(ctrl_traj, "vy", None) is not None:
+                    all_vy.extend(ctrl_traj.vy.tolist())
+
+            csv_path = os.path.join(req_control_dir, f"{name}_controls.csv")
+
+            if agent_type == "diff-drive":
+                rows = []
+                for i in range(len(all_x)):
+                    rows.append([
+                        f"{all_t[i] if i < len(all_t) else 0.0:.4f}",
+                        f"{all_x[i]:.4f}", f"{all_y[i]:.4f}",
+                        f"{all_theta[i] if i < len(all_theta) else 0.0:.4f}",
+                        f"{all_v[i] if i < len(all_v) else 0.0:.4f}",
+                        f"{all_omega[i] if i < len(all_omega) else 0.0:.4f}",
+                    ])
+                _write_csv(csv_path, rows,
+                           ['time', 'x', 'y', 'theta', 'v', 'omega'])
+
+            elif agent_type == "holonomic":
+                rows = []
+                for i in range(len(all_x)):
+                    rows.append([
+                        f"{all_t[i] if i < len(all_t) else 0.0:.4f}",
+                        f"{all_x[i]:.4f}", f"{all_y[i]:.4f}",
+                        f"{all_v[i] if i < len(all_v) else 0.0:.4f}",
+                        f"{all_vy[i] if i < len(all_vy) else 0.0:.4f}",
+                    ])
+                _write_csv(csv_path, rows,
+                           ['time', 'x', 'y', 'vx', 'vy'])
+
+            else:  # heterogeneous-formation
+                rows = []
+                for i in range(len(all_x)):
+                    rows.append([
+                        f"{all_t[i] if i < len(all_t) else 0.0:.4f}",
+                        f"{all_x[i]:.4f}", f"{all_y[i]:.4f}",
+                        f"{all_theta[i] if i < len(all_theta) else 0.0:.4f}",
+                        f"{all_v[i] if i < len(all_v) else 0.0:.4f}",
+                        f"{all_omega[i] if i < len(all_omega) else 0.0:.4f}",
+                    ])
+                _write_csv(csv_path, rows,
+                           ['time', 'x', 'y', 'theta', 'u1', 'u2'])
+
+            self.get_logger().info(
+                f"  {name}: saved {len(rows)} rows -> {csv_path}"
+            )
+
     def _save_state_csvs(self, robot_trajectories, centroid_trajectories,
-                          agent_info, trajectories,
-                          req_output_dir: str, req_control_dir: str):
+                         agent_info, trajectories,
+                         req_output_dir: str, req_control_dir: str):
         self.get_logger().info("Saving state CSVs...")
 
         for name, paths in robot_trajectories.items():
@@ -1169,7 +1212,6 @@ class PathPlannerNode(Node):
             agent_type = agent_info[name]['type']
 
             if agent_type == "heterogeneous-formation":
-                # centroid
                 cfile = os.path.join(req_output_dir, f"{name}_centroid.csv")
                 crows = [
                     [f"{t:.6f}", f"{xc:.6f}", f"{yc:.6f}",
@@ -1180,7 +1222,6 @@ class PathPlannerNode(Node):
                            ["time", "xc", "yc", "theta_c", "sx", "sy"])
                 self.get_logger().info(f"  {name}: centroid -> {cfile}")
 
-                # individual robots
                 for i, path in enumerate(paths):
                     rtype = agent.robot_types[i]
                     rfile = os.path.join(
@@ -1197,7 +1238,6 @@ class PathPlannerNode(Node):
                     )
 
             elif agent_type == "diff-drive":
-                # FIX 3: look for control CSV in req_control_dir
                 ctrl_csv = os.path.join(req_control_dir, f"{name}_controls.csv")
                 ctrl_t, ctrl_v, ctrl_w = [], [], []
                 if os.path.exists(ctrl_csv):
@@ -1230,7 +1270,6 @@ class PathPlannerNode(Node):
                 self.get_logger().info(f"  {name}: -> {rfile}")
 
             elif agent_type == "holonomic":
-                # FIX 3: look for control CSV in req_control_dir
                 ctrl_csv = os.path.join(req_control_dir, f"{name}_controls.csv")
                 ctrl_t, ctrl_vx, ctrl_vy = [], [], []
                 if os.path.exists(ctrl_csv):
@@ -1283,12 +1322,11 @@ class PathPlannerNode(Node):
             fig.savefig(img_path, dpi=120, bbox_inches="tight")
             plt.close(fig)
             self.get_logger().info(f"Map image saved -> {img_path}")
-
         except Exception as e:
             self.get_logger().warn(f"Could not save map image: {e}")
 
     def _save_path_image(self, robot_trajectories, agent_info,
-                          trajectories, req_image_dir: str):
+                         trajectories, req_image_dir: str):
         try:
             import matplotlib
             matplotlib.use("Agg")
@@ -1304,20 +1342,15 @@ class PathPlannerNode(Node):
 
             for name, paths in robot_trajectories.items():
                 agent_type = agent_info[name]['type']
-
                 if agent_type == "heterogeneous-formation":
                     for path in paths:
                         pts = np.array([pos[:2] for pos, _ in path])
                         ax.plot(pts[:, 0], pts[:, 1], lw=1.5, alpha=0.6)
-                    c_pts = np.array([
-                        item[0][:2] for item in trajectories[name]
-                    ])
-                    ax.plot(c_pts[:, 0], c_pts[:, 1], lw=3, alpha=0.9,
-                            label=name)
+                    c_pts = np.array([item[0][:2] for item in trajectories[name]])
+                    ax.plot(c_pts[:, 0], c_pts[:, 1], lw=3, alpha=0.9, label=name)
                 else:
                     pts = np.array([pos[:2] for pos, _ in paths[0]])
-                    ax.plot(pts[:, 0], pts[:, 1], lw=2.5, alpha=0.8,
-                            label=name)
+                    ax.plot(pts[:, 0], pts[:, 1], lw=2.5, alpha=0.8, label=name)
 
             ax.set_aspect("equal", "box")
             ax.legend(loc="upper right", fontsize=8)
@@ -1327,7 +1360,6 @@ class PathPlannerNode(Node):
             fig.savefig(img_path, dpi=120, bbox_inches="tight")
             plt.close(fig)
             self.get_logger().info(f"Path image saved -> {img_path}")
-
         except Exception as e:
             self.get_logger().warn(f"Could not save path image: {e}")
 

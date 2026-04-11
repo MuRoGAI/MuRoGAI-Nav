@@ -1,27 +1,29 @@
 #!/usr/bin/env python3
 
+import os
 import json
 import time
-import subprocess
 import openai
+
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String, Bool
+
 from dataclasses import dataclass
-import os
 from rclpy.callback_groups import (
     MutuallyExclusiveCallbackGroup,
     ReentrantCallbackGroup
 )
 from ament_index_python.packages import get_package_share_directory
 
-from robot_interface.srv import GotoPoseHolonomic
+from navigation_manager_interface.msg import NavigationRobotRequest, RobotGoalStatus, CancelNavigationRequest
 
+ROBOT_NAME   = 'delivery_bot1'
+ROBOT_TYPE   = 'Differential Drive'
+NODE_NAME    = ROBOT_NAME + '_llm_node'
+PACKAGE_NAME = 'delivery_bot'
 
-ROBOT_NAME   = 'delivery_bot'
-ROBOT_TYPE   = "Differential Drive Robot"
-NODE_NAME    = "delivery_bot_llm_node"
-PACKAGE_NAME = "delivery_bot"
+MODEL = 'gpt-4o'
 
 
 class TaskCancelledException(Exception):
@@ -39,37 +41,20 @@ class TestOption:
 
 option_list = [
     TestOption(
-        name="DeliverFood",
+        name='Goto',
         id=0,
-        description="This is used to deliver food items from a stall to a table.",
-        example_code="node.deliver_food(stall_number=1, table_number=3)"
+        # description='Navigate to any location. when it is a team task, you must specify formation robots as a list.',
+        description='Navigate to any location.',
+        example_code="node.goto(goal='fridge')"
     ),
-    TestOption(
-        name='ClearTable',
-        id=1,
-        description='This is used to clear the plates from table and drop them in the sink. From the history, check which food items were delivered to the table and clear only those food items. from the history check the name of the food which was kept at the table and send that also',
-        example_code='node.clear_table(table_number=2, food_name="food1")'
-    )
+    # TestOption(
+    #     name='Find',
+    #     id=1,
+    #     description='Find and locate any object or person in the environment.',
+    #     example_code="node.find('chair')"
+    # )
 ]
 
-TableLocation = {
-    1 : [0.0, -1.3, 0.0],
-    2 : [3.0, -1.3, 0.0],
-    3 : [6.0, -1.3, 0.0],
-    4 : [9.0, -1.3, 0.0],
-}
-
-StallLocation = {
-    1 : [0.0, 0.0, 0.0],
-    2 : [4.0, 0.0, 0.0],
-    3 : [8.0, 0.0, 0.0],
-}
-
-home_pose = [0.0, 0.0, 0.0]
-
-sink_pose = [-1.85, -0.5, 0.0]
-
-food = ['food1', 'food2', 'food3']
 
 class RobotLLMNode(Node):
     """
@@ -87,7 +72,21 @@ class RobotLLMNode(Node):
         # ---- Parameters ----
         self.declare_parameter('robot_name', ROBOT_NAME)
         self.robot_name: str = self.get_parameter('robot_name').value
+
+        self.declare_parameter('robot_type', ROBOT_TYPE)
+        self.robot_type: str = self.get_parameter('robot_type').value
+
         robot_task_topic = f'{self.robot_name}_task_status'
+
+        self.declare_parameter("config_file", "robot_config_restaurant2")
+        cfg_file_name = self.get_parameter("config_file").get_parameter_value().string_value
+        self.config_file = cfg_file_name + '.json'
+        
+        package_share = get_package_share_directory("chatty")
+        cfg_path = os.path.join(package_share, "config", self.config_file)
+
+        with open(cfg_path, 'r') as f:
+            self.robot_config = json.load(f)
 
         RobotLLMNode._instance = self
 
@@ -99,6 +98,10 @@ class RobotLLMNode(Node):
         self._task_cancelled = False  # Simple boolean flag
         # ============================================
 
+        # ========== GOAL STATUS FLAG ==========
+        self._goal_reached = None  # None=waiting, True=success, False=failed
+        # ======================================
+
         # GROUPS
         self.single_group = MutuallyExclusiveCallbackGroup()
         self.seq_group = MutuallyExclusiveCallbackGroup()
@@ -109,8 +112,10 @@ class RobotLLMNode(Node):
         self.pub_robot_states = self.create_publisher(String, '/robot_states', 10)
         self.pub_robot_task = self.create_publisher(String, robot_task_topic, 10)
 
-        self._goto_client = self.create_client(GotoPoseHolonomic, '/r2/goto_pose', callback_group=self.multi_group)
-        self._cancel_goto_pub = self.create_publisher(Bool, '/r2/cancel_goto_pose_goal', 10)
+        # self._goto_client = self.create_client(GotoPoseHolonomic, "/r1/goto_pose", callback_group=self.multi_group)
+        # self._cancel_goto_pub = self.create_publisher(Bool, "/r1/cancel_goto_pose_goal", 10)
+        self._request_goto_pub = self.create_publisher(NavigationRobotRequest, '/navigation/request', 10)
+        self._cancel_goto_pub = self.create_publisher(CancelNavigationRequest, "/navigation/cancel", 10)
 
         # ---- Subscriptions ----
         self.sub_robot_states = self.create_subscription(
@@ -135,6 +140,10 @@ class RobotLLMNode(Node):
         # )
         self.sub_chat_task_status = self.create_subscription(
             String, '/chat/task_status', self.on_chat_task_status, 10
+        )
+
+        self.goal_status_sub_ = self.create_subscription(
+            RobotGoalStatus, "/controller/goal_status", self.goal_status_callback, 10
         )
 
         # ---- Timer Callbacks ----
@@ -164,6 +173,7 @@ class RobotLLMNode(Node):
     @classmethod
     def get_instance(cls):
         """Safely get or create the singleton node."""
+
         if cls._instance is None:
             raise RuntimeError("RobotLLMNode has not been created yet! Did you run the node?")
         return cls._instance
@@ -226,14 +236,15 @@ class RobotLLMNode(Node):
                 for key, value in data.get("robot_tasks", {}).items()
             }
 
-            robot_name = self.robot_name
             robot_names = list(robot_tasks.keys())
-            for name in robot_names:
-                if self.robot_name in name:
-                    robot_name = name
-                    break
 
-            robot_task = robot_tasks.get(robot_name, "").strip()
+            if self.robot_name not in robot_names:
+                self.get_logger().debug(
+                    f"Exact key {self.robot_name} not found in robot_tasks. Ignoring message."
+                )
+                return
+
+            robot_task = robot_tasks.get(self.robot_name, "").strip()
             self.get_logger().debug(f"{self.robot_name} task fetched [1]")
 
             if not robot_task:
@@ -249,7 +260,7 @@ class RobotLLMNode(Node):
                 self.get_logger().debug(robot_task)
                 return
             
-            elif "stop" in robot_task.lower():
+            if "stop" in robot_task.lower():
                 self.get_logger().info(f"{self.robot_name} task: {robot_task}")
                 self.robot_task_interrupted(robot_task)
                 self.stop_tasks()
@@ -275,8 +286,8 @@ class RobotLLMNode(Node):
             except TaskCancelledException:
                 self.get_logger().warn("Task execution was cancelled")
                 self.robot_task_interrupted(robot_task)
-
             # status.data = f'{self.robot_name}: received {len(tasks) if isinstance(tasks, list) else 1} task set(s)'
+
         except json.JSONDecodeError:
             self.get_logger().warn(
                 f'Received /task_manager/tasks_json with invalid JSON; raw: {msg.data}'
@@ -316,6 +327,28 @@ class RobotLLMNode(Node):
         """Update current time from /current_time topic."""
         self.get_logger().debug(f'Received /current_time: {msg.data}')
         self.current_time = msg.data
+
+    def goal_status_callback(self, msg: RobotGoalStatus) -> None:
+        """Handle goal status updates from navigation controller."""
+        robot_name = msg.robot_name
+        goal_reached = msg.goal_reached
+
+        if robot_name == self.robot_name:
+            self._goal_reached = goal_reached
+            
+            if goal_reached:
+                self.get_logger().info(f'{self.robot_name}: Navigation goal reached successfully')
+                self.update_robot_state({
+                    "last_goal_status": "reached",
+                    "last_goal_timestamp": time.time()
+                })
+            else:
+                self.get_logger().warn(f'{self.robot_name}: Navigation goal failed')
+                self.update_robot_state({
+                    "last_goal_status": "failed",
+                    "last_goal_timestamp": time.time()
+                })
+
 
     # -------------------- Helpers (optional) --------------------
 
@@ -404,6 +437,7 @@ class RobotLLMNode(Node):
         # self.task_completed = True
         # self.task_in_progress = False
         # self.task_interrupted = False
+
         if not robot_task:
             robot_task = self.robot_task
 
@@ -465,15 +499,12 @@ class RobotLLMNode(Node):
         return
 
     def stop_tasks(self) -> None:
-        """Stop all robot tasks by setting cancellation flag."""
+        """Stop all robot tasks (stub function)."""
         self.get_logger().info("Stopping all robot tasks...")
-
-        # ========== SET CANCELLATION FLAG ==========
-        self._task_cancelled = True
-        # ===========================================
 
         msg = Bool()
         msg.data = True
+        self._cancel_find_pub.publish(msg)
         self._cancel_goto_pub.publish(msg)
 
         self.get_logger().info("Cancel request sent to /goto/cancel")
@@ -521,7 +552,7 @@ class RobotLLMNode(Node):
 
         try:
             response = openai.chat.completions.create(
-                model="gpt-4o",
+                model=MODEL,
                 messages=[
                     {'role': 'system', 'content': prompt},
                     {'role': 'user', 'content': task}
@@ -558,9 +589,77 @@ class RobotLLMNode(Node):
         self.get_logger().warn("Returning (None, None) due to LLM failure")
         return None, None
 
+    def build_robot_context_from_config(self) -> str:
+        """
+        Convert robot configuration JSON into a structured natural-language context
+        for LLM consumption (no raw dumping).
+        """
+        cfg = self.robot_config
+        lines = []
+
+        # -------------------------------------------------
+        # Robot names
+        # -------------------------------------------------
+        robot_names = cfg.get("robot_names", [])
+        if robot_names:
+            lines.append(
+                f"The system contains the following robots: {', '.join(robot_names)}."
+            )
+
+        # -------------------------------------------------
+        # Robot capabilities
+        # -------------------------------------------------
+        robot_caps = cfg.get("robot_capabilities", {})
+        if robot_caps:
+            lines.append("Robot capabilities:")
+            for name, desc in robot_caps.items():
+                lines.append(f"- {name}: {desc}")
+
+        # -------------------------------------------------
+        # Robot morphology
+        # -------------------------------------------------
+        robot_morph = cfg.get("robot_morphology", {})
+        if robot_morph:
+            lines.append("Physical and morphological constraints:")
+            for name, desc in robot_morph.items():
+                lines.append(f"- {name}: {desc}")
+
+        # -------------------------------------------------
+        # Robot states
+        # -------------------------------------------------
+        robot_states = cfg.get("robot_states", {})
+        if robot_states:
+            lines.append("Current robot states:")
+            for name, state_dict in robot_states.items():
+                state_desc = ", ".join(
+                    [f"{k.replace('_', ' ')}: {v}" for k, v in state_dict.items()]
+                )
+                lines.append(f"- {name}: {state_desc}")
+
+        # -------------------------------------------------
+        # Task-specific rules
+        # -------------------------------------------------
+        task_rules = cfg.get("task_specific_rules", [])
+        if task_rules:
+            lines.append("Task-specific operational rules:")
+            for rule in task_rules:
+                lines.append(f"- {rule}")
+
+        # -------------------------------------------------
+        # Task replanning rules
+        # -------------------------------------------------
+        replanning_rules = cfg.get("task_replanning_rules", [])
+        if replanning_rules:
+            lines.append("Task replanning and failure handling rules:")
+            for rule in replanning_rules:
+                lines.append(f"- {rule}")
+
+        return "\n".join(lines)
+
     def execute_task(self, task: str) -> None:
         """Execute the given robot task using LLM decision-making."""
         chat_history = self.read_chat_history()
+        robot_context = self.build_robot_context_from_config()
 
         try:
             self.get_logger().info("Building system action messages")
@@ -573,20 +672,16 @@ class RobotLLMNode(Node):
             self.get_logger().info("Building system messages")
             
             prompt = (
-                f"You are a robot control system controlling a {ROBOT_TYPE} named '{self.robot_name}'. "
+                f"You are a robot control system controlling a {self.robot_type} Robot named '{self.robot_name}'. "
                 "You must generate python code to perform the task. "
                 "Based on the given task, generate code using available actions."
+                f"Robot system context:\n{robot_context}\n"
                 f"Recent Tasks (History): {chat_history} "
                 f"Current States of All Robots: {self.robot_states} "
                 f"Available Actions: {available_actions} "
                 "Using the class reference name same as the example is important. "
                 "Use the name 'node' to refer to the RobotLLMNode instance. "
-                "Task Specific Rules: "
-                "   'food1' is the name of the food from stall 1 "
-                "   'food2' is the name of the food from stall 2 "
-                "   'food3' is the name of the food from stall 3 "
-                "   Table 1, 2, 3, and 4 are present in the restaurant environment. "
-                "   remember this name to pick the food from stall or table "
+                "To serve anything to anyone first goto stall and then goto the person. "
             )
 
             self.get_logger().debug(f"Prompt message: {prompt}")
@@ -611,283 +706,219 @@ class RobotLLMNode(Node):
             self.get_logger().error("Failed to generate valid code for the task.")
             self.robot_task_interrupted(task)
 
-    def goto_service(self, x: float, y: float, yaw_deg: float) -> bool:
-        """Call GoToPoseDiffDrive service (non-blocking, no nested spin)."""
+    def find(self, target: str) -> bool:
+        """
+        Find and locate a target object or person.
+        
+        Args:
+            target: Name of the object or person to find (e.g., 'chair', 'person', 'cup')
+        
+        Returns:
+            bool: True if target found, False otherwise
+        """
         # ========== CHECK CANCELLATION ==========
         self.check_cancelled()
         # ========================================
-
-        self.get_logger().info(f"Sending goto goal: x={x}, y={y}, yaw={yaw_deg}°")
-
-        if not self._goto_client.wait_for_service(timeout_sec=5.0):
-            self.get_logger().error("GotoPoseDiffDrive service NOT available!")
-            return False
-
-        req = GotoPoseHolonomic.Request()
-        req.x = x
-        req.y = y
-        req.yaw_deg = yaw_deg
-
-        future = self._goto_client.call_async(req)
-        self.get_logger().info("Waiting for goto service response...")
-
-        deadline = time.time() + 900000.0
-        while rclpy.ok() and not future.done():
+        
+        self.get_logger().info(f"Starting search for: {target}")
+        
+        # Update robot state: Search started
+        self.update_robot_state({
+            "current_task": "find",
+            "task_status": "searching",
+            "search_target": target,
+            "activity": f"Searching for {target}"
+        })
+        
+        # Simulate searching process
+        self.get_logger().info(f"Scanning environment for {target}...")
+        
+        # Update state: Actively scanning
+        self.update_robot_state({
+            "task_status": "scanning",
+            "scan_started_at": time.time(),
+            "activity": f"Actively scanning for {target}"
+        })
+        
+        # Simulate search time with cancellation checks
+        search_duration = 3.0  # seconds
+        start_time = time.time()
+        
+        while time.time() - start_time < search_duration:
             # ========== CHECK CANCELLATION IN LOOP ==========
             self.check_cancelled()
             # ================================================
-            time.sleep(0.05)
-            if time.time() > deadline:
-                self.get_logger().error("GotoPoseDiffDrive service call TIMED OUT.")
-                return False
-
-        try:
-            res = future.result()
-        except Exception as e:
-            self.get_logger().error(f"Service call failed: {e}")
-            return False
-
-        if res.accepted:
-            self.get_logger().info(f"Goto accepted: {res.message}")
+            time.sleep(0.5)
+            self.get_logger().debug(f"Still searching for {target}...")
+        
+        # Simulate find result (dummy - always succeeds for now)
+        found = True
+        
+        if found:
+            self.get_logger().info(f"Successfully found {target}")
+            
+            # Update state: Target found
+            self.update_robot_state({
+                "task_status": "target_found",
+                "search_result": "success",
+                "found_target": target,
+                "found_at": time.time(),
+                "target_location": "unknown",  # In real implementation, this would be actual coordinates
+                "activity": f"Found {target}"
+            })
             return True
         else:
-            self.get_logger().warn(f"Goto rejected: {res.message}")
+            self.get_logger().warn(f"Failed to find {target}")
+            
+            # Update state: Target not found
+            self.update_robot_state({
+                "task_status": "target_not_found",
+                "search_result": "failed",
+                "searched_for": target,
+                "search_failed_at": time.time(),
+                "activity": f"Could not locate {target}"
+            })
             return False
 
-    def teleport(self, name, x, y, z):
-        """Teleport object in simulation."""
+    def wait_for_goto_complete(self, goal: str, timeout: float = 120.0) -> bool:
+        """
+        Wait for goto navigation to complete.
+        
+        Args:
+            goal: The goal location being navigated to
+            timeout: Maximum time to wait in seconds (default: 120s)
+        
+        Returns:
+            bool: True if goal reached, False if failed or timed out
+        """
+        self.get_logger().info(f"Waiting for navigation to {goal} to complete (timeout={timeout}s)...")
+        
+        # Reset goal status flag before waiting
+        self._goal_reached = None
+        
+        start_time = time.time()
+        deadline = start_time + timeout
+        
+        while rclpy.ok():
+            # ========== CHECK CANCELLATION ==========
+            try:
+                self.check_cancelled()
+            except TaskCancelledException:
+                self.get_logger().warn("Navigation cancelled during wait")
+                return False
+            # ========================================
+            
+            # Check if we've received a goal status update
+            if self._goal_reached is not None:
+                if self._goal_reached:
+                    elapsed = time.time() - start_time
+                    self.get_logger().info(f"Navigation to {goal} completed successfully in {elapsed:.2f}s")
+                    return True
+                else:
+                    self.get_logger().warn(f"Navigation to {goal} failed")
+                    return False
+            
+            # Check timeout
+            if time.time() > deadline:
+                elapsed = time.time() - start_time
+                self.get_logger().error(f"Navigation to {goal} timed out after {elapsed:.2f}s")
+                return False
+            
+            # Sleep briefly to avoid busy waiting
+            time.sleep(0.1)
+        
+        self.get_logger().error("ROS shutdown during navigation wait")
+        return False
+
+    def Goto(self, goal: str, formation: list = None) -> bool:
+        self.goto(goal, formation)
+
+    def goto(self, goal: str, formation: list = None) -> bool:
+        """
+        Navigate to a goal location, optionally with formation.
+        
+        Args:
+            goal: Target location name (e.g., 'fridge', 'table', 'counter')
+            formation: Optional list of robot names to form a formation (default: None/empty list)
+        
+        Returns:
+            bool: True if navigation succeeded, False otherwise
+        """
         # ========== CHECK CANCELLATION ==========
         self.check_cancelled()
         # ========================================
-
-        self.get_logger().info(f"Teleport Object: {name}")
-
-        req = (
-            f'name: "{name}", '
-            f'position: {{x: {x}, y: {y}, z: {z}}}, '
-            'orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}'
+        
+        self.get_logger().info(f"Requesting navigation to goal: {goal}")
+        
+        # Update robot state: Navigation requested
+        self.update_robot_state({
+            "current_task": "goto",
+            "task_status": "requesting_navigation",
+            "target_goal": goal,
+            "activity": f"Navigating to {goal}"
+        })
+        
+        # Create navigation request message
+        msg = NavigationRobotRequest()
+        msg.robot_name = self.robot_name
+        msg.goal = goal
+        
+        # Handle formation parameter
+        if formation is None:
+            msg.formation_robots = []
+        elif isinstance(formation, list):
+            msg.formation_robots = formation
+            self.get_logger().info(f"Formation requested with robots: {formation}")
+        else:
+            self.get_logger().warn(f"Invalid formation type: {type(formation)}. Expected list. Using empty list.")
+            msg.formation_robots = []
+        
+        # Update state with formation info if applicable
+        if msg.formation_robots:
+            self.update_robot_state({
+                "formation_active": True,
+                "formation_robots": msg.formation_robots,
+                "formation_role": "leader"
+            })
+        
+        # Publish navigation request
+        self._request_goto_pub.publish(msg)
+        
+        self.get_logger().info(
+            f"Navigation request sent: robot={msg.robot_name}, goal={msg.goal}, "
+            # f"formation={msg.formation_robots if msg.formation_robots else 'None'}"
         )
-
-        cmd = [
-            'ign', 'service', '-s', '/world/food_court/set_pose',
-            '--reqtype', 'ignition.msgs.Pose',
-            '--reptype', 'ignition.msgs.Boolean',
-            '--timeout', '1000',
-            '--req', req
-        ]
         
-        result = subprocess.run(cmd, capture_output=True, text=True)
-
-        self.get_logger().info(f"Teleport result: {result.stdout}")
-        return result.returncode == 0
-
-    # —————————————————————— LLM FUNCTIONS ——————————————————————
-    
-    def deliver_food(self, stall_number, table_number):
-        """Deliver food with cancellation support and state updates."""
-        self.get_logger().info('Delivering food ...')
-        
-        # Update state: Task started
+        # Update state: Navigation in progress
         self.update_robot_state({
-            "current_task": "deliver_food",
-            "task_status": "in_progress",
-            "stall_number": stall_number,
-            "table_number": table_number,
-            "delivery_stage": "started"
+            "task_status": "navigating",
+            "navigation_requested_at": time.time()
         })
         
-        table_pose = TableLocation.get(table_number)
-        stall_pose = StallLocation.get(stall_number)
-
-        if table_pose is None:
-            self.get_logger().error(f"Invalid table number: {table_number}")
+        # Wait for navigation to complete
+        success = self.wait_for_goto_complete(goal)
+        
+        # Update state based on result
+        if success:
+            self.get_logger().info(f"Navigation to {goal} completed successfully")
             self.update_robot_state({
-                "task_status": "failed",
-                "failure_reason": f"invalid_table_number_{table_number}"
+                "task_status": "navigation_completed",
+                "navigation_result": "success",
+                "current_location": goal,
+                "arrived_at": time.time(),
+                "activity": f"Arrived at {goal}"
             })
-            return 
-
-        if stall_pose is None:
-            self.get_logger().error(f"Invalid stall number: {stall_number}")
+            return True
+        else:
+            self.get_logger().error(f"Navigation to {goal} failed or timed out")
             self.update_robot_state({
-                "task_status": "failed",
-                "failure_reason": f"invalid_stall_number_{stall_number}"
+                "task_status": "navigation_failed",
+                "navigation_result": "failed",
+                "failed_goal": goal,
+                "failure_time": time.time(),
+                "activity": f"Failed to reach {goal}"
             })
-            return 
-
-        sx, sy, syaw = stall_pose
-        hx, hy, hyaw = table_pose
-        home_pose_x, home_pose_y, home_pose_yaw = home_pose
-        food_name = food[stall_number - 1]
-
-        # ========== CHECK CANCELLATION ==========
-        self.check_cancelled()
-        # ========================================
-
-        # Update state: Navigating to stall
-        self.update_robot_state({
-            "task_status": "navigating_to_stall",
-            "delivery_stage": "going_to_stall",
-            "target_coords": {"x": sx, "y": sy+0.5, "yaw": syaw},
-            "food_item": food_name
-        })
-        
-        result = self.goto_service(sx, sy+0.5, syaw) 
-        self.get_logger().info('Robot Near Stall')
-        time.sleep(2.0)
-
-        # Update state: Picking food
-        self.update_robot_state({
-            "task_status": "picking_food",
-            "delivery_stage": "at_stall",
-            "current_location": f"stall_{stall_number}"
-        })
-        
-        result = self.teleport(name=food_name, x=sx, y=sy+0.5, z=0.4)
-        self.get_logger().info('Food Picked from Stall')
-        time.sleep(3.0)
-
-        # Update state: Food picked, navigating to table
-        self.update_robot_state({
-            "task_status": "navigating_to_table",
-            "delivery_stage": "carrying_food",
-            "food_picked": True,
-            "target_coords": {"x": hx, "y": hy, "yaw": hyaw}
-        })
-        
-        result = self.goto_service(hx, hy, hyaw)
-        self.get_logger().info('Robot Near Table')
-        time.sleep(2.0)
-
-        # Update state: Delivering food to table
-        self.update_robot_state({
-            "task_status": "delivering_food",
-            "delivery_stage": "at_table",
-            "current_location": f"table_{table_number}"
-        })
-        
-        result = self.teleport(name=food_name, x=hx+0.1, y=hy-0.7, z=0.6)
-        self.get_logger().info("Food Delivered to table")
-        time.sleep(3.0)
-
-        # Update state: Returning home
-        self.update_robot_state({
-            "task_status": "returning_home",
-            "delivery_stage": "going_home",
-            "food_delivered": True,
-            "delivery_completed_at": time.time()
-        })
-        
-        result = self.goto_service(home_pose_x, home_pose_y, home_pose_yaw)
-        self.get_logger().info('Robot Went Home')
-
-        # Update state: Task completed
-        self.update_robot_state({
-            "task_status": "completed",
-            "delivery_stage": "at_home",
-            "current_location": "home",
-            f"delivery_stall{stall_number}_to_table{table_number}": "completed",
-            "completion_timestamp": time.time()
-        })
-
-    def clear_table(self, table_number, food_name):
-        """Clear table with cancellation support and state updates."""
-        self.get_logger().info('Clearing Table ...')
-        
-        # Update state: Task started
-        self.update_robot_state({
-            "current_task": "clear_table",
-            "task_status": "in_progress",
-            "table_number": table_number,
-            "food_to_clear": food_name,
-            "clearing_stage": "started"
-        })
-        
-        table_pose = TableLocation.get(table_number)
-        self.get_logger().info(f'Clear the food item: {food_name} from table number: {table_number}')
-
-        if table_pose is None:
-            self.get_logger().error(f"Invalid table number: {table_number}")
-            self.update_robot_state({
-                "task_status": "failed",
-                "failure_reason": f"invalid_table_number_{table_number}"
-            })
-            return 
-
-        table_x, table_y, table_yaw = table_pose
-        sink_x, sink_y, sink_yaw = sink_pose
-        home_pose_x, home_pose_y, home_pose_yaw = home_pose
-
-        # ========== CHECK CANCELLATION ==========
-        self.check_cancelled()
-        # ========================================
-
-        # Update state: Navigating to table
-        self.update_robot_state({
-            "task_status": "navigating_to_table",
-            "clearing_stage": "going_to_table",
-            "target_coords": {"x": table_x, "y": table_y, "yaw": table_yaw}
-        })
-        
-        result = self.goto_service(table_x, table_y, table_yaw)
-        self.get_logger().info('Robot Near Table')
-        time.sleep(2.0)
-
-        # Update state: Picking food from table
-        self.update_robot_state({
-            "task_status": "picking_food_from_table",
-            "clearing_stage": "at_table",
-            "current_location": f"table_{table_number}"
-        })
-        
-        result = self.teleport(name=food_name, x=table_x, y=table_y, z=0.4)
-        self.get_logger().info('Food Picked from Table')
-        time.sleep(3.0)
-
-        # Update state: Navigating to sink
-        self.update_robot_state({
-            "task_status": "navigating_to_sink",
-            "clearing_stage": "carrying_dishes",
-            "food_picked": True,
-            "target_coords": {"x": sink_x, "y": sink_y, "yaw": sink_yaw}
-        })
-        
-        result = self.goto_service(sink_x, sink_y, sink_yaw)
-        self.get_logger().info('Robot Near Sink')
-        time.sleep(2.0)
-
-        # Update state: Dropping food in sink
-        self.update_robot_state({
-            "task_status": "dropping_in_sink",
-            "clearing_stage": "at_sink",
-            "current_location": "sink"
-        })
-        
-        result = self.teleport(name=food_name, x=-2.5, y=-0.5, z=0.6)
-        self.get_logger().info('Food Dropped in Sink')  
-        time.sleep(3.0)
-
-        # Update state: Returning home
-        self.update_robot_state({
-            "task_status": "returning_home",
-            "clearing_stage": "going_home",
-            "dishes_cleared": True,
-            "clearing_completed_at": time.time()
-        })
-        
-        result = self.goto_service(home_pose_x, home_pose_y, home_pose_yaw)
-        self.get_logger().info('Robot Went Home')
-
-        # Update state: Task completed
-        self.update_robot_state({
-            "task_status": "completed",
-            "clearing_stage": "at_home",
-            "current_location": "home",
-            f"table_{table_number}_cleared": True,
-            f"cleared_item": food_name,
-            "completion_timestamp": time.time()
-        })
-
+            return False
 
 def execute_python_code(code: str, node=None):
     """Execute generated Python code safely with cancellation support."""
@@ -927,6 +958,8 @@ def main(args=None):
 
     try:
         executor.spin()
+    except KeyboardInterrupt:
+        node.get_logger().info("Keyboard interrupt received")
     finally:
         node.destroy_node()
         rclpy.shutdown()

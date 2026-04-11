@@ -236,8 +236,6 @@ class NavigationManager(Node):
         )
 
 
-        robot_pose_string = None
-        goal_memory_string = None
 
 
 

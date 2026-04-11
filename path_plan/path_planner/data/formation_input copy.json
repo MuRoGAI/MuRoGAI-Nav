@@ -1,0 +1,72 @@
+{
+
+    "current_pose":{
+        "delivery_bot1"  : [5.0, 7.5, 0.0],
+        "delivery_bot2"  : [5.0, 4.5, 0.0],
+        "delivery_bot3"  : [7.0, 6.0, 0.0],
+        "cleaning_robot" : [19.0, 15.0,  3.14]
+    },
+
+
+    "goal_pose":{
+        "F1": {
+            "centroid_x": 3.135,
+            "centroid_y": 7.583,
+            "formation_yaw": 1.57,
+            "desired_radius": 1.0,
+            "robots": ["burger1", "burger2", "burger3"]
+        },
+        "F2": {
+            "centroid_x": 3.135,
+            "centroid_y": 1.75,
+            "formation_yaw": -1.57,
+            "desired_radius": 1.0,
+            "robots": ["tb4_1", "firebird", "go2"]
+        },
+        "R1": { 
+            "robot": "waffle", "x": 1.140, "y": 4.375, "yaw": 3.14
+        }
+    }
+}
+
+
+
+
+{
+    "current_pose": {
+        "delivery_bot1": [
+            5.0,
+            7.5,
+            0.0
+        ],
+        "delivery_bot2": [
+            5.0,
+            4.5,
+            0.0
+        ],
+        "delivery_bot3": [
+            7.0,
+            6.0,
+            0.0
+        ],
+        "cleaning_bot": [
+            19.0,
+            15.0,
+            3.14
+        ]
+    },
+    "goal_pose": {
+        "R1": {
+            "robot": "cleaning_bot",
+            "x": 5.0,
+            "y": 14.0,
+            "yaw": 3.14
+        },
+        "R2": {
+            "robot": "delivery_bot3",
+            "x": 18.0,
+            "y": 5.0,
+            "yaw": 0.0
+        }
+    }
+}
