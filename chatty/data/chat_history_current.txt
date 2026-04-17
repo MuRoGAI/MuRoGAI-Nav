@@ -1,7 +1,7 @@
 *********     NEW EXPERIMNET           ********* 
-[Time: Hours: 00, Minutes: 00, Seconds: 08] Human: clean goto sink
-[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
+[Time: Hours: 00, Minutes: 00, Seconds: 45] Human: cleaner bot goto sink2
+[Time: Hours: 00, Minutes: 00, Seconds: 47] Task Manager:
 Independent Tasks:
-Cleaning_bot tasks: go to sink
+Cleaning_bot tasks: go to sink2
 multirobot_list: []
 singlerobot_list: [Cleaning_bot]

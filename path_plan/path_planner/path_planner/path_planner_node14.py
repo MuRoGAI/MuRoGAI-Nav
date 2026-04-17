@@ -8,8 +8,8 @@ HOW THE INTERRUPT WORKS (no threading required)
 2. File is read, then IMMEDIATELY WIPED (written to "{}").
    The wipe is the "consumed" signal — the file is now empty again.
 3. run_plan() is called with:
-      abort_flag  = [False]   – a 1-element list shared by reference
-      check_input = <lambda>  – callable that peeks at the file
+      abort_flag  = [False]   - a 1-element list shared by reference
+      check_input = <lambda>  - callable that peeks at the file
 4. Inside run_plan() a small wrapper is passed down to every
    SIRRT.plan() call as its abort_flag argument.  plan() already
    polls abort_flag[0] every ABORT_CHECK_INTERVAL iterations AND
@@ -90,7 +90,7 @@ IMAGE_DIR    = os.environ.get("PLANNER_IMAGES",
 POLL_INTERVAL = float(os.environ.get("PLANNER_POLL", "1.0"))   # seconds
 
 # How often (seconds) to poll the file from INSIDE a running plan.
-# Keep this at 1–2 s so we react quickly without hammering the disk.
+# Keep this at 1-2 s so we react quickly without hammering the disk.
 INPLAN_POLL_INTERVAL = float(os.environ.get("PLANNER_INPLAN_POLL", "1.0"))
 
 # planner hyper-parameters
@@ -635,7 +635,7 @@ def run_plan(eg_formation: dict, run_tag: str,
             neighbor_radius    = NEIGHBOR_RADIUS,
             precision          = PRECISION,
             seed               = SEED,
-            debug              = False,
+            debug              = True,
             use_kinodynamic    = use_kino,
             kinodynamic_params = kino_params,
         )
@@ -706,6 +706,7 @@ def run_plan(eg_formation: dict, run_tag: str,
     if _poll_for_new_input("before saving outputs"):
         return
 
+    expected_agents = [name for name, _, _, _, _, _ in agents]
     if not trajectories:
         print("\nNo trajectories produced.")
         return
@@ -715,10 +716,16 @@ def run_plan(eg_formation: dict, run_tag: str,
     os.makedirs(req_image,   exist_ok=True)
 
     # ── save CSVs ─────────────────────────────────────────────────────
-    _save_control_csvs(trajectories, agent_info, control_trajectories, req_control)
+
     robot_traj, centroid_traj = _extract_robot_traj(trajectories, agent_info)
-    _save_state_csvs(robot_traj, centroid_traj, agent_info, trajectories, req_traj)
     _save_image(robot_traj, agent_info, trajectories, run_tag, req_num, req_image)
+    if len(trajectories) < len(expected_agents):
+        missing = [n for n in expected_agents if n not in trajectories]
+        print(f"\nPartial failure — missing trajectories for: {missing}. Skipping save.")
+        return
+
+    _save_control_csvs(trajectories, agent_info, control_trajectories, req_control)
+    _save_state_csvs(robot_traj, centroid_traj, agent_info, trajectories, req_traj)
     print(f"\nAll outputs saved under tag '{run_tag}'")
 
 

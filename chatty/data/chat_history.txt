@@ -5029,3 +5029,516 @@ Independent Tasks:
 Cleaning_bot tasks: go to sink
 multirobot_list: []
 singlerobot_list: [Cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 03, Seconds: 35] Human: cleanr goto sink1
+[Time: Hours: 00, Minutes: 03, Seconds: 38] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 04] Human: cleaner goto sink2
+[Time: Hours: 00, Minutes: 01, Seconds: 05] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink2
+multirobot_list: []
+singlerobot_list: [cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 58] Human: claning bot goto sink2, delivery team goto sink1
+[Time: Hours: 00, Minutes: 01, Seconds: 01] Task Manager:
+Independent Tasks:
+Cleaning Bot tasks: go to sink2
+Team 1: [Delivery Bot1, Delivery Bot2, Delivery Bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning Bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 37] Human: claning bot goto sink2, delivery team goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 40] Task Manager:
+Independent Tasks:
+cleaning_bot tasks: go to sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Human: del team goto sinnk1
+[Time: Hours: 00, Minutes: 00, Seconds: 23] Task Manager:
+Independent Tasks:
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Human: del team goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Task Manager:
+Independent Tasks:
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 41] Human: clean goto sink2 del team goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 44] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: clean, goto sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: goto sink1
+
+multirobot_list: []
+singlerobot_list: [Cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Human: clea goto sikn2 del team goto sikn 1
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Task Manager:
+Independent Tasks:
+cleaning_bot tasks: go to location sikn2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to location sikn1
+multirobot_list: []
+singlerobot_list: [cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 37] Human: clean goto sink2 del team goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 39] Task Manager:
+Independent Tasks:
+Cleaning Bot tasks: go to sink2
+Team 1: [Delivery Bot1, Delivery Bot2, Delivery Bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning Bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: clean goto sink2 del team goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+Independent Tasks:
+cleaning_bot tasks: clean, go to sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+
+multirobot_list: []
+singlerobot_list: [cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Human: clean goto sink2 del team goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: clean, go to sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Human: clean goto sink2 del team goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: clean
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: goto sink1
+delivery_bot3 tasks: goto sink2
+multirobot_list: []
+singlerobot_list: [Cleaning_bot, Team 1, delivery_bot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 23] Human: clean goto sink2 del team goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 24] Task Manager:
+Independent Tasks:
+cleaning_bot tasks: go to sink2 and clean
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1 together
+
+multirobot_list: []
+singlerobot_list: [cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Human: clean goto sink2 del team goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: clean, go to sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+
+multirobot_list: []
+singlerobot_list: [Cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Human: clean goto sink2 del team goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: clean goto sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: del team goto sink1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Human: clean goto sink2 del team goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: clean, go to sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 23] Human: clean goto sink2 del team goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 25] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: clean goto sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: del team goto sink1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 01] Human: clean goto sink2 del team goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 02] Task Manager:
+Independent Tasks:
+Cleaning Bot tasks: clean
+Delivery Bot1 tasks: go to sink1
+Delivery Bot2 tasks: go to sink1
+Delivery Bot3 tasks: go to sink1, go to sink2
+multirobot_list: []
+singlerobot_list: [Cleaning Bot, Delivery Bot1, Delivery Bot2, Delivery Bot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 01] Human: clean goto sink2 del team goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Task Manager:
+Independent Tasks:
+Cleaning Bot tasks: go to sink2
+Team 1: [Delivery Bot1, Delivery Bot2, Delivery Bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning Bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Human: clean goto sink2 del team goto sink
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Task Manager:
+Independent Tasks:
+cleaning_bot tasks: clean, go to sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink
+multirobot_list: []
+singlerobot_list: [cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Human: clean goto sink2 del team goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
+Independent Tasks:
+cleaning_bot tasks: clean, goto sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: goto sink1
+multirobot_list: []
+singlerobot_list: [cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Human: clean goto sink2 del team goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Task Manager:
+Independent Tasks:
+cleaning_bot tasks: clean, go to sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+
+multirobot_list: []
+singlerobot_list: [cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Human: clean goto sink2 del team goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink2 and clean
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 02, Seconds: 54] Human: cleanr goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 02, Seconds: 57] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 17, Seconds: 44] Human: cleanr goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 17, Seconds: 46] Task Manager:
+Independent Tasks:
+cleaning_bot tasks: go to sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Human: cleanr goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Task Manager:
+Independent Tasks:
+Cleaning Bot tasks: go to sink2
+Team 1: [Delivery Bot1, Delivery Bot2, Delivery Bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning Bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: cleanr goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+Independent Tasks:
+cleaning_bot tasks: go to sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: cleanr goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: goto sink2
+Team 1:[delivery_bot1, delivery_bot2, delivery_bot3]: goto sink1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 29] Human: cleanr goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 32] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Human: cleanr goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink2
+Team 1:[delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Human: cleanr goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink2
+Team 1:[delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 02] Human: cleanr goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Task Manager:
+Independent Tasks:
+cleaning_bot tasks: go to sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 03] Human: cleanr goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 05] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink2
+Team 1:[delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Human: cleanr goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 02, Seconds: 53] Human: cleanr goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 02, Seconds: 55] Task Manager:
+Independent Tasks:
+cleaning_bot tasks: go to sink2
+Team 1:[delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Human: cleanr goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Task Manager:
+Independent Tasks:
+cleaning_bot tasks: go to sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 29] Human: cleanr goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 32] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink2
+Team 1:[delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 00] Human: cleaner goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 01, Seconds: 03] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 19, Seconds: 10] Human: cleaner goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 19, Seconds: 13] Task Manager:
+Independent Tasks:
+cleaning_bot tasks: go to sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 31] Human: cleaner goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 01, Seconds: 36] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Human: cleaner goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+cleaning_bot tasks: go to sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Human: cleaner goto sink2
+[Time: Hours: 00, Minutes: 00, Seconds: 24] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink2
+multirobot_list: []
+singlerobot_list: [cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 31] Human: cleaner goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 01, Seconds: 33] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 09] Human: cleaner goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 01, Seconds: 13] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot, Team 1]
+[Time: Hours: 00, Minutes: 02, Seconds: 22] Human: cleaner goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 02, Seconds: 25] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink2
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Human: cleaner goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Task Manager:
+Independent Tasks:
+cleaning_bot tasks: go to sink2
+delivery_bot1 tasks: go to sink1
+delivery_bot2 tasks: go to sink1
+delivery_bot3 tasks: go to sink1
+multirobot_list: []
+singlerobot_list: [cleaning_bot, delivery_bot1, delivery_bot2, delivery_bot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 04] Human: cleaner goto sink2 delivery guys goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Task Manager:
+Independent Tasks:
+cleaning_bot tasks: go to sink2
+Team 1:[delivery_bot1, delivery_bot2, delivery_bot3]: go to sink1
+multirobot_list: []
+singlerobot_list: [cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 36] Human: cleanner boto goto 20, 6
+[Time: Hours: 00, Minutes: 00, Seconds: 38] Task Manager:
+Independent Tasks:
+cleaning_bot tasks: go to position (20, 6)
+multirobot_list: []
+singlerobot_list: [cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Human: cleanner boto goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Task Manager:
+Independent Tasks:
+cleaning_bot tasks: go to sink1
+multirobot_list: []
+singlerobot_list: [cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 27] Human: cleaner  bot goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 29] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Human: cleaner bot goto sink1
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot]
+[Time: Hours: 00, Minutes: 04, Seconds: 58] Human: deliverybot3 goto sink2
+[Time: Hours: 00, Minutes: 05, Seconds: 00] Task Manager:
+Independent Tasks:
+Delivery_bot3 tasks: go to sink2
+multirobot_list: []
+singlerobot_list: [Delivery_bot3]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 06, Seconds: 18] Human: cleaner bot goto sink2
+[Time: Hours: 00, Minutes: 06, Seconds: 20] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink2
+multirobot_list: []
+singlerobot_list: [Cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Human: cleaning bot goto sink2
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: goto sink2
+multirobot_list: []
+singlerobot_list: [Cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 11] Human: cleaner bot goto sink1
+[Time: Hours: 00, Minutes: 01, Seconds: 13] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Human: cleaner bot goto sink2
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Task Manager:
+Independent Tasks:
+cleaning_bot tasks: go to sink2
+multirobot_list: []
+singlerobot_list: [cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 29] Human: cleaner bot goto  sink2
+[Time: Hours: 00, Minutes: 00, Seconds: 31] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink2
+multirobot_list: []
+singlerobot_list: [Cleaning_bot]
+[Time: Hours: 00, Minutes: 15, Seconds: 52] Human: delivery bot3 goto sink1
+[Time: Hours: 00, Minutes: 15, Seconds: 54] Task Manager:
+Independent Tasks:
+Delivery_bot3 tasks: go to sink1
+multirobot_list: []
+singlerobot_list: [Delivery_bot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 02, Seconds: 06] Human: cleaner bot goto sink2
+[Time: Hours: 00, Minutes: 02, Seconds: 08] Task Manager:
+Independent Tasks:
+cleaning_bot tasks: go to sink2
+multirobot_list: []
+singlerobot_list: [cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 09] Human: cleaner goto sink2
+[Time: Hours: 00, Minutes: 01, Seconds: 12] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: goto sink2
+multirobot_list: []
+singlerobot_list: [Cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 07, Seconds: 00] Human: cleaner goto sink2
+[Time: Hours: 00, Minutes: 07, Seconds: 03] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: goto sink2
+multirobot_list: []
+singlerobot_list: [Cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 15, Seconds: 36] Human: cleaner goto sink2
+[Time: Hours: 00, Minutes: 15, Seconds: 39] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink2
+multirobot_list: []
+singlerobot_list: [Cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Human: cleaner goto sink2
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: goto sink2
+multirobot_list: []
+singlerobot_list: [Cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 23] Human: cleaning bot goto sink2
+[Time: Hours: 00, Minutes: 00, Seconds: 25] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: goto sink2
+multirobot_list: []
+singlerobot_list: [Cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 45] Human: cleaner bot goto sink2
+[Time: Hours: 00, Minutes: 00, Seconds: 47] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink2
+multirobot_list: []
+singlerobot_list: [Cleaning_bot]

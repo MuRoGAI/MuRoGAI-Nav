@@ -104,7 +104,7 @@ def generate_launch_description():
         pkg_yahboom_gazebo, 'launch', 'yahboom_robot.launch.py'
     ])
 
-    # x3_uav_robot = os.path.join(pkg_x3_uav_gazebo, 'launch', 'x3_uav_robot.launch.py')
+    x3_uav_robot = os.path.join(pkg_x3_uav_gazebo, 'launch', 'x3_uav_robot.launch.py')
 
 
     robot1_launch = TimerAction(
@@ -115,7 +115,7 @@ def generate_launch_description():
                 launch_arguments={
                     'use_sim_time': use_sim_time,
                     'robot_name': 'mobile_manipulator',
-                    'prefix': 'deliver_bot1',
+                    'prefix': 'delivery_bot1',
                     'use_ignition': use_ignition,
                     'use_hardware': 'False',
                     'use_mock_hardware': 'False',
@@ -143,7 +143,7 @@ def generate_launch_description():
                 launch_arguments={
                     'use_sim_time': use_sim_time,
                     'robot_name': 'mobile_manipulator',
-                    'prefix': 'deliver_bot2',
+                    'prefix': 'delivery_bot2',
                     'use_ignition': use_ignition,
                     'use_hardware': 'False',
                     'use_mock_hardware': 'False',
@@ -164,87 +164,6 @@ def generate_launch_description():
 
 
 
-    # robot3_launch = TimerAction(
-    #     period=9.0,
-    #     actions=[
-    #         IncludeLaunchDescription(
-    #             PythonLaunchDescriptionSource(mobile_manipulator_launch),
-    #             launch_arguments={
-    #                 'use_sim_time': use_sim_time,
-    #                 'robot_name': 'mobile_manipulator',
-    #                 'prefix': 'robot3',
-    #                 'use_ignition': use_ignition,
-    #                 'use_hardware': 'False',
-    #                 'use_mock_hardware': 'False',
-    #                 'use_plugin': 'False',
-    #                 'use_ros2_control': 'False',
-    #                 'use_plugin_control': 'True',
-    #                 'spawn_x': '19.0',
-    #                 'spawn_y': '12.0',
-    #                 'spawn_z': '0.05',
-    #                 'spawn_roll': '0.0',
-    #                 'spawn_pitch': '0.0',
-    #                 'spawn_yaw': '3.14',
-    #                 'use_rviz': use_multi_rviz,
-    #             }.items()
-    #         )
-    #     ]
-    # )
-
-    # robot4_launch = TimerAction(
-    #     period=9.0,
-    #     actions=[
-    #         IncludeLaunchDescription(
-    #             PythonLaunchDescriptionSource(mobile_manipulator_launch),
-    #             launch_arguments={
-    #                 'use_sim_time': use_sim_time,
-    #                 'robot_name': 'mobile_manipulator',
-    #                 'prefix': 'robot4',
-    #                 'use_ignition': use_ignition,
-    #                 'use_hardware': 'False',
-    #                 'use_mock_hardware': 'False',
-    #                 'use_plugin': 'False',
-    #                 'use_ros2_control': 'False',
-    #                 'use_plugin_control': 'True',
-    #                 'spawn_x': '19.0',
-    #                 'spawn_y': '12.0',
-    #                 'spawn_z': '0.05',
-    #                 'spawn_roll': '0.0',
-    #                 'spawn_pitch': '0.0',
-    #                 'spawn_yaw': '3.14',
-    #                 'use_rviz': use_multi_rviz,
-    #             }.items()
-    #         )
-    #     ]
-    # )
-
-    # robot3_launch = TimerAction(
-    #     period=9.0,
-    #     actions=[
-    #         IncludeLaunchDescription(
-    #             PythonLaunchDescriptionSource(mobile_manipulator_launch),
-    #             launch_arguments={
-    #                 'use_sim_time': use_sim_time,
-    #                 'robot_name': 'mobile_manipulator',
-    #                 'prefix': 'robot3',
-    #                 'use_ignition': use_ignition,
-    #                 'use_hardware': 'False',
-    #                 'use_mock_hardware': 'False',
-    #                 'use_plugin': 'False',
-    #                 'use_ros2_control': 'False',
-    #                 'use_plugin_control': 'True',
-    #                 'spawn_x': '19.0',
-    #                 'spawn_y': '12.0',
-    #                 'spawn_z': '0.05',
-    #                 'spawn_roll': '0.0',
-    #                 'spawn_pitch': '0.0',
-    #                 'spawn_yaw': '3.14',
-    #                 'use_rviz': use_multi_rviz,
-    #             }.items()
-    #         )
-    #     ]
-    # )
-
     robot3_launch = TimerAction(
         period=9.0,
         actions=[
@@ -253,7 +172,7 @@ def generate_launch_description():
                 launch_arguments={
                     'use_sim_time': use_sim_time,
                     'robot_name': 'rosmaster_x3',
-                    'prefix': 'deliver_bot3',
+                    'prefix': 'delivery_bot3',
                     'use_ignition': use_ignition,
                     'use_plugin': 'True',
                     'use_ros2_control': 'False',
@@ -270,6 +189,7 @@ def generate_launch_description():
             )
         ]
     )
+
 
     robot4_launch = TimerAction(
         period=11.0,
@@ -289,7 +209,7 @@ def generate_launch_description():
                     'spawn_z': '0.05',
                     'spawn_roll': '0.0',
                     'spawn_pitch': '0.0',
-                    'spawn_yaw': '3.14',
+                    'spawn_yaw': '0.0',
                     'use_rviz': use_multi_rviz,
                     'plate_colour': 'purple',
                 }.items()
@@ -297,61 +217,35 @@ def generate_launch_description():
         ]
     )
 
-    # drone_launch = TimerAction(
-    #     period=17.0,
-    #     actions=[
-    #         IncludeLaunchDescription(
-    #             PythonLaunchDescriptionSource(x3_uav_robot),
-    #             launch_arguments={
-    #                 'use_jsp': 'false',
-    #                 'use_jsp_gui': 'false',
-    #                 'robot_name': 'x3_uav',
-    #                 'prefix': 'drone',
-    #                 'use_sim_time': use_sim_time,
-    #                 # 'xacro_file': xacro_file,
-    #                 'use_ignition': use_ignition,
-    #                 'use_plugin': 'True',
-    #                 'use_ros2_control': 'false',
-    #                 'use_mock_hardware': 'false',
-    #                 'spawn_x': '2.5',
-    #                 'spawn_y': '5.0',
-    #                 'spawn_z': '0.05',
-    #                 'spawn_roll': '0.0',
-    #                 'spawn_pitch': '0.0',
-    #                 'spawn_yaw': '0.0',
-    #                 'use_rviz': use_multi_rviz,
-    #             }.items()
-    #         )
-    #     ]
-    # )
 
-    # drone1_launch = TimerAction(
-    #     period=19.0,
-    #     actions=[
-    #         IncludeLaunchDescription(
-    #             PythonLaunchDescriptionSource(x3_uav_robot),
-    #             launch_arguments={
-    #                 'use_jsp': 'false',
-    #                 'use_jsp_gui': 'false',
-    #                 'robot_name': 'x3_uav',
-    #                 'prefix': 'drone1',
-    #                 'use_sim_time': use_sim_time,
-    #                 # 'xacro_file': xacro_file,
-    #                 'use_ignition': use_ignition,
-    #                 'use_plugin': 'True',
-    #                 'use_ros2_control': 'false',
-    #                 'use_mock_hardware': 'false',
-    #                 'spawn_x': '22.0',
-    #                 'spawn_y': '15.0',
-    #                 'spawn_z': '0.05',
-    #                 'spawn_roll': '0.0',
-    #                 'spawn_pitch': '0.0',
-    #                 'spawn_yaw': '0.0',
-    #                 'use_rviz': use_multi_rviz,
-    #             }.items()
-    #         )
-    #     ]
-    # )
+    drone_launch = TimerAction(
+        period=13.0,
+        actions=[
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(x3_uav_robot),
+                launch_arguments={
+                    'use_jsp': 'false',
+                    'use_jsp_gui': 'false',
+                    'robot_name': 'x3_uav',
+                    'prefix': 'drone',
+                    'use_sim_time': use_sim_time,
+                    # 'xacro_file': xacro_file,
+                    'use_ignition': use_ignition,
+                    'use_plugin': 'True',
+                    'use_ros2_control': 'false',
+                    'use_mock_hardware': 'false',
+                    'spawn_x': '2.5',
+                    'spawn_y': '5.0',
+                    'spawn_z': '0.05',
+                    'spawn_roll': '0.0',
+                    'spawn_pitch': '0.0',
+                    'spawn_yaw': '0.0',
+                    'use_rviz': use_multi_rviz,
+                }.items()
+            )
+        ]
+    )
+
 
     single_rviz_node = Node(
         package='rviz2',

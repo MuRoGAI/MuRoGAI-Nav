@@ -3,21 +3,24 @@
     "delivery_bot1",
     "delivery_bot2",
     "delivery_bot3",
-    "cleaning_bot"
+    "cleaning_bot",
+    "drone"
   ],
 
   "robot_capabilities": {
     "delivery_bot1": "Differential drive carry robot for indoor transport and cooperative item delivery.",
     "delivery_bot2": "Differential drive carry robot for indoor transport and cooperative item delivery.",
     "delivery_bot3": "Holonomic carry robot capable of omnidirectional movement for precise transport and cooperative delivery.",
-    "cleaning_bot": "Holonomic carry robot capable of omnidirectional movement for precise transport and cooperative delivery."
+    "cleaning_bot": "Holonomic carry robot capable of omnidirectional movement for precise transport and cooperative delivery.",
+    "drone": "Aerial robot capable of vertical takeoff and landing. It has a RGBD camera."
   },
 
   "robot_morphology": {
     "delivery_bot1": "Drive Type: Differential Drive, Radius: 0.15 m, Payload: 5 kg, Mobility: Non-holonomic",
     "delivery_bot2": "Drive Type: Differential Drive, Radius: 0.15 m, Payload: 5 kg, Mobility: Non-holonomic",
     "delivery_bot3": "Drive Type: Holonomic, Radius: 0.15 m, Payload: 10 kg, Mobility: Omnidirectional",
-    "cleaning_bot": "Drive Type: Holonomic, Radius: 0.15 m, Payload: 10 kg, Mobility: Omnidirectional"
+    "cleaning_bot": "Drive Type: Holonomic, Radius: 0.15 m, Payload: 10 kg, Mobility: Omnidirectional",
+    "drone": "Drive Type: Aerial (Multirotor), Radius: 0.2 m, Payload: 2 kg, Mobility: Fully 3D (x, y, z)"
   },
 
   "robot_states": {
@@ -52,27 +55,34 @@
       "carry_state": "Empty",
       "battery_state": "Full",
       "mode": "Idle"
+    },
+    "drone": {
+      "relative_position": "Free (Airborne or Grounded)",
+      "relative_orientation": "Fully maneuverable in 3D",
+      "carry_state": "Empty",
+      "battery_state": "Full",
+      "mode": "Idle"
     }
   },
 
   "path_planner": {
     "delivery_bot1":{
       "radius":0.25,
-      "max_linear_velocity_x": 0.12,
+      "max_linear_velocity_x": 0.25,
       "max_linear_velocity_y": 0.0,
       "max_angular_velocity_z": 0.4,
-      "max_acceleration": 0.05,
-      "max_angular_acceleration": 0.3,
+      "max_acceleration": 2.5,
+      "max_angular_acceleration": 2.5,
       "colour": "green",
       "type": "Differential Drive Robot"
     },
     "delivery_bot2":{
       "radius":0.25,
-      "max_linear_velocity_x": 0.12,
+      "max_linear_velocity_x": 0.25,
       "max_linear_velocity_y": 0.0,
       "max_angular_velocity_z": 0.4,
-      "max_acceleration": 0.05,
-      "max_angular_acceleration": 0.3,
+      "max_acceleration": 2.5,
+      "max_angular_acceleration": 2.5,
       "colour": "blue",
       "type": "Differential Drive Robot"
     },
@@ -81,8 +91,8 @@
       "max_linear_velocity_x": 0.25,
       "max_linear_velocity_y": 0.25,
       "max_angular_velocity_z": 0.4,
-      "max_acceleration": 0.4,
-      "max_angular_acceleration": 3.5,
+      "max_acceleration": 2.5,
+      "max_angular_acceleration": 2.5,
       "colour": "purple",
       "type": "Holonomic Drive Robot"
     },
@@ -91,20 +101,35 @@
       "max_linear_velocity_x": 0.25,
       "max_linear_velocity_y": 0.25,
       "max_angular_velocity_z": 0.4,
-      "max_acceleration": 0.4,
-      "max_angular_acceleration": 3.5,
-      "colour": "purple",
+      "max_acceleration": 2.5,
+      "max_angular_acceleration": 2.5,
+      "colour": "red",
       "type": "Holonomic Drive Robot"
+    },
+    "drone":{
+      "radius":0.3,
+      "max_linear_velocity_x": 1.5,
+      "max_linear_velocity_y": 1.5,
+      "max_linear_velocity_z": 1.0,
+      "max_angular_velocity_z": 1.0,
+      "max_acceleration": 1.0,
+      "max_angular_acceleration": 0.8,
+      "colour": "orange",
+      "type": "Aerial Robot (Multirotor)"
     }
   },
 
   "task_specific_rules": [
-    "All robots are designated as carry robots for transport and delivery tasks.",
-    "Differential drive robots are preferred for straight-line and formation-based transport tasks.",
-    "Holonomic robots are preferred for precise positioning, docking, and confined space transport.",
-    "Holonomic robots may assist differential drive robots during cooperative payload transport.",
-    "One lady is sitting along in the chair10.",
-    "One boy is sitting alone in the chair3."
+    "This is restaurant environment, where robots servem clean and help. ",
+    "The entire restaurant is maintained by robots. ",
+    "Stall 1 has all types of vegetarian food. ",
+    "Stall 2 has all types of juices or drinks. ",
+    "Tables 1, 2, 3, 4, 5, and 6 are present in the restaurant environment. ",
+    "There are 2 sinks in the environment. ",
+    "Whenever specific information is not known ask the drone about it. ",
+    "After the drone replies to your question, you can continue to allocate task. ",
+    "Answering questions should be classified as an independent task. ",
+    "Always assign the task with the correct Stall Number or Table Number. If the information is not known, ask the drone for it. "
   ],
 
   "task_replanning_rules": [

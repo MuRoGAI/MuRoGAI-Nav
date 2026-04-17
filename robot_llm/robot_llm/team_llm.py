@@ -1,26 +1,31 @@
 #!/usr/bin/env python3
 
+import os
+import re
 import json
 import time
-import re
 import openai
+
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import String
+from std_msgs.msg import String, Bool
+
 from dataclasses import dataclass
-import os
 from rclpy.callback_groups import (
     MutuallyExclusiveCallbackGroup,
     ReentrantCallbackGroup
 )
-from threading import Thread, Lock
 from ament_index_python.packages import get_package_share_directory
 
+from navigation_manager_interface.msg import NavigationRobotRequest, RobotGoalStatus, CancelNavigationRequest
 
-ROBOT_NAME   = 'robots_team'
-ROBOT_TYPE   = 'Team of Robots'
+# ROBOT_NAME   = 'team1'
+TEAM_NAME   = 'team1'
+# ROBOT_TYPE   = 'Differential Drive'
+NODE_NAME    = TEAM_NAME + '_llm_node'
 PACKAGE_NAME = 'robot_llm'
-NODE_NAME    = 'teams_llm_node'
+
+MODEL = 'gpt-4o'
 
 
 class TaskCancelledException(Exception):
@@ -37,25 +42,21 @@ class TestOption:
     example_code: str
 
 option_list = [
-    # TestOption(
-    #     name="Assemble", # GetIntoFormation
-    #     id=0,
-    #     description="This is used get into formation.",
-    #     example_code="node.assemble()" # navigation manager selects a suitable point using the centroid of all the robots and a default radius
-    # ),
-    # TestOption(
-    #     name="AssembleAt", #
-    #     id=0,
-    #     description="This is use to assemble at a particular location",
-    #     example_code="node.assemble_at(goal='round table')"  # goal from position from task
-    # ),
     TestOption(
-        name="Goto",
-        id=1,
-        description="This is used to goto only after robots are already in formation",
-        example_code="node.goto(goal='fridge')" # goal from position from task
-    )
+        name='Goto',
+        id=0,
+        # description='Navigate to any location. when it is a team task, you must specify formation robots as a list.',
+        description='Navigate to any location with the team.',
+        example_code="node.goto(goal='fridge')"
+    ),
+    # TestOption(
+    #     name='Find',
+    #     id=1,
+    #     description='Find and locate any object or person in the environment.',
+    #     example_code="node.find('chair')"
+    # )
 ]
+
 
 class RobotLLMNode(Node):
     """
@@ -71,34 +72,47 @@ class RobotLLMNode(Node):
         super().__init__(NODE_NAME)
 
         # ---- Parameters ----
-        self.declare_parameter('robot_name', ROBOT_NAME)
-        self.robot_name: str = self.get_parameter('robot_name').value
-        robot_task_topic = f'{self.robot_name}_task_status'
+        self.declare_parameter('team_name', TEAM_NAME)
+        self.team_name: str = self.get_parameter('team_name').value
 
-        self.declare_parameter("config_file", "robot_config_room_202")
+        self.declare_parameter('robot_names', ['robot1'])
+        self.robot_names: list[str] = self.get_parameter('robot_names').value
+
+        # self.declare_parameter('robot_names', ['diff-drive'])
+        # self.robot_names: list[str] = self.get_parameter('robot_names').value
+
+        robot_task_topic = 'team_task_status'
+        self.robot_name = self.team_name
+
+        self.declare_parameter("config_file", "robot_config_restaurant2")
         cfg_file_name = self.get_parameter("config_file").get_parameter_value().string_value
         self.config_file = cfg_file_name + '.json'
-
+        
         package_share = get_package_share_directory("chatty")
         cfg_path = os.path.join(package_share, "config", self.config_file)
 
         with open(cfg_path, 'r') as f:
             self.robot_config = json.load(f)
 
+        self.robot_types = []
+        for robot_name in self.robot_names:
+            robot_type = self.get_robot_type(self.robot_config, robot_name)
+            self.robot_types.append(robot_type)
+
+
         RobotLLMNode._instance = self
 
         self.current_time = f"Hours: {00}, Minutes: {10}, Seconds: {00}"
         self.robot_task = ""
         self.robot_states = {}
-                
-        self.team_workers = {}      # team -> Thread
-        self.team_cancel  = {}      # team -> bool
-        self.team_queues  = {}      # team -> deque[str]
-        self.team_lock    = Lock()
 
         # ========== CANCELLATION MECHANISM ==========
         self._task_cancelled = False  # Simple boolean flag
         # ============================================
+
+        # ========== GOAL STATUS FLAG ==========
+        self._goal_reached = None  # None=waiting, True=success, False=failed
+        # ======================================
 
         # GROUPS
         self.single_group = MutuallyExclusiveCallbackGroup()
@@ -110,6 +124,10 @@ class RobotLLMNode(Node):
         self.pub_robot_states = self.create_publisher(String, '/robot_states', 10)
         self.pub_robot_task = self.create_publisher(String, robot_task_topic, 10)
 
+        # self._goto_client = self.create_client(GotoPoseHolonomic, "/r1/goto_pose", callback_group=self.multi_group)
+        # self._cancel_goto_pub = self.create_publisher(Bool, "/r1/cancel_goto_pose_goal", 10)
+        self._request_goto_pub = self.create_publisher(NavigationRobotRequest, '/navigation/request', 10)
+        self._cancel_goto_pub = self.create_publisher(CancelNavigationRequest, "/navigation/cancel", 10)
 
         # ---- Subscriptions ----
         self.sub_robot_states = self.create_subscription(
@@ -134,6 +152,10 @@ class RobotLLMNode(Node):
         # )
         self.sub_chat_task_status = self.create_subscription(
             String, '/chat/task_status', self.on_chat_task_status, 10
+        )
+
+        self.goal_status_sub_ = self.create_subscription(
+            RobotGoalStatus, "/controller/goal_status", self.goal_status_callback, 10
         )
 
         # ---- Timer Callbacks ----
@@ -163,6 +185,7 @@ class RobotLLMNode(Node):
     @classmethod
     def get_instance(cls):
         """Safely get or create the singleton node."""
+
         if cls._instance is None:
             raise RuntimeError("RobotLLMNode has not been created yet! Did you run the node?")
         return cls._instance
@@ -200,17 +223,53 @@ class RobotLLMNode(Node):
                 file.write("")
             self.get_logger().warn(f"Robot task history file not found. Created new file: {self.robot_task_history}")
 
-    def normalize_team_name(self, key: str) -> str | None:
-        """
-        Convert:
-        team 5, Team_5, team5_task, team_5_tasks → team5
-        """
-        key = key.lower().replace(" ", "_")
-        m = re.search(r"team[_]?(\d+)", key)
-        if not m:
-            return None
-        return f"team{m.group(1)}"
+    def get_robot_type(self, config, robot_name):
+        try:
+            return config["path_planner"][robot_name]["type"]
+        except KeyError:
+            self.get_logger().warn(
+                f"Robot type not found for '{robot_name}', using 'Unknown'"
+            )
+            return "Unknown"
 
+    def _is_team_key(self, key: str) -> bool:
+        """Check if a key matches team naming patterns: team_1, Team1, TEAM_N, TEam_N, etc."""
+        return bool(re.match(r'^team[_]?\d+$', key.strip(), re.IGNORECASE))
+
+    def _parse_team_task(self, value: str):
+        """
+        Parse team task value of format: '[robot1, robot2, robot3]: actual task'
+        
+        Returns:
+            (robot_list, task_str) if valid format, else (None, None)
+        """
+        match = re.match(r'^\[([^\]]+)\]\s*:\s*(.+)$', value.strip())
+        if not match:
+            return None, None
+        
+        robots_raw = match.group(1)
+        task_str   = match.group(2).strip()
+        
+        robot_list = [r.strip() for r in robots_raw.split(',') if r.strip()]
+        return robot_list, task_str
+
+    def _robot_names_match(self, parsed_robots: list) -> bool:
+        """
+        Check if parsed_robots matches self.robot_names regardless of order.
+        Normalizes: lowercase + spaces replaced with underscores.
+        e.g. 'Delivery Bot1' -> 'delivery_bot1'
+        """
+        def normalize(name: str) -> str:
+            return name.lower().strip().replace(" ", "_")
+
+        normalized_parsed = set(normalize(r) for r in parsed_robots)
+        normalized_self   = set(normalize(r) for r in self.robot_names)
+
+        self.get_logger().debug(
+            f"Matching parsed={normalized_parsed} vs self.robot_names={normalized_self}"
+        )
+
+        return normalized_parsed == normalized_self
 
     # -------------------- Callbacks --------------------
 
@@ -227,183 +286,100 @@ class RobotLLMNode(Node):
         except json.JSONDecodeError:
             self.get_logger().error(f"/robot_states not JSON: {msg.data}")
 
-    def cancel_team(self, team_name: str):
-        with self.team_lock:
-            self.team_cancel[team_name] = True
-
-    # def run_team_tasks(self, team_name: str, tasks: list[str]) -> None:
-    #     try:
-    #         self.get_logger().info(f"[{team_name}] Started parallel execution: {tasks}")
-
-    #         for task in tasks:
-    #             if self._task_cancelled or self.team_cancel.get(team_name, False):
-    #                 self.get_logger().warn(f"[{team_name}] Cancelled")
-    #                 return
-
-    #             task_label = f"{team_name}: {task}"
-    #             self.robot_task_in_progress(task_label)
-
-    #             self.execute_task(task_label)
-
-    #         self.get_logger().info(f"[{team_name}] All tasks completed")
-    #         self.robot_task_completed(f"{team_name} tasks")
-
-    #     except TaskCancelledException:
-    #         self.get_logger().warn(f"[{team_name}] Task cancelled")
-    #         self.robot_task_interrupted(f"{team_name} tasks")
-
-    #     except Exception as e:
-    #         self.get_logger().error(f"[{team_name}] Task failed → {e}")
-    #         self.robot_task_interrupted(f"{team_name} tasks")
-
-    #     finally:
-    #         # CLEANUP — THIS IS CRITICAL
-    #         with self.team_lock:
-    #             self.team_workers.pop(team_name, None)
-    #             self.team_cancel.pop(team_name, None)
-
-    #         self.get_logger().info(f"[{team_name}] Thread exited cleanly")
-
-
-    def run_team_tasks(self, team: str) -> None:
-        try:
-            self.get_logger().info(f"[{team}] Thread started")
-
-            while True:
-                with self.team_lock:
-                    if self.team_cancel.get(team, False):
-                        self.get_logger().warn(f"[{team}] Cancelled")
-                        return
-
-                    if not self.team_queues.get(team):
-                        return
-
-                    task = self.team_queues[team].popleft()
-
-                task_label = f"{team}: {task}"
-                self.robot_task_in_progress(task_label)
-
-                self.execute_task(task_label)
-
-        except TaskCancelledException:
-            self.get_logger().warn(f"[{team}] Task cancelled")
-
-        except Exception as e:
-            self.get_logger().error(f"[{team}] Task failed → {e}")
-
-        finally:
-            with self.team_lock:
-                self.team_workers.pop(team, None)
-                self.team_queues.pop(team, None)
-                self.team_cancel.pop(team, None)
-
-            self.robot_task_completed(f"{team} tasks")
-            self.get_logger().info(f"[{team}] Thread exited cleanly")
-
-
     def on_tasks_json(self, msg: String) -> None:
-        """Handle tasks JSON from task manager (team-based, parallel-safe)."""
-        self.get_logger().debug(f"Received /task_manager/tasks_json: {msg.data}")
-
+        """Handle tasks JSON from task manager."""
+        self.get_logger().debug(f'Received /task_manager/tasks_json: {msg.data}')
         try:
             data = json.loads(msg.data)
-
-            # --------------------------------------------------
-            # Normalize incoming task keys
-            # --------------------------------------------------
             robot_tasks = {
                 key.lower().replace(" ", "_"): value
                 for key, value in data.get("robot_tasks", {}).items()
             }
 
-            team_tasks = {}   # { "team5": [task1, task2, ...] }
+            # ----------------------------------------------------------------
+            # TEAM TASK EXTRACTION
+            # Look for keys matching team_N / teamN / TEAM_N patterns,
+            # then verify the robot list inside [...] matches self.robot_names.
+            # ----------------------------------------------------------------
+            team_task = None
 
-            # --------------------------------------------------
-            # Extract & normalize team tasks
-            # --------------------------------------------------
-            for key, task in robot_tasks.items():
-                team = self.normalize_team_name(key)
-                if not team:
+            for key, value in robot_tasks.items():
+                if not self._is_team_key(key):
                     continue
 
-                if not isinstance(task, str) or not task.strip():
+                if not value or not value.strip():
+                    self.get_logger().debug(f"Team key '{key}' has empty value, skipping.")
                     continue
 
-                team_tasks.setdefault(team, []).append(task.strip())
+                parsed_robots, task_str = self._parse_team_task(value)
 
-            if not team_tasks:
-                self.get_logger().debug("No team tasks found.")
-                return
+                if parsed_robots is None:
+                    self.get_logger().warn(
+                        f"Team key '{key}' value does not match expected format "
+                        f"'[robot1, robot2, ...]: task'. Got: '{value}'"
+                    )
+                    continue
 
-            self.get_logger().info(f"Team tasks detected: {team_tasks}")
+                self.get_logger().debug(
+                    f"Team key '{key}': parsed robots={parsed_robots}, task='{task_str}'"
+                )
 
-            # --------------------------------------------------
-            # HANDLE STOP PER TEAM (before threading)
-            # --------------------------------------------------
-            for team, tasks in list(team_tasks.items()):
-                stop_tasks = [t for t in tasks if "stop" in t.lower()]
-                if stop_tasks:
-                    self.get_logger().warn(f"[{team}] STOP task received")
-
-                    # cancel running team (if any)
-                    self.cancel_team(team)
-
-                    # publish stop status
-                    status = String()
-                    status.data = f"{team.upper()} (status): STOP TASKS COMPLETED"
-                    self.pub_task_status.publish(status)
-
-                    # remove STOP tasks from execution list
-                    team_tasks[team] = [t for t in tasks if "stop" not in t.lower()]
-
-            # remove teams that now have no executable tasks
-            team_tasks = {t: q for t, q in team_tasks.items() if q}
-            if not team_tasks:
-                self.get_logger().info("Only STOP tasks received. Nothing to execute.")
-                return
-
-            # --------------------------------------------------
-            # ENQUEUE TASKS + START THREADS IF NEEDED
-            # --------------------------------------------------
-            for team, tasks in team_tasks.items():
-                with self.team_lock:
-
-                    # create task queue if first time
-                    if team not in self.team_queues:
-                        from collections import deque
-                        self.team_queues[team] = deque()
-
-                    # enqueue new tasks
-                    for task in tasks:
-                        self.team_queues[team].append(task)
-                        self.get_logger().info(f"[{team}] Queued task: {task}")
-
-                    # if team already running → do NOT start new thread
-                    if team in self.team_workers and self.team_workers[team].is_alive():
-                        self.get_logger().info(
-                            f"[{team}] Worker already running, tasks appended"
-                        )
-                        continue
-
-                    # otherwise start a new worker thread
-                    self.team_cancel[team] = False
-
-                    worker = Thread(
-                        target=self.run_team_tasks,
-                        args=(team,),
-                        daemon=True
+                if self._robot_names_match(parsed_robots):
+                    self.get_logger().info(
+                        f"Team task matched for key '{key}': robots={parsed_robots}, task='{task_str}'"
+                    )
+                    team_task = task_str
+                    break  # Use the first matching team task found
+                else:
+                    self.get_logger().debug(
+                        f"Team key '{key}' robots {parsed_robots} do not match "
+                        f"self.robot_names {self.robot_names}. Skipping."
                     )
 
-                    self.team_workers[team] = worker
-                    worker.start()
+            if not team_task:
+                self.get_logger().debug(
+                    f"No matching team task found for robot_names={self.robot_names}. Ignoring message."
+                )
+                return
 
-                    self.get_logger().info(f"[{team}] Worker thread started")
+            robot_task = team_task
+
+            # ----------------------------------------------------------------
+            # STOP handling
+            # ----------------------------------------------------------------
+            if "stop" in robot_task.lower():
+                self.get_logger().info(f"{self.team_name} task: {robot_task}")
+                self.robot_task_interrupted(robot_task)
+                self.stop_tasks()
+                status_msg = String()
+                status_msg.data = f'{self.team_name.capitalize()} (status): STOP TASKS COMPLETED'
+                self.pub_task_status.publish(status_msg)
+                return
+
+            self.robot_task = robot_task
+            self.get_logger().info(f"{self.team_name} task: {robot_task}")
+
+            self.get_logger().info("Robot Task in Progress ..")
+            self.robot_task_in_progress(robot_task)
+
+            # ----------------------------------------------------------------
+            # Execute
+            # ----------------------------------------------------------------
+            self.reset_cancellation()
+            self.get_logger().info("Executing Robot Task ..")
+            try:
+                self.execute_task(robot_task)
+                self.get_logger().info("On Task Json: Task executed")
+            except TaskCancelledException:
+                self.get_logger().warn("Task execution was cancelled")
+                self.robot_task_interrupted(robot_task)
 
         except json.JSONDecodeError:
             self.get_logger().warn(
-                f"Received /task_manager/tasks_json with invalid JSON; raw: {msg.data}"
+                f'Received /task_manager/tasks_json with invalid JSON; raw: {msg.data}'
             )
-
+            # status.data = f'{self.robot_name}: received invalid tasks JSON'
+        # self.pub_task_status.publish(status)
 
     def on_chat_output(self, msg: String) -> None:
         """Handle raw chat output and save it to the history file."""
@@ -422,6 +398,7 @@ class RobotLLMNode(Node):
         with open(self.history_file, "a") as file:
             file.write(self.chat_entry + "\n")
 
+
     # def on_chat_history(self, msg: String) -> None:
     #     """Handle chat history stream."""
     #     # self.get_logger().debug(f'Received /chat/history len={len(msg.data)}')
@@ -436,6 +413,28 @@ class RobotLLMNode(Node):
         """Update current time from /current_time topic."""
         self.get_logger().debug(f'Received /current_time: {msg.data}')
         self.current_time = msg.data
+
+    def goal_status_callback(self, msg: RobotGoalStatus) -> None:
+        """Handle goal status updates from navigation controller."""
+        robot_name = msg.robot_name
+        goal_reached = msg.goal_reached
+
+        if robot_name == self.robot_name:
+            self._goal_reached = goal_reached
+            
+            if goal_reached:
+                self.get_logger().info(f'{self.robot_name}: Navigation goal reached successfully')
+                self.update_robot_state({
+                    "last_goal_status": "reached",
+                    "last_goal_timestamp": time.time()
+                })
+            else:
+                self.get_logger().warn(f'{self.robot_name}: Navigation goal failed')
+                self.update_robot_state({
+                    "last_goal_status": "failed",
+                    "last_goal_timestamp": time.time()
+                })
+
 
     # -------------------- Helpers (optional) --------------------
 
@@ -506,7 +505,6 @@ class RobotLLMNode(Node):
 
         return
 
-
     # -------------------- Task Status Methods --------------------
 
     def robot_task_in_progress(self, robot_task) -> None:
@@ -521,10 +519,11 @@ class RobotLLMNode(Node):
         self.robot_task_status_update(task_in_progress_msg)
         return
 
-    def robot_task_completed(self, robot_task=None) -> None:
+    def robot_task_completed(self, robot_task) -> None:
         # self.task_completed = True
         # self.task_in_progress = False
         # self.task_interrupted = False
+
         if not robot_task:
             robot_task = self.robot_task
 
@@ -533,7 +532,7 @@ class RobotLLMNode(Node):
         self.robot_task_status_update(task_completed_msg)
         return
 
-    def robot_task_interrupted(self, robot_task=None) -> None:
+    def robot_task_interrupted(self, robot_task) -> None:
         # self.task_completed = False
         # self.task_in_progress = False
         # self.task_interrupted = True
@@ -579,28 +578,24 @@ class RobotLLMNode(Node):
         self.get_logger().info("Robot task status updated... ")
         return
 
-    def tasks_completed(self, task=None) -> None:
+    def tasks_completed(self, task) -> None:
         msg = String()
-        msg.data = f"{self.robot_name.capitalize()} (status): ALL TASKS COMPLETED"
+        # msg.data = f"{self.robot_name.capitalize()} (status): ALL TASKS COMPLETED"
+        msg.data = f"{self.robot_name.capitalize()} [{', '.join(self.robot_names)}] (status): ALL TASKS COMPLETED"
         self.pub_task_status.publish(msg)
         return
 
     def stop_tasks(self) -> None:
-        self.get_logger().info("Stopping ALL team tasks")
+        """Stop all robot tasks (stub function)."""
+        self.get_logger().info("Stopping all robot tasks...")
 
-        with self.team_lock:
-            for team in self.team_cancel:
-                self.team_cancel[team] = True
+        msg = Bool()
+        msg.data = True
+        self._cancel_find_pub.publish(msg)
+        self._cancel_goto_pub.publish(msg)
 
-        # ========== SET CANCELLATION FLAG ==========
-        self._task_cancelled = True
-        # ===========================================
-
-        msg = String()
-        msg.data = "STOP"
-        self._cancel_pub.publish(msg)
-
-        self.get_logger().info("Cancel request sent to /start_pick/cancel")
+        self.get_logger().info("Cancel request sent to /goto/cancel")
+        self.get_logger().info("Cancel request sent to /find/cancel")
         self.get_logger().info("All tasks of the robot have been stopped.")
 
     # -------------------- Helper Methods --------------------
@@ -644,7 +639,7 @@ class RobotLLMNode(Node):
 
         try:
             response = openai.chat.completions.create(
-                model="gpt-4o",
+                model=MODEL,
                 messages=[
                     {'role': 'system', 'content': prompt},
                     {'role': 'user', 'content': task}
@@ -748,7 +743,6 @@ class RobotLLMNode(Node):
 
         return "\n".join(lines)
 
-
     def execute_task(self, task: str) -> None:
         """Execute the given robot task using LLM decision-making."""
         chat_history = self.read_chat_history()
@@ -763,20 +757,26 @@ class RobotLLMNode(Node):
 
             self.get_logger().debug(f"Action message: {available_actions}")
             self.get_logger().info("Building system messages")
-            
+
+
+
             prompt = (
-                f"You are a robot control system controlling a {ROBOT_TYPE} named '{self.robot_name}'. "
-                "You must generate python code that issues commands for the entire team. "
-                # "You must generate python code to perform the task. "
+                "You are a team robot control system managing a team. "
+                "You are controlling these robots:\n"
+                + "\n".join(
+                    f"  - {name} (Type: {rtype})"
+                    for name, rtype in zip(self.robot_names, self.robot_types)
+                ) +
+                "You must generate python code to perform the task. "
                 "Based on the given task, generate code using available actions."
-                f"Robot system context:\n{robot_context}\n\n"
+                f"Robot system context:\n{robot_context}\n"
                 f"Recent Tasks (History): {chat_history} "
                 f"Current States of All Robots: {self.robot_states} "
                 f"Available Actions: {available_actions} "
-                "Using the class reference name same as the example is important. "
+                "The variable 'node' is already the live RobotLLMNode instance. "
                 "Use the name 'node' to refer to the RobotLLMNode instance. "
-                "Your generating code note this, available actions are case-sensitive, so DO NOT change the case of any function or variable names. "
-                # "IMPORTANT: Add 'node.check_cancelled()' at the start of loops and between long operations. "
+                "Using the class reference name same as the example is important. "
+                "To serve anything to anyone first goto stall and then goto the person. "
             )
 
             self.get_logger().debug(f"Prompt message: {prompt}")
@@ -801,25 +801,200 @@ class RobotLLMNode(Node):
             self.get_logger().error("Failed to generate valid code for the task.")
             self.robot_task_interrupted(task)
 
-    # —————————————————————— LLM FUNCTIONS ——————————————————————
+    def find(self, target: str) -> bool:
+        """
+        Find and locate a target object or person.
+        
+        Args:
+            target: Name of the object or person to find (e.g., 'chair', 'person', 'cup')
+        
+        Returns:
+            bool: True if target found, False otherwise
+        """
+        # ========== CHECK CANCELLATION ==========
+        self.check_cancelled()
+        # ========================================
+        
+        self.get_logger().info(f"Starting search for: {target}")
+        
+        # Update robot state: Search started
+        self.update_robot_state({
+            "current_task": "find",
+            "task_status": "searching",
+            "search_target": target,
+            "activity": f"Searching for {target}"
+        })
+        
+        # Simulate searching process
+        self.get_logger().info(f"Scanning environment for {target}...")
+        
+        # Update state: Actively scanning
+        self.update_robot_state({
+            "task_status": "scanning",
+            "scan_started_at": time.time(),
+            "activity": f"Actively scanning for {target}"
+        })
+        
+        # Simulate search time with cancellation checks
+        search_duration = 3.0  # seconds
+        start_time = time.time()
+        
+        while time.time() - start_time < search_duration:
+            # ========== CHECK CANCELLATION IN LOOP ==========
+            self.check_cancelled()
+            # ================================================
+            time.sleep(0.5)
+            self.get_logger().debug(f"Still searching for {target}...")
+        
+        # Simulate find result (dummy - always succeeds for now)
+        found = True
+        
+        if found:
+            self.get_logger().info(f"Successfully found {target}")
+            
+            # Update state: Target found
+            self.update_robot_state({
+                "task_status": "target_found",
+                "search_result": "success",
+                "found_target": target,
+                "found_at": time.time(),
+                "target_location": "unknown",  # In real implementation, this would be actual coordinates
+                "activity": f"Found {target}"
+            })
+            return True
+        else:
+            self.get_logger().warn(f"Failed to find {target}")
+            
+            # Update state: Target not found
+            self.update_robot_state({
+                "task_status": "target_not_found",
+                "search_result": "failed",
+                "searched_for": target,
+                "search_failed_at": time.time(),
+                "activity": f"Could not locate {target}"
+            })
+            return False
 
-    def assemble(self) -> bool:
-        self.get_logger().info("Assemlbling ...")
-        time.sleep(3)
-        self.robot_task_completed(f"assemble")
-        return True
+    def wait_for_goto_complete(self, goal: str, timeout: float = 100000.0) -> bool:
+        """
+        Wait for goto navigation to complete.
+        
+        Args:
+            goal: The goal location being navigated to
+            timeout: Maximum time to wait in seconds (default: 120s)
+        
+        Returns:
+            bool: True if goal reached, False if failed or timed out
+        """
+        self.get_logger().info(f"Waiting for navigation to {goal} to complete (timeout={timeout}s)...")
+        
+        # Reset goal status flag before waiting
+        self._goal_reached = None
+        
+        start_time = time.time()
+        deadline = start_time + timeout
+        
+        while rclpy.ok():
+            # ========== CHECK CANCELLATION ==========
+            try:
+                self.check_cancelled()
+            except TaskCancelledException:
+                self.get_logger().warn("Navigation cancelled during wait")
+                return False
+            # ========================================
+            
+            # Check if we've received a goal status update
+            if self._goal_reached is not None:
+                if self._goal_reached:
+                    elapsed = time.time() - start_time
+                    self.get_logger().info(f"Navigation to {goal} completed successfully in {elapsed:.2f}s")
+                    return True
+                else:
+                    self.get_logger().warn(f"Navigation to {goal} failed")
+                    return False
+            
+            # Check timeout
+            if time.time() > deadline:
+                elapsed = time.time() - start_time
+                self.get_logger().error(f"Navigation to {goal} timed out after {elapsed:.2f}s")
+                return False
+            
+            # Sleep briefly to avoid busy waiting
+            time.sleep(0.1)
+        
+        self.get_logger().error("ROS shutdown during navigation wait")
+        return False
 
-    def assemble_at(self, goal='kitchen') -> bool :
-        self.get_logger().info(f"Assemlbling at {goal}...")
-        time.sleep(3)
-        self.robot_task_completed(f"assemble at {goal}")
-        return True
+    def Goto(self, goal: str, formation: list = None) -> bool:
+        self.goto(goal, formation)
 
-    def goto(self, goal='chair') -> bool :
-        self.get_logger().info(f"Ging to {goal}...")
-        time.sleep(3)
-        self.robot_task_completed(f"goto {goal}")
-        return True
+    def goto(self, goal: str, formation: list = None) -> bool:
+        # ========== CHECK CANCELLATION ==========
+        self.check_cancelled()
+        # ========================================
+
+        self.get_logger().info(f"Requesting navigation to goal: {goal}")
+
+        self.update_robot_state({
+            "current_task": "goto",
+            "task_status": "requesting_navigation",
+            "target_goal": goal,
+            "activity": f"Navigating to {goal}"
+        })
+
+        msg = NavigationRobotRequest()
+        msg.robot_name = self.robot_name  # team name e.g. 'team1'
+        msg.goal = goal
+
+        # For team node: always use self.robot_names as formation
+        # unless caller explicitly passes a different formation list
+        if formation is not None and isinstance(formation, list):
+            msg.formation_robots = formation
+            self.get_logger().info(f"Formation overridden by caller: {formation}")
+        else:
+            msg.formation_robots = self.robot_names  # default: all team robots
+            self.get_logger().info(f"Formation set to team robots: {self.robot_names}")
+
+        self.update_robot_state({
+            "formation_active": True,
+            "formation_robots": msg.formation_robots,
+            "formation_role": "leader"
+        })
+
+        self._request_goto_pub.publish(msg)
+
+        self.get_logger().info(
+            f"Navigation request sent: robot={msg.robot_name}, goal={msg.goal}, "
+            f"formation={msg.formation_robots}"
+        )
+
+        self.update_robot_state({
+            "task_status": "navigating",
+            "navigation_requested_at": time.time()
+        })
+
+        success = self.wait_for_goto_complete(goal)
+
+        if success:
+            self.get_logger().info(f"Navigation to {goal} completed successfully")
+            self.update_robot_state({
+                "task_status": "navigation_completed",
+                "navigation_result": "success",
+                "current_location": goal,
+                "arrived_at": time.time(),
+                "activity": f"Arrived at {goal}"
+            })
+            return True
+        else:
+            self.get_logger().error(f"Navigation to {goal} failed or timed out")
+            self.update_robot_state({
+                "task_status": "navigation_failed",
+                "navigation_result": "failed",
+                "failed_goal": goal,
+                "failure_time": time.time(),
+                "activity": f"Failed to reach {goal}"
+            })
+            return False
 
 def execute_python_code(code: str, node=None):
     """Execute generated Python code safely with cancellation support."""
@@ -841,18 +1016,13 @@ def execute_python_code(code: str, node=None):
         })
         # =================================================================
         node.get_logger().info("Code executed successfully")
-
-        # node.get_logger().info("Robot Task Completed.")
-        # node.robot_task_completed()
-        # node.tasks_completed()
-
     except TaskCancelledException:
         node.get_logger().warn("Code execution cancelled")
         raise  # Re-raise so execute_task can handle it
     except TypeError as e:
         pass
     except Exception as e:
-        node.get_logger().error("Failed to execute generated code: %s", e)
+        node.get_logger().error(f"Failed to execute generated code: {e}")
 
 
 def main(args=None):
@@ -864,6 +1034,8 @@ def main(args=None):
 
     try:
         executor.spin()
+    except KeyboardInterrupt:
+        node.get_logger().info("Keyboard interrupt received")
     finally:
         node.destroy_node()
         rclpy.shutdown()

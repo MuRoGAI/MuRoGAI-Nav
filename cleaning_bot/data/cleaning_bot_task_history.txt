@@ -1,2 +1,3 @@
 Cleaning_bot (status) :  : NO CURRENT TASK
-Cleaning_bot (status) : go to sink : TASK IN PROGRESS
+Cleaning_bot (status) : go to sink2 : TASK IN PROGRESS
+Cleaning_bot (status) : go to sink2 : TASK COMPLETED

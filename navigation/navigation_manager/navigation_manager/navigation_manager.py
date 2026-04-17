@@ -24,7 +24,7 @@ from openai import OpenAI
 # Global LLM Configuration
 # ==================================================
 
-LLM_MODEL_NAME = "gpt-4.1"
+MODEL = "gpt-4.1"
 
 def quaternion_to_yaw(qx, qy, qz, qw) -> float:
     """
@@ -106,7 +106,7 @@ class NavigationManager(Node):
             self.get_logger().warning(f"No robot_names found in {self.config_file_path}")
         else:
             for robot_name in robot_names:
-                topic_name = f"/{robot_name}/odom_world"
+                topic_name = f"/{robot_name}/odom"
 
                 self.get_logger().info(f"Subscribing to odometry: {topic_name}")
 
@@ -159,7 +159,7 @@ class NavigationManager(Node):
             "   Your job is to decide where each robot should navigate based on a request. "
             "   The robots can goto the goal position alone also in a formation with other robot. "
             "   Your output must be what should be the robot location if it has to goto goal. It must not collide with any objects or any other robots. "
-            "   Incomplete goal must be resent. "
+            # "   Omitting an incomplete goal will cause a robot to stop mid-task - this is a critical failure. so  INCOMPLETE GOALS MUST ALWAYS BE RESENT"
             "\n"
             # "   INPUTS:"
             # f"   Environment and robot configuration data: {json.dumps(self.config_data)}. "
@@ -178,6 +178,7 @@ class NavigationManager(Node):
             "   If there is any Formation or single Robot in the assigned id, then that id can not be replacable, for that also goal pose must be found. "
             "   For any formation group key starting with 'F', the value must be an object containing the fields centroid_x, centroid_y, formation_yaw, desired_radius, and robots. "
             "   The centroid_x and centroid_y fields must be floating point values representing the formation center position in meters. "
+            "   For formation groups, formation_yaw represents the global orientation of the entire formation in radians and applies to all robots inside that formation. "
             "   The formation_yaw field must be a floating point value expressed in radians and must not be expressed in degrees. "
             "   The desired_radius field must be a floating point value representing the desired formation radius in meters and must be greater than zero. "
             # "   The robots field must be a list of robot objects with fields:robot,x,y,yaw. "
@@ -191,15 +192,14 @@ class NavigationManager(Node):
             # "   colour (string) representing robot visualization or identification label, "
             # "   type (string) representing the robot drive model such as Differential Drive, Omnidirectional Drive, or Holonomic Drive. "
             # "   These fields must not be modified arbitrarily and must remain consistent with the provided configuration and example format. "
-            "   For formation groups, formation_yaw represents the global orientation of the entire formation in radians and applies to all robots inside that formation. "
             # "   Individual robot yaw still represents each robot's own heading relative to the world frame. "
             "   When generating goal positions, you must respect robot radius to avoid collisions with obstacles and other robots, "
             # "   and respect max_velocity and max_angular_velocity_z as motion constraints when determining feasible target poses. "
-            "   While generating goal positions if any robot/s is asked to goto any object, the position must have a safe distance from the object so that there wont be any collision. "
-            "   Robots must maintain safe distance that does not mean robot goal should be far  from actual goal"
+            "   While generating goal positions if any robot/s is asked to goto any object, the position must have a safe distance from the object so that there will not be any collision. "
+            "   Robots must maintain safe distance that does not mean robot goal should be far from actual goal. "
             "   While generating goal pose for formation the goal pose of the EVERY robot in formation SHOULD NOT collide with any object. "
-            "   It is always better to keep give distance from your calculated goal. Factor of Safety. "
-            "   You can use the 'rotation' of each object in the Map metadata information to check the in which direction the object is faced. "
+            # "   It is always better to keep give distance from your calculated goal. Factor of Safety. "
+            # "   You can use the 'rotation' of each object in the Map metadata information to check the in which direction the object is faced. "
             # "   The output must be in the json type. "
             # "   Orientation of robot or formation should point towards the object. "
             # "   Position of robot should be within 2 meters PROXIMITY to the object and NOT directly on the object. "
@@ -207,7 +207,7 @@ class NavigationManager(Node):
             # "   Formation centroid can lie on the object. "
             
             f" Example format: {json.dumps(eg_formation)}."
-            "  In all field of teh output like x, y, yaw, you have to say where the robot should go not where robot is. "
+            "  In all field of the output like x, y, yaw, you have to say where the robot should go not where robot is. "
             # "   All field names shown in the example must always be preserved exactly in the output JSON, including: centroid_x, centroid_y, formation_yaw, desired_radius, robot, x, y, yaw, radius, max_velocity, max_angular_velocity_z, colour, and type. These keys must not be renamed, omitted, or reformatted. "
         )
 
@@ -224,22 +224,22 @@ class NavigationManager(Node):
         )
 
         # --------------------------------------------------
-        # Controller feedback subscriber
-        # --------------------------------------------------
-        self.goal_status_sub_ = self.create_subscription(
-            RobotGoalStatus,
-            "/controller/goal_status",
-            self.goal_status_callback,
-            10
-        )
-
-        # --------------------------------------------------
         # Cancel navigation subscriber
         # --------------------------------------------------
         self.cancel_sub_ = self.create_subscription(
             CancelNavigationRequest,
             "/navigation/cancel",
             self.cancel_navigation_callback,
+            10
+        )
+
+        # --------------------------------------------------
+        # Controller feedback subscriber
+        # --------------------------------------------------
+        self.goal_status_sub_ = self.create_subscription(
+            RobotGoalStatus,
+            "/controller/goal_status",
+            self.goal_status_callback,
             10
         )
 
@@ -321,21 +321,25 @@ class NavigationManager(Node):
             # -------- Formation group (F*) --------
             if group_name.startswith("F") and isinstance(group_data, dict):
                 robots = group_data.get("robots", [])
-
-                for robot_name in robots:   # <-- already string
+                for robot_name in robots:
                     if robot_name and robot_name not in robot_names:
                         robot_names.append(robot_name)
 
             # -------- Individual group (R*) --------
-            elif group_name.startswith("R") and isinstance(group_data, list):
+            elif group_name.startswith("R"):
+                # LLM returns dict for single robot, list for multiple
+                if isinstance(group_data, dict):
+                    robot_entries = [group_data]
+                elif isinstance(group_data, list):
+                    robot_entries = group_data
+                else:
+                    continue
 
-                for robot_entry in group_data:
+                for robot_entry in robot_entries:
                     robot_name = robot_entry.get("robot")
-
                     if robot_name and robot_name not in robot_names:
                         robot_names.append(robot_name)
 
-        
         return robot_names
 
     def publish_stop_robots(self, robot_names: list, reason: str):
@@ -388,8 +392,16 @@ class NavigationManager(Node):
             # ------------------------
             # Individual group (R*)
             # ------------------------
-            elif group_name.startswith("R") and isinstance(group_data, list):
-                for robot_entry in group_data:
+            elif group_name.startswith("R"):
+                # LLM returns dict for single robot, list for multiple
+                if isinstance(group_data, dict):
+                    robot_entries = [group_data]
+                elif isinstance(group_data, list):
+                    robot_entries = group_data
+                else:
+                    continue
+
+                for robot_entry in robot_entries:
                     robot_name = robot_entry.get("robot")
                     if not robot_name:
                         continue
@@ -401,7 +413,6 @@ class NavigationManager(Node):
                         "yaw": float(robot_entry.get("yaw", 0.0)),
                         "goal": goal
                     }
-
 
 
     def odom_callback(self, msg: Odometry, robot_name: str):
@@ -444,23 +455,41 @@ class NavigationManager(Node):
         reason = msg.reason
         formation_robots = msg.formation_robots
 
-        self.get_logger().warning(
-            f"Cancel request received for robot '{robot_name}'. Reason: {reason}"
-        )
-
         # -----------------------------
-        # Remove from goal memory
+        # Formation cancel
         # -----------------------------
-        if robot_name in self.robot_goal_memory:
-            removed_goal = self.robot_goal_memory.pop(robot_name)
-
-            self.get_logger().info(
-                f"Cancelled goal for robot '{robot_name}': {removed_goal}"
+        if formation_robots:
+            self.get_logger().warning(
+                f"Formation cancel received for robots: {formation_robots}. Reason: {reason}"
             )
+
+            # Remove all formation robots from goal memory
+            for robot in formation_robots:
+                if robot in self.robot_goal_memory:
+                    removed_goal = self.robot_goal_memory.pop(robot)
+                    self.get_logger().info(f"Cancelled goal for formation robot '{robot}': {removed_goal}")
+                else:
+                    self.get_logger().warning(f"Formation robot '{robot}' had no active goal to cancel.")
+
+            # Stop all formation robots immediately
+            self.publish_stop_robots(robot_names=formation_robots, reason=reason)
+
+        # -----------------------------
+        # Single robot cancel
+        # -----------------------------
         else:
             self.get_logger().warning(
-                f"Robot '{robot_name}' had no active goal to cancel."
+                f"Cancel request received for robot '{robot_name}'. Reason: {reason}"
             )
+
+            if robot_name in self.robot_goal_memory:
+                removed_goal = self.robot_goal_memory.pop(robot_name)
+                self.get_logger().info(f"Cancelled goal for robot '{robot_name}': {removed_goal}")
+            else:
+                self.get_logger().warning(f"Robot '{robot_name}' had no active goal to cancel.")
+
+            # Stop immediately, don't wait for LLM replan
+            self.publish_stop_robots(robot_names=[robot_name], reason=reason)
 
         # -----------------------------
         # Replan for remaining robots
@@ -469,7 +498,7 @@ class NavigationManager(Node):
             trigger="cancel",
             robot_name=robot_name,
             goal=None,
-            formation_robots=[]
+            formation_robots=formation_robots
         )
 
     def navigate_request_callback(self, msg: NavigationRobotRequest):
@@ -531,7 +560,9 @@ class NavigationManager(Node):
         dynamic_system_prompt = (
             self.system_prompt
             + f" Current live robot poses in JSON format where each robot contains x,y,yaw in meters and radians:{robot_pose_string}."
-            + f" Current assigned robot goals in JSON format where the top-level keys are robot names exactly matching robot_names and each value is an object with fields group(string),x(float meters),y(float meters),yaw(float radians) representing the last assigned goal for that robot:{goal_memory_string}. for all the last assigned goal must be send always. This list only contains the incomplete goal, so you have to always send this also. While resending old goals do not change its goal. Old goals have stored its own goals so do not change it."
+            + f" Current assigned robot goals in JSON format where the top-level keys are robot names exactly matching robot_names and each value is an object with fields group(string),x(float meters),y(float meters),yaw(float radians) representing the last assigned goal for that robot:{goal_memory_string}."
+            + " Do NOT modify, drop, merge, or skip any robot from this list. This list only contains the incomplete goal, so you have to always send this also."
+            + " While resending old goals do not change its goal. Old goals have stored its own goals so do not change it."
         )
         
         # --------------------------------------------------
@@ -608,7 +639,7 @@ class NavigationManager(Node):
     # def query_llm(self, system_prompt: str, user_prompt: str) -> str:
     #     try:
     #         response = self.llm_client.chat.completions.create(
-    #             model=LLM_MODEL_NAME,
+    #             model=MODEL,
     #             messages=[
     #                 {"role": "system", "content": system_prompt},
     #                 {"role": "user", "content": user_prompt},
@@ -640,7 +671,7 @@ class NavigationManager(Node):
             ]
             
             response = self.llm_client.chat.completions.create(
-                model=LLM_MODEL_NAME,  # Must be vision-capable like gpt-4o
+                model=MODEL,  # Must be vision-capable like gpt-4o
                 messages=messages,
                 temperature=0.1,
             )

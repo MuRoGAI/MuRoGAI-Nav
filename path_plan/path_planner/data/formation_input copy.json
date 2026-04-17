@@ -1,5 +1,9 @@
 {
 
+"a":
+
+{
+
     "current_pose":{
         "delivery_bot1"  : [5.0, 7.5, 0.0],
         "delivery_bot2"  : [5.0, 4.5, 0.0],
@@ -30,7 +34,8 @@
 }
 
 
-
+,
+"b":
 
 {
     "current_pose": {
@@ -62,11 +67,16 @@
             "y": 14.0,
             "yaw": 3.14
         },
-        "R2": {
-            "robot": "delivery_bot3",
-            "x": 18.0,
-            "y": 5.0,
-            "yaw": 0.0
+
+        "F1": {
+            "centroid_x": 18.0,
+            "centroid_y": 6.0,
+            "formation_yaw": 0.0,
+            "desired_radius": 1.0,
+            "robots": ["delivery_bot1", "delivery_bot2", "delivery_bot3"]
         }
     }
+}
+
+
 }

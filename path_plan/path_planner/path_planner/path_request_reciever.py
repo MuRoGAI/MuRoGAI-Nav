@@ -62,7 +62,7 @@ class PathRequestReciever(Node):
         self.config_data      = self._load_json(self.config_file_path)
         self.robot_names      = self.config_data.get('robot_names', [])
         for robot_name in self.robot_names:
-            topic_name = f"/{robot_name}/odom_world"
+            topic_name = f"/{robot_name}/odom"
 
             sub = self.create_subscription(
                 Odometry,

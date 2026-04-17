@@ -73,8 +73,8 @@ class RobotLLMNode(Node):
         self.declare_parameter('robot_name', ROBOT_NAME)
         self.robot_name: str = self.get_parameter('robot_name').value
 
-        self.declare_parameter('robot_type', ROBOT_TYPE)
-        self.robot_type: str = self.get_parameter('robot_type').value
+        # self.declare_parameter('robot_type', ROBOT_TYPE)
+        # self.robot_type: str = self.get_parameter('robot_type').value
 
         robot_task_topic = f'{self.robot_name}_task_status'
 
@@ -82,11 +82,14 @@ class RobotLLMNode(Node):
         cfg_file_name = self.get_parameter("config_file").get_parameter_value().string_value
         self.config_file = cfg_file_name + '.json'
         
+
         package_share = get_package_share_directory("chatty")
         cfg_path = os.path.join(package_share, "config", self.config_file)
 
         with open(cfg_path, 'r') as f:
             self.robot_config = json.load(f)
+
+        self.robot_type = self.get_robot_type(self.robot_config, self.robot_name)
 
         RobotLLMNode._instance = self
 
@@ -210,6 +213,15 @@ class RobotLLMNode(Node):
             with open(self.robot_task_history, "w") as file:
                 file.write("")
             self.get_logger().warn(f"Robot task history file not found. Created new file: {self.robot_task_history}")
+
+    def get_robot_type(self, config, robot_name):
+        try:
+            return config["path_planner"][robot_name]["type"]
+        except KeyError:
+            self.get_logger().warn(
+                f"Robot type not found for '{robot_name}', using 'Unknown'"
+            )
+            return "Unknown"
 
     # -------------------- Callbacks --------------------
 
@@ -679,8 +691,9 @@ class RobotLLMNode(Node):
                 f"Recent Tasks (History): {chat_history} "
                 f"Current States of All Robots: {self.robot_states} "
                 f"Available Actions: {available_actions} "
-                "Using the class reference name same as the example is important. "
+                "The variable 'node' is already the live RobotLLMNode instance. "
                 "Use the name 'node' to refer to the RobotLLMNode instance. "
+                "Using the class reference name same as the example is important. "
                 "To serve anything to anyone first goto stall and then goto the person. "
             )
 
@@ -780,7 +793,7 @@ class RobotLLMNode(Node):
             })
             return False
 
-    def wait_for_goto_complete(self, goal: str, timeout: float = 120.0) -> bool:
+    def wait_for_goto_complete(self, goal: str, timeout: float = 100000.0) -> bool:
         """
         Wait for goto navigation to complete.
         
