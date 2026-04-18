@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import math
 import os
 import threading
@@ -11,52 +10,43 @@ from rclpy.executors import MultiThreadedExecutor
 from rclpy.qos import QoSProfile, ReliabilityPolicy
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
-
-
 # ═════════════════════════════════════════════════════════════════════════════
 #  PATH DIRECTORY
 # ═════════════════════════════════════════════════════════════════════════════
-
 PATH_DIR = (
-    "/home/suraj/murogai_nav/src/MuRoGAI-Nav/"
-    "path_plan/path_planner/path_planner/trajectory_logs2"
+"/home/suraj/murogai_nav/src/MuRoGAI-Nav/"
+"path_plan/path_planner/path_planner/trajectory_logs2"
 )
-
-
 # ═════════════════════════════════════════════════════════════════════════════
 #  PER-ROBOT CONFIG  —  edit gains here
 # ═════════════════════════════════════════════════════════════════════════════
-
 @dataclass
 class RobotConfig:
     csv_file: str = ""
-
     # ── Control gains ────────────────────────────────────────────────────────
     kp_linear:  float = 1.5   # forward position error gain       (ex  → v)
     kp_angular: float = 2.5   # bearing recovery gain             (pos_err·sin(hdg_err) → ω)
     ky:         float = 3.5   # Kanayama lateral gain             (v_d·ey → ω)
-
     # ── Velocity limits ───────────────────────────────────────────────────────
     v_max: float = 0.22   # m/s
     w_max: float = 2.84   # rad/s
 
-
 ROBOT_CONFIG: dict[str, RobotConfig] = {
     "burger1": RobotConfig(
         csv_file="burger1.csv",
-        kp_linear=3.0, kp_angular=3.5, ky=4.0,
+        kp_linear=3.2, kp_angular=3.7, ky=4.2,
         v_max=0.3, w_max=2.84,
     ),
-    # "burger2": RobotConfig(
-    #     csv_file="burger2.csv",
-    #     kp_linear=1.5, kp_angular=2.5, ky=3.5,
-    #     v_max=0.4, w_max=2.84,
-    # ),
-    # "burger3": RobotConfig(
-    #     csv_file="burger3.csv",
-    #     kp_linear=1.5, kp_angular=2.5, ky=3.5,
-    #     v_max=0.22, w_max=2.84,
-    # ),
+    "burger2": RobotConfig(
+        csv_file="burger2.csv",
+        kp_linear=3.2, kp_angular=3.7, ky=4.2,
+        v_max=0.3, w_max=2.84,
+    ),
+    "burger3": RobotConfig(
+        csv_file="burger3.csv",
+        kp_linear=3.2, kp_angular=3.7, ky=4.2,
+        v_max=0.3, w_max=2.84,
+    ),
     # "waffle": RobotConfig(
     #     csv_file="waffle.csv",
     #     kp_linear=1.5, kp_angular=2.5, ky=3.5,
@@ -76,15 +66,16 @@ ROBOT_CONFIG: dict[str, RobotConfig] = {
 
 ROBOTS     = list(ROBOT_CONFIG.keys())
 SYNC_DELAY = 1.0   # seconds after ALL robots have odom → all start together
+GOAL_TOLERANCE = 0.05   # metres — robot considered "done" within this radius
+# Minimum forward velocity injected in Phase 4 when v_d ≈ 0 but the robot
+# still has significant position error and is roughly facing the target.
+V_FLOOR_FRAC   = 0.12   # fraction of v_max  (≈ 0.036 m/s for burger1)
 
 QOS_RELIABLE    = QoSProfile(reliability=ReliabilityPolicy.RELIABLE,    depth=10)
 QOS_BEST_EFFORT = QoSProfile(reliability=ReliabilityPolicy.BEST_EFFORT, depth=10)
-
-
 # ═════════════════════════════════════════════════════════════════════════════
 #  CSV LOADER
 # ═════════════════════════════════════════════════════════════════════════════
-
 def load_waypoints(csv_path: str) -> np.ndarray:
     """
     Load CSV with columns: time, x, y, theta
@@ -96,15 +87,12 @@ def load_waypoints(csv_path: str) -> np.ndarray:
     data = data[np.argsort(data[:, 0])]
     data[:, 0] -= data[0, 0]
     return data   # (N, 4): t, x, y, theta
-
-
 # ═════════════════════════════════════════════════════════════════════════════
 #  CUBIC POLYNOMIAL  —  one axis, one segment
 # ═════════════════════════════════════════════════════════════════════════════
 #
 #  p(tau) = a0 + a1·tau + a2·tau² + a3·tau³,   tau = t - t0
 #  Boundary conditions: p(t0)=p0, p'(t0)=v0, p(tf)=pf, p'(tf)=vf
-
 def cubic_coeffs(t0: float, tf: float,
                  p0: float, v0: float,
                  pf: float, vf: float) -> np.ndarray:
@@ -118,7 +106,6 @@ def cubic_coeffs(t0: float, tf: float,
     a3_c = (-2*h / T**3) + (v0 + vf)  / T**2
     return np.array([a0_c, a1_c, a2_c, a3_c, t0])
 
-
 def eval_cubic(t: float, c: np.ndarray):
     """Returns (position, velocity) at absolute time t."""
     a0_c, a1_c, a2_c, a3_c, t0 = c
@@ -126,23 +113,17 @@ def eval_cubic(t: float, c: np.ndarray):
     p   = a0_c + a1_c*tau   + a2_c*tau**2 + a3_c*tau**3
     v   = a1_c + 2*a2_c*tau + 3*a3_c*tau**2
     return p, v
-
-
 # ═════════════════════════════════════════════════════════════════════════════
 #  SPLINE BUILDER
 # ═════════════════════════════════════════════════════════════════════════════
-
 def build_spline(waypoints: np.ndarray, pose_offset: tuple):
     """
     Build cubic splines for x, y, and theta from waypoints.
-
     pose_offset = (dx, dy) shifts the path to start at the robot's actual
     position rather than the logged position.
-
     Interior knot velocities are estimated with the same weighted central
     finite-difference scheme used in Doc-3 so the robot does NOT decelerate
     to zero at every waypoint.  Endpoint velocities are clamped to zero.
-
     Returns:
         segments  — list of dicts {t0, tf, cx, cy, ct}
         duration  — total trajectory time (seconds)
@@ -158,7 +139,6 @@ def build_spline(waypoints: np.ndarray, pose_offset: tuple):
     vx = np.zeros(N)
     vy = np.zeros(N)
     vt = np.zeros(N)
-
     for i in range(1, N - 1):
         dt_prev = times[i]     - times[i - 1]
         dt_next = times[i + 1] - times[i]
@@ -187,25 +167,19 @@ def build_spline(waypoints: np.ndarray, pose_offset: tuple):
             "cy": cubic_coeffs(t0, tf, ys[i],     vy[i], ys[i+1],     vy[i+1]),
             "ct": cubic_coeffs(t0, tf, thetas[i], vt[i], thetas[i+1], vt[i+1]),
         })
-
     return segments, float(times[-1])
-
 
 def _norm(a: float) -> float:
     """Wrap angle to [-π, π]."""
     return math.atan2(math.sin(a), math.cos(a))
-
-
 # ═════════════════════════════════════════════════════════════════════════════
 #  COORDINATOR  —  synchronised start gate
 # ═════════════════════════════════════════════════════════════════════════════
-
 class Coordinator:
     """
     Thread-safe.  Every robot calls report_ready() on its first odom.
     Once ALL robots have checked in, releases a shared absolute start_time.
     """
-
     def __init__(self, robot_names, sync_delay=SYNC_DELAY):
         self._expected   = set(robot_names)
         self._ready      = set()
@@ -218,18 +192,13 @@ class Coordinator:
             self._ready.add(robot_name)
             if self._ready >= self._expected and self._start_time is None:
                 self._start_time = now_sec + self._delay
-            return self._start_time
-
-
+        return self._start_time
 # ═════════════════════════════════════════════════════════════════════════════
 #  ROBOT NODE
 # ═════════════════════════════════════════════════════════════════════════════
-
 class PathFollower(Node):
-
     def __init__(self, robot_name: str, coordinator: Coordinator):
         super().__init__(f'{robot_name}_controller')
-
         self.robot = robot_name
         self.coord = coordinator
         self.cfg   = ROBOT_CONFIG[robot_name]
@@ -284,7 +253,6 @@ class PathFollower(Node):
         self.timer = self.create_timer(0.02, self.control_loop)
 
     # ── Odom ─────────────────────────────────────────────────────────────────
-
     def odom_callback(self, msg):
         pos = msg.pose.pose.position
         q   = msg.pose.pose.orientation
@@ -298,21 +266,17 @@ class PathFollower(Node):
         )
 
     # ── Build spline once all robots are ready ────────────────────────────────
-
     def create_trajectory(self, shared_start_time: float):
         if self.waypoints is None:
             self.get_logger().error(f"[TRAJ] {self.robot}: no waypoints — skipping")
             self.traj_created = True
             return
-
         x0, y0, _ = self.current_pose
         dx = x0 - float(self.waypoints[0, 1])
         dy = y0 - float(self.waypoints[0, 2])
-
         self.segments, self.traj_duration = build_spline(self.waypoints, (dx, dy))
         self.start_time   = shared_start_time
         self.traj_created = True
-
         self.get_logger().info(
             f"[TRAJ] {self.robot}: {len(self.segments)} cubic segments  "
             f"total={self.traj_duration:.2f}s  "
@@ -321,15 +285,17 @@ class PathFollower(Node):
         )
 
     # ── Find active segment ───────────────────────────────────────────────────
-
     def _active_segment(self, t: float):
         for seg in self.segments:
             if seg["t0"] <= t <= seg["tf"]:
                 return seg
+        # t is slightly past the last segment's tf — clamp to it
+        last = self.segments[-1]
+        if t > last["tf"] and t - last["tf"] < 0.5:   # within 0.5 s grace window
+            return last
         return None
 
     # ── Waypoint crossing logger (Doc-3 style) ────────────────────────────────
-
     def _log_waypoint_crossings(self, t: float):
         x, y, yaw = self.current_pose
         for i, seg in enumerate(self.segments):
@@ -338,15 +304,12 @@ class PathFollower(Node):
             if t < seg["tf"]:
                 break
             self.logged_segments.add(i)
-
             xd_end, _ = eval_cubic(seg["tf"], seg["cx"])
             yd_end, _ = eval_cubic(seg["tf"], seg["cy"])
             td_end, _ = eval_cubic(seg["tf"], seg["ct"])
-
             pos_error = math.hypot(xd_end - x, yd_end - y)
             ang_error = _norm(td_end - yaw)
             time_err  = t - seg["tf"]
-
             self.get_logger().info(
                 f"\n========== [{self.robot}] WAYPOINT {i+1}/{len(self.segments)} "
                 f"==========\n"
@@ -359,7 +322,6 @@ class PathFollower(Node):
             )
 
     # ── Control loop (50 Hz) ──────────────────────────────────────────────────
-
     def control_loop(self):
         if self.current_pose is None:
             return
@@ -388,11 +350,51 @@ class PathFollower(Node):
         # Log waypoint crossings
         self._log_waypoint_crossings(t)
 
-        # Phase 3 — done
+        # Phase 3 — trajectory time expired: switch to goal-seeking.
+        # Linear velocity uses pos_err * cos(heading_err_g) — NOT ex_g * cos(e_theta_g).
+        # The old formula used the desired *final heading* error (e_theta_g) which can
+        # be large and drive cos() to zero or negative, stalling the robot.
+        # The new formula uses only the bearing to the goal, which is always correct
+        # regardless of what the trajectory's final heading happens to be.
         if t > self.segments[-1]["tf"]:
-            self.cmd_pub.publish(Twist())
-            self.get_logger().info(f"[DONE] {self.robot}")
-            self.segments = []
+            last_seg = self.segments[-1]
+            xd_g, _  = eval_cubic(last_seg["tf"], last_seg["cx"])
+            yd_g, _  = eval_cubic(last_seg["tf"], last_seg["cy"])
+
+            x, y, yaw = self.current_pose
+            pos_err   = math.hypot(xd_g - x, yd_g - y)
+
+            if pos_err < GOAL_TOLERANCE:
+                self.cmd_pub.publish(Twist())
+                self.get_logger().info(
+                    f"[DONE] {self.robot}  final_err={pos_err:.3f}m"
+                )
+                self.segments = []
+                return
+
+            dx_g          = xd_g - x
+            dy_g          = yd_g - y
+            bearing_g     = math.atan2(dy_g, dx_g)
+            heading_err_g = _norm(bearing_g - yaw)
+
+            cfg = self.cfg
+            cmd = Twist()
+            cmd.linear.x  = float(np.clip(
+                cfg.kp_linear * pos_err * math.cos(heading_err_g),
+                0.0, cfg.v_max          # clamp to [0, v_max] — never reverse
+            ))
+            cmd.angular.z = float(np.clip(
+                cfg.kp_angular * pos_err * math.sin(heading_err_g),
+                -cfg.w_max, cfg.w_max
+            ))
+            self.cmd_pub.publish(cmd)
+
+            if now - self.last_debug_time > 0.5:
+                self.last_debug_time = now
+                self.get_logger().info(
+                    f"[SEEK] {self.robot}  pos_err={pos_err:.3f}m  "
+                    f"des=({xd_g:.2f},{yd_g:.2f})  act=({x:.2f},{y:.2f})"
+                )
             return
 
         # Phase 4 — find active segment
@@ -423,24 +425,37 @@ class PathFollower(Node):
         #   Kanayama term:  ky · v_d · ey
         #       Corrects lateral drift proportional to forward speed.
         #   Bearing recovery: kp_angular · pos_err · sin(bearing_err)
-        #       Steers toward the desired point when v_d ≈ 0 (waypoint joins,
-        #       slow phases).  sin() keeps it smooth and bounded at ±1.
+        #       Steers toward the desired point when moving.  sin() keeps it
+        #       smooth and bounded at ±1.
+        #   Orientation correction: kp_angular · sin(e_theta)
+        #       Takes over when v_d ≈ 0 so the robot corrects heading without
+        #       spinning uncontrollably (bearing term is singular at low speed).
+        #   v_blend smoothly transitions between the two angular strategies:
+        #       1.0 when v_d ≥ 0.08 m/s (bearing recovery active)
+        #       0.0 when v_d = 0       (orientation correction only)
         pos_error          = math.hypot(dx, dy)
         bearing_to_desired = math.atan2(dy, dx)
         heading_error      = _norm(bearing_to_desired - yaw)
+        v_blend            = min(1.0, abs(v_d) / 0.08)
 
         cfg = self.cfg
         lateral_correction = (
             cfg.ky          * v_d * ey
-            + cfg.kp_angular * pos_error * math.sin(heading_error)
+            + v_blend       * cfg.kp_angular * pos_error * math.sin(heading_error)
+            + (1.0-v_blend) * cfg.kp_angular * math.sin(e_theta)
         )
 
         # ── Control commands ──────────────────────────────────────────────────
+        v_cmd = v_d * math.cos(e_theta) + cfg.kp_linear * ex
+        # Velocity floor: the spline forces v_d → 0 in the final segments.
+        # When feedforward dies but the robot still has significant position
+        # error and is roughly facing the target, inject a minimum forward
+        # velocity so the robot does not stall before Phase 3 kicks in.
+        if pos_error > GOAL_TOLERANCE and math.cos(heading_error) > 0.5:
+            v_cmd = max(v_cmd, cfg.v_max * V_FLOOR_FRAC)
+
         cmd = Twist()
-        cmd.linear.x  = float(np.clip(
-            v_d * math.cos(e_theta) + cfg.kp_linear * ex,
-            -cfg.v_max, cfg.v_max
-        ))
+        cmd.linear.x  = float(np.clip(v_cmd, -cfg.v_max, cfg.v_max))
         cmd.angular.z = float(np.clip(
             w_d + lateral_correction,
             -cfg.w_max, cfg.w_max
@@ -457,22 +472,16 @@ class PathFollower(Node):
                 f"act=({x:.2f},{y:.2f},{yaw:.2f}) | "
                 f"v={cmd.linear.x:.2f} w={cmd.angular.z:.2f}"
             )
-
-
 # ═════════════════════════════════════════════════════════════════════════════
 #  ENTRY POINT
 # ═════════════════════════════════════════════════════════════════════════════
-
 def main():
     rclpy.init()
-
     coordinator = Coordinator(ROBOTS)
     nodes = [PathFollower(r, coordinator) for r in ROBOTS]
-
     executor = MultiThreadedExecutor(num_threads=len(nodes))
     for node in nodes:
         executor.add_node(node)
-
     try:
         executor.spin()
     except KeyboardInterrupt:
@@ -481,7 +490,6 @@ def main():
         for node in nodes:
             node.destroy_node()
         rclpy.shutdown()
-
 
 if __name__ == '__main__':
     main()
