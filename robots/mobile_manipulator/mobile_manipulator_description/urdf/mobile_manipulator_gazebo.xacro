@@ -102,7 +102,7 @@
           <wheel_radius>0.04445</wheel_radius>
           
           <topic>${namespace}/cmd_vel</topic>
-          <!-- <update_rate>200</update_rate> -->
+          <update_rate>200</update_rate>
           
           <!-- <odom_publish_frequency>50</odom_publish_frequency> -->
           <!-- <frame_id>${frame_prefix}odom</frame_id>
@@ -130,7 +130,7 @@
         <plugin filename="ignition-gazebo-joint-state-publisher-system" 
                 name="ignition::gazebo::systems::JointStatePublisher">
           <topic>${namespace}/joint_states</topic>
-          <update_rate>50</update_rate>
+          <update_rate>200</update_rate>
         </plugin>
       </gazebo>
     </xacro:if>

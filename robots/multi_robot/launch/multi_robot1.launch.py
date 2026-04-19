@@ -19,10 +19,10 @@ def generate_launch_description():
 
     # Packages
     pkg_shared            = get_package_share_directory('multi_robot')
+    pkg_ros_gz_sim        = get_package_share_directory('ros_gz_sim')
     # pkg_turtlebot3_gazebo = get_package_share_directory('turtlebot3_gazebo')
     pkg_yahboom_gazebo    = get_package_share_directory('yahboom_rosmaster_gazebo')
     pkg_x3_uav_gazebo     = get_package_share_directory('x3_uav_ignition')
-    pkg_ros_gz_sim        = get_package_share_directory('ros_gz_sim')
     ignition_pkg_share    = get_package_share_directory('mobile_manipulator_ignition')
 
 
@@ -218,6 +218,32 @@ def generate_launch_description():
     )
 
 
+    robot5_launch = TimerAction(
+        period=13.0,
+        actions=[
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(yahboom_launch),
+                launch_arguments={
+                    'use_sim_time': use_sim_time,
+                    'robot_name': 'rosmaster_x3',
+                    'prefix': 'cleaning_bot1',
+                    'use_ignition': use_ignition,
+                    'use_plugin': 'True',
+                    'use_ros2_control': 'False',
+                    'use_mock_hardware': 'False',
+                    'spawn_x': '4.0',
+                    'spawn_y': '11.0',
+                    'spawn_z': '0.05',
+                    'spawn_roll': '0.0',
+                    'spawn_pitch': '0.0',
+                    'spawn_yaw': '0.0',
+                    'use_rviz': use_multi_rviz,
+                    'plate_colour': 'purple',
+                }.items()
+            )
+        ]
+    )
+
     drone_launch = TimerAction(
         period=13.0,
         actions=[
@@ -273,9 +299,10 @@ def generate_launch_description():
         robot2_launch,
         robot3_launch,
         robot4_launch,
+        drone_launch,
+        
         # robot5_launch,
         # robot6_launch,
-        # drone_launch,
         # drone1_launch,
 
         single_rviz_node

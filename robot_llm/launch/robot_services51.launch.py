@@ -85,8 +85,8 @@ def generate_launch_description():
     )
  
     return LaunchDescription([
-        delivery_bot1_controller_node,
-        delivery_bot2_controller_node,
-        delivery_bot3_controller_node,
+        # delivery_bot1_controller_node,
+        # delivery_bot2_controller_node,
+        # delivery_bot3_controller_node,
         cleaning_bot_controller_node,
     ])

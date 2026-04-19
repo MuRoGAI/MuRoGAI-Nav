@@ -29,28 +29,28 @@
 #   lazy: false
 
 # LIDAR configuration
-- ros_topic_name: "scan"
-  gz_topic_name: "{prefix}/scan"
-  ros_type_name: "sensor_msgs/msg/LaserScan"
-  gz_type_name: "gz.msgs.LaserScan"
-  direction: GZ_TO_ROS
-  lazy: false
+# - ros_topic_name: "scan"
+#   gz_topic_name: "{prefix}/scan"
+#   ros_type_name: "sensor_msgs/msg/LaserScan"
+#   gz_type_name: "gz.msgs.LaserScan"
+#   direction: GZ_TO_ROS
+#   lazy: false
 
 # IMU configuration
-- ros_topic_name: "imu/data"
-  gz_topic_name: "{prefix}/imu/data"
-  ros_type_name: "sensor_msgs/msg/Imu"
-  gz_type_name: "gz.msgs.IMU"
-  direction: GZ_TO_ROS
-  lazy: false
+# - ros_topic_name: "imu/data"
+#   gz_topic_name: "{prefix}/imu/data"
+#   ros_type_name: "sensor_msgs/msg/Imu"
+#   gz_type_name: "gz.msgs.IMU"
+#   direction: GZ_TO_ROS
+#   lazy: false
 
 # Sending velocity commands from ROS 2 to Gazebo
-- ros_topic_name: "diff_drive_controller/cmd_vel"
-  gz_topic_name: "{prefix}/diff_drive_controller/cmd_vel"
-  ros_type_name: "geometry_msgs/msg/Twist"
-  gz_type_name: "gz.msgs.Twist"
-  direction: BIDIRECTIONAL
-  lazy: false
+# - ros_topic_name: "diff_drive_controller/cmd_vel"
+#   gz_topic_name: "{prefix}/diff_drive_controller/cmd_vel"
+#   ros_type_name: "geometry_msgs/msg/Twist"
+#   gz_type_name: "gz.msgs.Twist"
+#   direction: BIDIRECTIONAL
+#   lazy: false
 
 - ros_topic_name: "cmd_vel"
   gz_topic_name: "{prefix}/cmd_vel"
@@ -108,9 +108,9 @@
 #   direction: GZ_TO_ROS
 #   lazy: false
 
-- ros_topic_name: "arm_cmds"
-  gz_topic_name: "{prefix}/arm_cmds"
-  ros_type_name: "trajectory_msgs/msg/JointTrajectory"
-  gz_type_name: "gz.msgs.JointTrajectory"
-  direction: ROS_TO_GZ
-  lazy: false
+# - ros_topic_name: "arm_cmds"
+#   gz_topic_name: "{prefix}/arm_cmds"
+#   ros_type_name: "trajectory_msgs/msg/JointTrajectory"
+#   gz_type_name: "gz.msgs.JointTrajectory"
+#   direction: ROS_TO_GZ
+#   lazy: false

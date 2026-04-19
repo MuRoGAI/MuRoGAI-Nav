@@ -25,9 +25,11 @@
         </plugin>
 
         <!-- <physics name="1ms" type="ignored"> -->
-        <physics name="physics" type="dart">
-            <max_step_size>0.001</max_step_size>
+        <!-- <physics name="physics" type="ignored"> -->
+        <physics name="ode_physics" type="dart">
+            <max_step_size>0.005</max_step_size>
             <real_time_factor>1.0</real_time_factor>
+            <real_time_update_rate>0</real_time_update_rate>
         </physics>
 
         <!-- <gui fullscreen="0">

@@ -42,7 +42,7 @@ class MultiRobotOdomOffset(Node):
             "burger3" : (3.135, 1.750,  1.57),
             "waffle"  : (5.130, 4.375,  3.14),
             "tb4_1"   : (3.705, 7.875, -1.57),
-            "firebird": (2.565, 7.875,  -1.57),
+            "firebird": (2.565, 7.875, -1.57),
         }
 
         # self.offsets = {

@@ -10,22 +10,22 @@
     <!-- ============================================ -->
     <!-- LIDAR SENSOR -->
     <!-- ============================================ -->
-    <gazebo reference="${frame_prefix}base_link">
+    <!-- <gazebo reference="${frame_prefix}base_link">
       <sensor name="${name}_lidar" type="gpu_lidar">
         <pose>0.0 0 0 0 0 0</pose>
         <namespace>${frame_prefix}</namespace>
         <topic>/${frame_prefix}scan</topic>
         <always_on>true</always_on>
-        <update_rate>20</update_rate>  <!-- lower from 100 → fixes queue overflow -->
+        <update_rate>20</update_rate>
         <visualize>true</visualize>
         <gz_frame_id>${frame_prefix}base_link</gz_frame_id>
         <lidar>
           <scan>
             <horizontal>
-              <samples>360</samples>      <!-- better resolution -->
+              <samples>360</samples>
               <resolution>1</resolution>
-              <min_angle>-3.1416</min_angle> <!-- -π radians = -180° -->
-              <max_angle>3.1416</max_angle>  <!-- +π radians = +180° -->
+              <min_angle>-3.1416</min_angle>
+              <max_angle>3.1416</max_angle>
             </horizontal>
           </scan>
           <range>
@@ -40,10 +40,10 @@
           <stddev>0.01</stddev>
         </noise>
       </sensor>
-    </gazebo>
+    </gazebo> -->
   
 
-    <gazebo reference="${frame_prefix}base_link">
+    <!-- <gazebo reference="${frame_prefix}base_link">
       <sensor name="${name}_imu" type="imu">
         <pose>0 0 0 0 0 0</pose>
         <always_on>true</always_on>
@@ -61,7 +61,7 @@
           </noise>
         </plugin>
       </sensor>
-    </gazebo>
+    </gazebo> -->
     
     <!-- ============================================ -->
     <!-- VACUUM GRIPPER PLUGIN -->

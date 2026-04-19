@@ -4,7 +4,7 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded: ~
-      Splitter Ratio: 0.5
+      Splitter Ratio: 0.365105003118515
     Tree Height: 719
   - Class: rviz_common/Selection
     Name: Selection
@@ -55,7 +55,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /robot1/robot_description
+        Value: /delivery_bot1/robot_description
       Enabled: true
       Links:
         All Links Enabled: true
@@ -63,26 +63,26 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        robot1/base_footprint:
+        delivery_bot1/base_footprint:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        robot1/base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot1/caster_wheel:
+        delivery_bot1/base_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot1/fl_wheel:
+        delivery_bot1/caster_wheel:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot1/fr_wheel:
+        delivery_bot1/fl_wheel:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        delivery_bot1/fr_wheel:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -105,7 +105,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /robot2/robot_description
+        Value: /delivery_bot2/robot_description
       Enabled: true
       Links:
         All Links Enabled: true
@@ -113,26 +113,26 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        robot2/base_footprint:
+        delivery_bot2/base_footprint:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        robot2/base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot2/caster_wheel:
+        delivery_bot2/base_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot2/fl_wheel:
+        delivery_bot2/caster_wheel:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot2/fr_wheel:
+        delivery_bot2/fl_wheel:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        delivery_bot2/fr_wheel:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -155,7 +155,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /robot3/robot_description
+        Value: /delivery_bot3/robot_description
       Enabled: true
       Links:
         All Links Enabled: true
@@ -163,26 +163,83 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        robot3/base_footprint:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot3/base_link:
+        delivery_bot3/back_left_wheel_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot3/caster_wheel:
+        delivery_bot3/back_right_wheel_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot3/fl_wheel:
+        delivery_bot3/base_footprint:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        delivery_bot3/base_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot3/fr_wheel:
+        delivery_bot3/cam_1_color_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        delivery_bot3/cam_1_color_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        delivery_bot3/cam_1_depth_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        delivery_bot3/cam_1_depth_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        delivery_bot3/cam_1_infra1_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        delivery_bot3/cam_1_infra1_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        delivery_bot3/cam_1_infra2_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        delivery_bot3/cam_1_infra2_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        delivery_bot3/cam_1_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        delivery_bot3/front_left_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        delivery_bot3/front_right_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        delivery_bot3/imu_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        delivery_bot3/laser_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        delivery_bot3/top_plate_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -205,7 +262,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /robot4/robot_description
+        Value: /cleaning_bot/robot_description
       Enabled: true
       Links:
         All Links Enabled: true
@@ -213,83 +270,83 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        robot4/back_left_wheel_link:
+        cleaning_bot/back_left_wheel_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot4/back_right_wheel_link:
+        cleaning_bot/back_right_wheel_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot4/base_footprint:
+        cleaning_bot/base_footprint:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        robot4/base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot4/cam_1_color_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot4/cam_1_color_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot4/cam_1_depth_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot4/cam_1_depth_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot4/cam_1_infra1_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot4/cam_1_infra1_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot4/cam_1_infra2_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot4/cam_1_infra2_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot4/cam_1_link:
+        cleaning_bot/base_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot4/front_left_wheel_link:
+        cleaning_bot/cam_1_color_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        cleaning_bot/cam_1_color_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        cleaning_bot/cam_1_depth_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        cleaning_bot/cam_1_depth_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        cleaning_bot/cam_1_infra1_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        cleaning_bot/cam_1_infra1_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        cleaning_bot/cam_1_infra2_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        cleaning_bot/cam_1_infra2_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        cleaning_bot/cam_1_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot4/front_right_wheel_link:
+        cleaning_bot/front_left_wheel_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot4/imu_link:
+        cleaning_bot/front_right_wheel_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot4/laser_frame:
+        cleaning_bot/imu_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot4/top_plate_link:
+        cleaning_bot/laser_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        cleaning_bot/top_plate_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -312,7 +369,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /robot5/robot_description
+        Value: /drone/robot_description
       Enabled: true
       Links:
         All Links Enabled: true
@@ -320,83 +377,42 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        robot5/back_left_wheel_link:
+        drone/base_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot5/back_right_wheel_link:
+        drone/bottom_camera_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot5/base_footprint:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot5/base_link:
+        drone/front_camera_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot5/cam_1_color_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot5/cam_1_color_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot5/cam_1_depth_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot5/cam_1_depth_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot5/cam_1_infra1_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot5/cam_1_infra1_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot5/cam_1_infra2_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot5/cam_1_infra2_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot5/cam_1_link:
+        drone/imu_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot5/front_left_wheel_link:
+        drone/rotor_0:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot5/front_right_wheel_link:
+        drone/rotor_1:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot5/imu_link:
+        drone/rotor_2:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot5/laser_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot5/top_plate_link:
+        drone/rotor_3:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -420,101 +436,20 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /robot6/robot_description
-      Enabled: true
+      Enabled: false
       Links:
         All Links Enabled: true
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        robot6/back_left_wheel_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot6/back_right_wheel_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot6/base_footprint:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot6/base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot6/cam_1_color_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot6/cam_1_color_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot6/cam_1_depth_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot6/cam_1_depth_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot6/cam_1_infra1_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot6/cam_1_infra1_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot6/cam_1_infra2_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot6/cam_1_infra2_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot6/cam_1_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot6/front_left_wheel_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot6/front_right_wheel_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot6/imu_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot6/laser_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot6/top_plate_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
       Mass Properties:
         Inertia: false
         Mass: false
       Name: RobotModel
       TF Prefix: ""
       Update Interval: 0
-      Value: true
+      Value: false
       Visual Enabled: true
   Enabled: true
   Global Options:
@@ -562,25 +497,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 10
+      Distance: 21.701162338256836
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0
-        Y: 0
-        Z: 0
+        X: 8.965859413146973
+        Y: 9.816227912902832
+        Z: -1.3028887510299683
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.785398006439209
+      Pitch: 1.205397129058838
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.785398006439209
+      Yaw: 2.265399217605591
     Saved: ~
 Window Geometry:
   Displays:
@@ -588,7 +523,7 @@ Window Geometry:
   Height: 1016
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd0000000400000000000001560000035afc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d0000035a000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f0000035afc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000003d0000035a000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000073a0000003efc0100000002fb0000000800540069006d006501000000000000073a000002fb00fffffffb0000000800540069006d00650100000000000004500000000000000000000004c90000035a00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000004000000000000026d0000035afc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d0000035a000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f0000035afc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000003d0000035a000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000073a0000003efc0100000002fb0000000800540069006d006501000000000000073a000002fb00fffffffb0000000800540069006d00650100000000000004500000000000000000000003b20000035a00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:

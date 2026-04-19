@@ -193,62 +193,62 @@ def generate_launch_description():
         condition=IfCondition(use_ignition),
     )
 
-    start_gazebo_ros_bottom_depth_bridge_cmd = Node(
-        package='ros_gz_image',
-        executable='image_bridge',
-        name='bottom_camera_depth_image_bridge',
-        namespace=prefix,
-        arguments=[
-            [prefix, '/bottom_camera/depth_image'],
-        ],
-        remappings=[
-            ([prefix, '/bottom_camera/depth_image'], 'bottom_camera/depth_image/image_raw'),
-            ([prefix, '/bottom_camera/depth_image/compressed'], 'bottom_camera/depth_image/image_raw/compressed'),
-            ([prefix, '/bottom_camera/depth_image/compressedDepth'], 'bottom_camera/depth_image/image_raw/compressedDepth'),
-            ([prefix, '/bottom_camera/depth_image/theora'], 'bottom_camera/depth_image/image_raw/theora'),
-        ],
-        parameters=[{'use_sim_time': use_sim_time}],
-        output='screen',
-        condition=IfCondition(use_ignition),
-    )
+    # start_gazebo_ros_bottom_depth_bridge_cmd = Node(
+    #     package='ros_gz_image',
+    #     executable='image_bridge',
+    #     name='bottom_camera_depth_image_bridge',
+    #     namespace=prefix,
+    #     arguments=[
+    #         [prefix, '/bottom_camera/depth_image'],
+    #     ],
+    #     remappings=[
+    #         ([prefix, '/bottom_camera/depth_image'], 'bottom_camera/depth_image/image_raw'),
+    #         ([prefix, '/bottom_camera/depth_image/compressed'], 'bottom_camera/depth_image/image_raw/compressed'),
+    #         ([prefix, '/bottom_camera/depth_image/compressedDepth'], 'bottom_camera/depth_image/image_raw/compressedDepth'),
+    #         ([prefix, '/bottom_camera/depth_image/theora'], 'bottom_camera/depth_image/image_raw/theora'),
+    #     ],
+    #     parameters=[{'use_sim_time': use_sim_time}],
+    #     output='screen',
+    #     condition=IfCondition(use_ignition),
+    # )
 
-    start_gazebo_ros_front_image_bridge_cmd = Node(
-        package='ros_gz_image',
-        executable='image_bridge',
-        name='front_camera_image_bridge',
-        namespace=prefix,
-        arguments=[
-            [prefix, '/front_camera/image'],
-        ],
-        remappings=[
-            ([prefix, '/front_camera/image'], 'front_camera/color/image_raw'),
-            ([prefix, '/front_camera/image/compressed'], 'front_camera/color/image_raw/compressed'),
-            ([prefix, '/front_camera/image/compressedDepth'], 'front_camera/color/image_raw/compressedDepth'),
-            ([prefix, '/front_camera/image/theora'], 'front_camera/color/image_raw/theora'),
-        ],
-        parameters=[{'use_sim_time': use_sim_time}],
-        output='screen',
-        condition=IfCondition(use_ignition),
-    )
+    # start_gazebo_ros_front_image_bridge_cmd = Node(
+    #     package='ros_gz_image',
+    #     executable='image_bridge',
+    #     name='front_camera_image_bridge',
+    #     namespace=prefix,
+    #     arguments=[
+    #         [prefix, '/front_camera/image'],
+    #     ],
+    #     remappings=[
+    #         ([prefix, '/front_camera/image'], 'front_camera/color/image_raw'),
+    #         ([prefix, '/front_camera/image/compressed'], 'front_camera/color/image_raw/compressed'),
+    #         ([prefix, '/front_camera/image/compressedDepth'], 'front_camera/color/image_raw/compressedDepth'),
+    #         ([prefix, '/front_camera/image/theora'], 'front_camera/color/image_raw/theora'),
+    #     ],
+    #     parameters=[{'use_sim_time': use_sim_time}],
+    #     output='screen',
+    #     condition=IfCondition(use_ignition),
+    # )
 
-    start_gazebo_ros_front_depth_bridge_cmd = Node(
-        package='ros_gz_image',
-        executable='image_bridge',
-        name='front_camera_depth_bridge',
-        namespace=prefix,
-        arguments=[
-            [prefix, '/front_camera/depth_image'],
-        ],
-        remappings=[
-            ([prefix, '/front_camera/depth_image'], 'front_camera/depth_image/image_raw'),
-            ([prefix, '/front_camera/depth_image/compressed'], 'front_camera/depth_image/image_raw/compressed'),
-            ([prefix, '/front_camera/depth_image/compressedDepth'], 'front_camera/depth_image/image_raw/compressedDepth'),
-            ([prefix, '/front_camera/depth_image/theora'], 'front_camera/depth_image/image_raw/theora'),
-        ],
-        parameters=[{'use_sim_time': use_sim_time}],
-        output='screen',
-        condition=IfCondition(use_ignition),
-    )
+    # start_gazebo_ros_front_depth_bridge_cmd = Node(
+    #     package='ros_gz_image',
+    #     executable='image_bridge',
+    #     name='front_camera_depth_bridge',
+    #     namespace=prefix,
+    #     arguments=[
+    #         [prefix, '/front_camera/depth_image'],
+    #     ],
+    #     remappings=[
+    #         ([prefix, '/front_camera/depth_image'], 'front_camera/depth_image/image_raw'),
+    #         ([prefix, '/front_camera/depth_image/compressed'], 'front_camera/depth_image/image_raw/compressed'),
+    #         ([prefix, '/front_camera/depth_image/compressedDepth'], 'front_camera/depth_image/image_raw/compressedDepth'),
+    #         ([prefix, '/front_camera/depth_image/theora'], 'front_camera/depth_image/image_raw/theora'),
+    #     ],
+    #     parameters=[{'use_sim_time': use_sim_time}],
+    #     output='screen',
+    #     condition=IfCondition(use_ignition),
+    # )
     
 
 
@@ -327,9 +327,9 @@ def generate_launch_description():
         cmd_vel_bridge,
         start_gazebo_ros_bridge_cmd,
         start_gazebo_ros_bottom_image_bridge_cmd,
-        start_gazebo_ros_bottom_depth_bridge_cmd,
-        start_gazebo_ros_front_image_bridge_cmd,
-        start_gazebo_ros_front_depth_bridge_cmd,
+        # start_gazebo_ros_bottom_depth_bridge_cmd,
+        # start_gazebo_ros_front_image_bridge_cmd,
+        # start_gazebo_ros_front_depth_bridge_cmd,
 
         static_tf_world_to_odom,
 

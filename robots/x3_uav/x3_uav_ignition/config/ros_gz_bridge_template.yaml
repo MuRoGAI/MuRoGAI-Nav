@@ -13,20 +13,20 @@
   direction: GZ_TO_ROS
   lazy: true
 
-# RGBD Camera configuration
-- ros_topic_name: "front_camera/color/camera_info"
-  gz_topic_name: "{prefix}/front_camera/camera_info"
-  ros_type_name: "sensor_msgs/msg/CameraInfo"
-  gz_type_name: "gz.msgs.CameraInfo"
-  direction: GZ_TO_ROS
-  lazy: true
+# # RGBD Camera configuration
+# - ros_topic_name: "front_camera/color/camera_info"
+#   gz_topic_name: "{prefix}/front_camera/camera_info"
+#   ros_type_name: "sensor_msgs/msg/CameraInfo"
+#   gz_type_name: "gz.msgs.CameraInfo"
+#   direction: GZ_TO_ROS
+#   lazy: true
 
-- ros_topic_name: "front_camera/points"
-  gz_topic_name: "{prefix}/front_camera/points"
-  ros_type_name: "sensor_msgs/msg/PointCloud2"
-  gz_type_name: "gz.msgs.PointCloudPacked"
-  direction: GZ_TO_ROS
-  lazy: true
+# - ros_topic_name: "front_camera/points"
+#   gz_topic_name: "{prefix}/front_camera/points"
+#   ros_type_name: "sensor_msgs/msg/PointCloud2"
+#   gz_type_name: "gz.msgs.PointCloudPacked"
+#   direction: GZ_TO_ROS
+#   lazy: true
 
 
 # # LIDAR configuration
@@ -38,12 +38,12 @@
 #   lazy: false
 
 # IMU configuration
-- ros_topic_name: "imu/data"
-  gz_topic_name: "{prefix}/imu/data"
-  ros_type_name: "sensor_msgs/msg/Imu"
-  gz_type_name: "gz.msgs.IMU"
-  direction: GZ_TO_ROS
-  lazy: false
+# - ros_topic_name: "imu/data"
+#   gz_topic_name: "{prefix}/imu/data"
+#   ros_type_name: "sensor_msgs/msg/Imu"
+#   gz_type_name: "gz.msgs.IMU"
+#   direction: GZ_TO_ROS
+#   lazy: false
 
 # # Sending velocity commands from ROS 2 to Gazebo
 # - ros_topic_name: "/cmd_vel"
@@ -61,13 +61,13 @@
   direction: GZ_TO_ROS
   lazy: false
 
-# Odometry with covariance (if your OdometryPublisher or drive plugin publishes it)
-- ros_topic_name: "odometry_with_covariance"
-  gz_topic_name: "{prefix}/odometry_with_covariance"
-  ros_type_name: "nav_msgs/msg/Odometry"
-  gz_type_name: "gz.msgs.Odometry"
-  direction: GZ_TO_ROS
-  lazy: false
+# # Odometry with covariance (if your OdometryPublisher or drive plugin publishes it)
+# - ros_topic_name: "odometry_with_covariance"
+#   gz_topic_name: "{prefix}/odometry_with_covariance"
+#   ros_type_name: "nav_msgs/msg/Odometry"
+#   gz_type_name: "gz.msgs.Odometry"
+#   direction: GZ_TO_ROS
+#   lazy: false
 
 
 # Joint state bridge
