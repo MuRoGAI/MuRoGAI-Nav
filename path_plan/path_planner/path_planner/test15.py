@@ -13,7 +13,7 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
 
 PATH_DIR = (
-    "/home/suraj/murogai_nav/src/MuRoGAI-Nav/"
+    f"/home/{os.environ['USER']}/murogai_nav/src/MuRoGAI-Nav/"
     "path_plan/path_planner/path_planner/trajectory_logs2"
 )
 

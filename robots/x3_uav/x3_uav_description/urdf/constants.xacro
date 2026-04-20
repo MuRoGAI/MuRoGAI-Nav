@@ -5,10 +5,14 @@
   <xacro:arg name="prefix" default=""/>
   <xacro:arg name="use_ignition" default="true"/>
   <xacro:arg name="use_plugin" default="true"/>
+  <xacro:arg name="use_plugin_control" default="true"/>
+  <xacro:arg name="zero_gravity" default="true"/>
 
   <xacro:property name="prefix" value="$(arg prefix)"/>
   <xacro:property name="use_ignition" value="$(arg use_ignition)"/>
   <xacro:property name="use_plugin" value="$(arg use_plugin)"/>
+  <xacro:property name="use_plugin_control" value="$(arg use_plugin_control)"/>
+  <xacro:property name="zero_gravity" value="$(arg zero_gravity)"/>
 
   <xacro:property name="frame_prefix" value="${prefix + '/' if prefix else ''}"/>
   <xacro:property name="ns_prefix" value="${prefix if prefix else 'x3'}"/>

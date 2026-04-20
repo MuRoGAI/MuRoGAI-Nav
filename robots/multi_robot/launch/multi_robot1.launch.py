@@ -218,31 +218,31 @@ def generate_launch_description():
     )
 
 
-    robot5_launch = TimerAction(
-        period=13.0,
-        actions=[
-            IncludeLaunchDescription(
-                PythonLaunchDescriptionSource(yahboom_launch),
-                launch_arguments={
-                    'use_sim_time': use_sim_time,
-                    'robot_name': 'rosmaster_x3',
-                    'prefix': 'cleaning_bot1',
-                    'use_ignition': use_ignition,
-                    'use_plugin': 'True',
-                    'use_ros2_control': 'False',
-                    'use_mock_hardware': 'False',
-                    'spawn_x': '4.0',
-                    'spawn_y': '11.0',
-                    'spawn_z': '0.05',
-                    'spawn_roll': '0.0',
-                    'spawn_pitch': '0.0',
-                    'spawn_yaw': '0.0',
-                    'use_rviz': use_multi_rviz,
-                    'plate_colour': 'purple',
-                }.items()
-            )
-        ]
-    )
+    # robot5_launch = TimerAction(
+    #     period=13.0,
+    #     actions=[
+    #         IncludeLaunchDescription(
+    #             PythonLaunchDescriptionSource(yahboom_launch),
+    #             launch_arguments={
+    #                 'use_sim_time': use_sim_time,
+    #                 'robot_name': 'rosmaster_x3',
+    #                 'prefix': 'cleaning_bot1',
+    #                 'use_ignition': use_ignition,
+    #                 'use_plugin': 'True',
+    #                 'use_ros2_control': 'False',
+    #                 'use_mock_hardware': 'False',
+    #                 'spawn_x': '4.0',
+    #                 'spawn_y': '11.0',
+    #                 'spawn_z': '0.05',
+    #                 'spawn_roll': '0.0',
+    #                 'spawn_pitch': '0.0',
+    #                 'spawn_yaw': '0.0',
+    #                 'use_rviz': use_multi_rviz,
+    #                 'plate_colour': 'purple',
+    #             }.items()
+    #         )
+    #     ]
+    # )
 
     drone_launch = TimerAction(
         period=13.0,
@@ -258,11 +258,13 @@ def generate_launch_description():
                     # 'xacro_file': xacro_file,
                     'use_ignition': use_ignition,
                     'use_plugin': 'True',
+                    'use_plugin_control': 'false',
                     'use_ros2_control': 'false',
                     'use_mock_hardware': 'false',
+                    'zero_gravity': 'true',
                     'spawn_x': '2.5',
                     'spawn_y': '5.0',
-                    'spawn_z': '0.05',
+                    'spawn_z': '5.05',
                     'spawn_roll': '0.0',
                     'spawn_pitch': '0.0',
                     'spawn_yaw': '0.0',

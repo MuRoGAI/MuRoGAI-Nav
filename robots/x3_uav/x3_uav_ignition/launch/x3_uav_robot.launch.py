@@ -56,8 +56,10 @@ def generate_launch_description():
     prefix = LaunchConfiguration('prefix')
     use_ignition = LaunchConfiguration('use_ignition')
     use_plugin = LaunchConfiguration('use_plugin')
+    use_plugin_control = LaunchConfiguration('use_plugin_control')
     use_ros2_control = LaunchConfiguration('use_ros2_control')
     use_mock_hardware = LaunchConfiguration('use_mock_hardware')
+    zero_gravity = LaunchConfiguration('zero_gravity')
     use_rviz = LaunchConfiguration('use_rviz')
     spawn_x = LaunchConfiguration('spawn_x')
     spawn_y = LaunchConfiguration('spawn_y')
@@ -75,8 +77,10 @@ def generate_launch_description():
     prefix_arg = DeclareLaunchArgument('prefix', default_value='x3')
     use_ignition_arg = DeclareLaunchArgument('use_ignition', default_value='true')
     use_plugin_arg = DeclareLaunchArgument('use_plugin', default_value='true')
+    use_plugin_control_arg = DeclareLaunchArgument('use_plugin_control', default_value='true')
     use_ros2_control_arg = DeclareLaunchArgument('use_ros2_control', default_value='False')
     use_mock_hardware_arg = DeclareLaunchArgument('use_mock_hardware', default_value='False')
+    zero_gravity_arg = DeclareLaunchArgument('zero_gravity', default_value='true')
     use_rviz_arg = DeclareLaunchArgument('use_rviz', default_value='false')
     declare_x_cmd = DeclareLaunchArgument('spawn_x', default_value='0.0', description='x component of initial position, meters')
     declare_y_cmd = DeclareLaunchArgument('spawn_y', default_value='0.0', description='y component of initial position, meters')
@@ -98,6 +102,8 @@ def generate_launch_description():
         ' prefix:=', prefix,
         ' use_ignition:=', use_ignition,
         ' use_plugin:=', use_plugin,
+        ' use_plugin_control:=', use_plugin_control,
+        ' zero_gravity:=', zero_gravity,
     ])
 
     robot_description = ParameterValue(robot_description_content, value_type=str)
@@ -151,16 +157,16 @@ def generate_launch_description():
         " + '@geometry_msgs/msg/Twist@gz.msgs.Twist'"
     ])
 
-    cmd_vel_bridge = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        name='cmd_vel_bridge',
-        namespace=prefix,
-        arguments=[topic_with_prefix], 
-        parameters=[{'use_sim_time': use_sim_time}],
-        output='screen',
-        condition=IfCondition(use_ignition),
-    )
+    # cmd_vel_bridge = Node(
+    #     package='ros_gz_bridge',
+    #     executable='parameter_bridge',
+    #     name='cmd_vel_bridge',
+    #     namespace=prefix,
+    #     arguments=[topic_with_prefix], 
+    #     parameters=[{'use_sim_time': use_sim_time}],
+    #     output='screen',
+    #     condition=IfCondition(use_ignition),
+    # )
 
     start_gazebo_ros_bridge_cmd = Node(
         package='ros_gz_bridge',
@@ -307,9 +313,11 @@ def generate_launch_description():
 
         use_ignition_arg,
         use_plugin_arg,
+        use_plugin_control_arg,
 
         use_ros2_control_arg,
         use_mock_hardware_arg,
+        zero_gravity_arg,
 
         use_rviz_arg,
 
@@ -324,7 +332,7 @@ def generate_launch_description():
         start_gazebo_ros_spawner_cmd,
 
         bridge_config_action,
-        cmd_vel_bridge,
+        # cmd_vel_bridge,
         start_gazebo_ros_bridge_cmd,
         start_gazebo_ros_bottom_image_bridge_cmd,
         # start_gazebo_ros_bottom_depth_bridge_cmd,

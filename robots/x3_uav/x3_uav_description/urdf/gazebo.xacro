@@ -3,6 +3,7 @@
 
   <xacro:if value="${use_ignition}">
     <xacro:if value="${use_plugin}">
+    <xacro:if value="${use_plugin_control}">
       <!-- ====================== MOTOR 0 (CCW) ====================== -->
       <gazebo>
         <plugin filename="ignition-gazebo-multicopter-motor-model-system"
@@ -156,6 +157,7 @@
           <dimensions>3</dimensions>
         </plugin>
       </gazebo>
+    </xacro:if>
 
       <!-- ====================== JOINT STATE PUBLISHER ====================== -->
       <gazebo>
@@ -167,6 +169,44 @@
           <update_rate>50</update_rate>
         </plugin>
       </gazebo>
+
+    </xacro:if>
+
+  <!-- ====================== DISABLE GRAVITY FOR ALL LINKS ====================== -->
+    <xacro:if value="${zero_gravity}">
+
+      <gazebo reference="${frame_prefix}base_link">
+        <gravity>0</gravity>
+      </gazebo>
+
+      <gazebo reference="${frame_prefix}rotor_0">
+        <gravity>0</gravity>
+      </gazebo>
+
+      <gazebo reference="${frame_prefix}rotor_1">
+        <gravity>0</gravity>
+      </gazebo>
+
+      <gazebo reference="${frame_prefix}rotor_2">
+        <gravity>0</gravity>
+      </gazebo>
+
+      <gazebo reference="${frame_prefix}rotor_3">
+        <gravity>0</gravity>
+      </gazebo>
+
+      <gazebo reference="${frame_prefix}imu_link">
+        <gravity>0</gravity>
+      </gazebo>
+
+      <gazebo reference="${frame_prefix}front_camera_link">
+        <gravity>0</gravity>
+      </gazebo>
+
+      <gazebo reference="${frame_prefix}bottom_camera_link">
+        <gravity>0</gravity>
+      </gazebo>
+
 
     </xacro:if>
   </xacro:if>

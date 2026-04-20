@@ -6,6 +6,7 @@
 <!-- ============================================ -->
 
 <xacro:if value="${use_ignition}">
+<xacro:if value="${use_plugin}">
   
   <!-- ====================== IMU SENSOR ====================== -->
   <!-- <gazebo reference="${frame_prefix}imu_link">
@@ -89,6 +90,7 @@
     </sensor>
   </gazebo>
 
+</xacro:if>
 </xacro:if>
 
 </robot>
