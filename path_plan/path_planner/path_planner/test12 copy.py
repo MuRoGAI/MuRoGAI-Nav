@@ -2,7 +2,7 @@
 import math
 import os
 import threading
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import numpy as np
 import rclpy
 from rclpy.node import Node
@@ -21,6 +21,8 @@ PATH_DIR = (
 
 # ═════════════════════════════════════════════════════════════════════════════
 #  PER-ROBOT CONFIG
+#  use_rsr=True  → rot+tra 2-step planner  (waffle)
+#  use_rsr=False → cubic spline planner    (all others)
 # ═════════════════════════════════════════════════════════════════════════════
 @dataclass
 class RobotConfig:
@@ -30,55 +32,58 @@ class RobotConfig:
     ky:         float = 3.5
     v_max:      float = 0.22
     w_max:      float = 2.84
+    use_rsr:    bool  = False   # True → rot+tra planner, False → cubic spline
 
 ROBOT_CONFIG: dict[str, RobotConfig] = {
     "burger1": RobotConfig(
         csv_file="burger1.csv",
-        kp_linear=3.2, kp_angular=3.7, ky=4.2,
-        v_max=0.22, w_max=2.84
+        kp_linear=3.0, kp_angular=3.5, ky=4.0,
+        v_max=0.3, w_max=2.84, use_rsr=False,
     ),
     "burger2": RobotConfig(
         csv_file="burger2.csv",
-        kp_linear=3.2, kp_angular=3.7, ky=4.2,
-        v_max=0.22, w_max=2.84
+        kp_linear=1.5, kp_angular=2.5, ky=3.5,
+        v_max=0.4, w_max=2.84, use_rsr=False,
     ),
     "burger3": RobotConfig(
         csv_file="burger3.csv",
-        kp_linear=3.2, kp_angular=3.7, ky=4.2,
-        v_max=0.22, w_max=2.84
+        kp_linear=1.5, kp_angular=2.5, ky=3.5,
+        v_max=0.22, w_max=2.84, use_rsr=False,
     ),
     "waffle": RobotConfig(
         csv_file="waffle.csv",
-        kp_linear=3.2, kp_angular=1.0, ky=1.35,
+        kp_linear=1.2, kp_angular=0.5, ky=1.5,
         v_max=0.26, w_max=1.82,
+        use_rsr=True,   # ← rot+tra 2-step planner
     ),
     "firebird": RobotConfig(
         csv_file="firebird.csv",
-        kp_linear=1.5, kp_angular=0.73, ky=2.32,
-        v_max=0.26, w_max=1.9
+        kp_linear=0.8, kp_angular=0.8, ky=1.0,
+        v_max=0.26, w_max=1.9, use_rsr=False,
     ),
     # "tb4_1": RobotConfig(
     #     csv_file="tb4_1.csv",
     #     kp_linear=1.5, kp_angular=2.5, ky=3.5,
-    #     v_max=0.26, w_max=1.9
+    #     v_max=0.26, w_max=1.90, use_rsr=False,
     # ),
 }
 
 ROBOTS         = list(ROBOT_CONFIG.keys())
-SYNC_DELAY     = 1.0    # s — wait after all robots have odom before starting
-GOAL_TOLERANCE = 0.08   # m — SEEK done within this radius
+SYNC_DELAY     = 1.0
+GOAL_TOLERANCE = 0.08   # m
+V_FLOOR_FRAC   = 0.12   # fraction of v_max minimum forward speed (spline robots)
 
-# Skip angles / distances too small to bother with a dedicated sub-segment
-MIN_ROT_RAD = 0.05   # rad
-MIN_DIST_M  = 0.02   # m
-# Drop near-duplicate CSV rows (e.g. the 9 ms final heading-only row)
-MIN_WP_DT   = 0.10   # s
+# ── RSR planner constants ─────────────────────────────────────────────────────
+MIN_ROT_RAD     = 0.05   # rad — skip trivially small rotations
+MIN_DIST_M      = 0.02   # m   — treat as pure rotation if distance < this
+MIN_WP_DT       = 0.10   # s   — drop near-duplicate CSV rows
+ROT_TIME_FACTOR = 1.35   # robot achieves ~74% of w_max → give 35% extra time
 
 QOS_RELIABLE    = QoSProfile(reliability=ReliabilityPolicy.RELIABLE,    depth=10)
 QOS_BEST_EFFORT = QoSProfile(reliability=ReliabilityPolicy.BEST_EFFORT, depth=10)
 
 # ═════════════════════════════════════════════════════════════════════════════
-#  HELPERS
+#  SHARED HELPERS
 # ═════════════════════════════════════════════════════════════════════════════
 def _norm(a: float) -> float:
     """Wrap angle to [-π, π]."""
@@ -87,174 +92,183 @@ def _norm(a: float) -> float:
 # ═════════════════════════════════════════════════════════════════════════════
 #  CSV LOADER
 # ═════════════════════════════════════════════════════════════════════════════
-def load_waypoints(csv_path: str) -> np.ndarray:
+def load_waypoints(csv_path: str, drop_duplicates: bool = False) -> np.ndarray:
     """
     Load CSV (time, x, y, theta[, ...]).
-    Returns (N, 4) sorted by time, t[0]=0, near-duplicate rows removed.
+    Returns (N, 4) sorted by time, t[0]=0.
+    If drop_duplicates=True, rows with dt < MIN_WP_DT are removed (RSR planner).
     """
     data = np.genfromtxt(csv_path, delimiter=',', skip_header=1)
     if data.ndim == 1:
         data = data[np.newaxis, :]
     data = data[np.argsort(data[:, 0])]
     data[:, 0] -= data[0, 0]
-    keep = [0]
-    for i in range(1, len(data)):
-        if data[i, 0] - data[keep[-1], 0] >= MIN_WP_DT:
-            keep.append(i)
-    return data[np.ix_(keep, [0, 1, 2, 3])]   # (N,4): t,x,y,theta
+    if drop_duplicates:
+        keep = [0]
+        for i in range(1, len(data)):
+            if data[i, 0] - data[keep[-1], 0] >= MIN_WP_DT:
+                keep.append(i)
+        data = data[np.ix_(keep, [0, 1, 2, 3])]
+    return data[:, :4]   # (N, 4): t, x, y, theta
 
 # ═════════════════════════════════════════════════════════════════════════════
-#  3-STEP TRAJECTORY BUILDER
+#  ── CUBIC SPLINE PLANNER  (burger / firebird / tb4_1) ──────────────────────
 # ═════════════════════════════════════════════════════════════════════════════
-#
-#  For each consecutive waypoint pair (p0 → p1) we produce up to 3 segments:
-#
-#   STEP 1  [rot]   Rotate in place to face p1.
-#                   Duration = |bearing_to_p1 - current_heading| / w_max
-#
-#   STEP 2  [tra]   Drive straight to p1 at v_max.
-#                   Duration = distance(p0, p1) / v_max
-#
-#   STEP 3  [rot]   Rotate in place to desired heading θ1.
-#                   Duration = |θ1 - bearing_to_p1| / w_max
-#
-#  Timing comes purely from robot limits (v_max, w_max), so each step is
-#  guaranteed achievable and the robot arrives at each waypoint on time.
+def cubic_coeffs(t0, tf, p0, v0, pf, vf):
+    T = tf - t0
+    if T <= 1e-9:
+        return np.array([p0, 0.0, 0.0, 0.0, t0])
+    h    = pf - p0
+    a2   = (3*h / T**2) - (2*v0 + vf) / T
+    a3   = (-2*h / T**3) + (v0 + vf)  / T**2
+    return np.array([p0, v0, a2, a3, t0])
 
-def build_trajectory(waypoints: np.ndarray,
-                     pose_offset: tuple,
-                     v_max: float,
-                     w_max: float) -> tuple[list, float]:
+def eval_cubic(t, c):
+    a0, a1, a2, a3, t0 = c
+    tau = max(0.0, t - t0)
+    return (a0 + a1*tau + a2*tau**2 + a3*tau**3,
+            a1 + 2*a2*tau + 3*a3*tau**2)
+
+def build_spline(waypoints, pose_offset):
     """
-    Returns (segments, total_duration_s).
-
-    Each segment dict:
-      type        : 'rot' | 'tra'
-      t0, tf      : absolute start/end time from trajectory start
-      x0,y0,th0   : start pose
-      x1,y1,th1   : end pose
-      v_ff        : feedforward linear  velocity (0 for rot, ±v_max for tra)
-      w_ff        : feedforward angular velocity (±w_max for rot, 0 for tra)
-      wp_idx      : which original waypoint gap this belongs to
-      is_wp_end   : True on the last sub-segment of each waypoint gap
+    Cubic spline planner with central-difference knot velocities and
+    linear theta interpolation (avoids ±π ringing).
     """
-    dx_off, dy_off = pose_offset
-    poses = [
-        (float(wp[1]) + dx_off,
-         float(wp[2]) + dy_off,
-         float(wp[3]))
-        for wp in waypoints
-    ]
+    dx, dy = pose_offset
+    N      = len(waypoints)
+    times  = waypoints[:, 0]
+    xs     = waypoints[:, 1] + dx
+    ys     = waypoints[:, 2] + dy
+    thetas = np.unwrap(waypoints[:, 3])
 
+    vx = np.zeros(N)
+    vy = np.zeros(N)
+    for i in range(1, N - 1):
+        dt_p = times[i] - times[i-1]
+        dt_n = times[i+1] - times[i]
+        if dt_p < 1e-9 or dt_n < 1e-9:
+            continue
+        vx[i] = 0.5 * ((xs[i]-xs[i-1])/dt_p + (xs[i+1]-xs[i])/dt_n)
+        vy[i] = 0.5 * ((ys[i]-ys[i-1])/dt_p + (ys[i+1]-ys[i])/dt_n)
+    vx[0] = vy[0] = vx[-1] = vy[-1] = 0.0
+
+    MIN_SEG = 0.1
     segments = []
-    t        = 0.0
+    for i in range(N - 1):
+        t0, tf = float(times[i]), float(times[i+1])
+        if tf - t0 < MIN_SEG:
+            continue
+        # Linear theta — avoids cubic overshoot across ±π boundaries
+        slope = _norm(thetas[i+1] - thetas[i]) / (tf - t0)
+        ct    = np.array([thetas[i], slope, 0.0, 0.0, t0])
+        segments.append({
+            'type':  'spline',
+            't0': t0, 'tf': tf,
+            'cx': cubic_coeffs(t0, tf, xs[i],     vx[i], xs[i+1],     vx[i+1]),
+            'cy': cubic_coeffs(t0, tf, ys[i],     vy[i], ys[i+1],     vy[i+1]),
+            'ct': ct,
+        })
+    return segments, float(times[-1])
 
-    for i in range(len(poses) - 1):
-        x0, y0, _ = poses[i]
-        x1, y1, th1 = poses[i + 1]
-
-        # Current heading = end heading of the last sub-segment, or CSV value
-        if segments:
-            th0 = segments[-1]['th1']
-        else:
-            th0 = poses[0][2]
-
-        ddx     = x1 - x0
-        ddy     = y1 - y0
-        dist    = math.hypot(ddx, ddy)
-        bearing = math.atan2(ddy, ddx)   # direction from p0 to p1
-
-        wp_segs = []
-
-        if dist < MIN_DIST_M:
-            # ── Pure heading correction (positions identical) ─────────────
-            dth = _norm(th1 - th0)
-            if abs(dth) > MIN_ROT_RAD:
-                dt = abs(dth) / w_max
-                wp_segs.append(_make_rot(t, dt, x0, y0, th0, th1, i))
-                t += dt
-
-        else:
-            # ── STEP 1: rotate in place to face the next waypoint ─────────
-            turn1 = _norm(bearing - th0)
-            if abs(turn1) > MIN_ROT_RAD:
-                dt = abs(turn1) / w_max
-                wp_segs.append(_make_rot(t, dt, x0, y0, th0, bearing, i))
-                t  += dt
-                th0 = bearing   # heading after step 1
-
-            # ── STEP 2: drive straight to the waypoint ────────────────────
-            dt = dist / v_max
-            wp_segs.append({
-                'type':       'tra',
-                'wp_idx':     i,
-                'is_wp_end':  False,
-                't0': t, 'tf': t + dt,
-                'x0': x0, 'y0': y0, 'th0': th0,
-                'x1': x1, 'y1': y1, 'th1': th0,   # heading unchanged
-                'v_ff': v_max,
-                'w_ff': 0.0,
-            })
-            t  += dt
-            th0 = th0   # same heading after step 2
-
-            # ── STEP 3: rotate in place to desired heading at waypoint ─────
-            turn2 = _norm(th1 - th0)
-            if abs(turn2) > MIN_ROT_RAD:
-                dt = abs(turn2) / w_max
-                wp_segs.append(_make_rot(t, dt, x1, y1, th0, th1, i))
-                t += dt
-
-        # Mark the last sub-segment of this waypoint gap
-        if wp_segs:
-            wp_segs[-1]['is_wp_end'] = True
-        segments.extend(wp_segs)
-
-    return segments, t
-
-
+# ═════════════════════════════════════════════════════════════════════════════
+#  ── ROT + TRA 2-STEP PLANNER  (waffle) ─────────────────────────────────────
+# ═════════════════════════════════════════════════════════════════════════════
 def _make_rot(t0, dt, x, y, th0, th1, wp_idx):
-    """Create a rotate-in-place sub-segment."""
-    dth  = _norm(th1 - th0)
-    w_ff = math.copysign(abs(dth) / max(dt, 1e-9), dth)
+    """
+    Rotate-in-place sub-segment.
+    Clock is advanced by dt*ROT_TIME_FACTOR; w_ff is based on ideal dt
+    so feedforward ≈ achievable angular rate.
+    """
+    dth       = _norm(th1 - th0)
+    w_ff      = math.copysign(abs(dth) / max(dt, 1e-9), dth)
+    actual_dt = dt * ROT_TIME_FACTOR
     return {
         'type':      'rot',
         'wp_idx':    wp_idx,
         'is_wp_end': False,
-        't0': t0, 'tf': t0 + dt,
+        't0': t0, 'tf': t0 + actual_dt,
         'x0': x,  'y0': y,  'th0': th0,
         'x1': x,  'y1': y,  'th1': th1,
         'v_ff': 0.0,
         'w_ff': w_ff,
     }
 
-# ═════════════════════════════════════════════════════════════════════════════
-#  SEGMENT EVALUATOR
-# ═════════════════════════════════════════════════════════════════════════════
-def eval_seg(t: float, seg: dict):
+def build_rsr_trajectory(waypoints, pose_offset, v_max, w_max):
     """
-    Returns desired pose + feedforward (xd, yd, th_d, v_d, w_d) at time t.
+    2-step planner: STEP1 rotate to face next WP, STEP2 drive straight.
+    No STEP3 — feedback controller handles final heading correction.
+    _norm() automatically picks the shorter CW/CCW rotation.
     """
+    dx_off, dy_off = pose_offset
+    poses = [(float(wp[1])+dx_off, float(wp[2])+dy_off, float(wp[3]))
+             for wp in waypoints]
+
+    segments = []
+    t = 0.0
+
+    for i in range(len(poses) - 1):
+        x0, y0, _ = poses[i]
+        x1, y1, th1 = poses[i+1]
+        th0 = segments[-1]['th1'] if segments else poses[0][2]
+
+        ddx     = x1 - x0
+        ddy     = y1 - y0
+        dist    = math.hypot(ddx, ddy)
+        bearing = math.atan2(ddy, ddx)
+
+        wp_segs = []
+
+        if dist < MIN_DIST_M:
+            dth = _norm(th1 - th0)
+            if abs(dth) > MIN_ROT_RAD:
+                dt = abs(dth) / w_max
+                wp_segs.append(_make_rot(t, dt, x0, y0, th0, th1, i))
+                t += dt * ROT_TIME_FACTOR
+        else:
+            # STEP 1 — rotate to face next waypoint (shorter direction)
+            turn = _norm(bearing - th0)
+            if abs(turn) > MIN_ROT_RAD:
+                dt = abs(turn) / w_max
+                wp_segs.append(_make_rot(t, dt, x0, y0, th0, bearing, i))
+                t  += dt * ROT_TIME_FACTOR
+                th0 = bearing
+
+            # STEP 2 — drive straight; feedback corrects any lateral drift
+            dt = dist / v_max
+            wp_segs.append({
+                'type':      'tra',
+                'wp_idx':    i,
+                'is_wp_end': True,
+                't0': t, 'tf': t + dt,
+                'x0': x0, 'y0': y0, 'th0': th0,
+                'x1': x1, 'y1': y1, 'th1': th0,
+                'v_ff': v_max,
+                'w_ff': 0.0,
+            })
+            t += dt
+
+        if wp_segs and not any(s['is_wp_end'] for s in wp_segs):
+            wp_segs[-1]['is_wp_end'] = True
+        segments.extend(wp_segs)
+
+    return segments, t
+
+def eval_rsr_seg(t, seg):
+    """Evaluate desired pose + feedforward for a rot or tra segment."""
     t0  = seg['t0']
     tf  = seg['tf']
     T   = max(tf - t0, 1e-9)
     tau = max(0.0, min(t - t0, T))
-
     if seg['type'] == 'rot':
-        xd  = seg['x0']
-        yd  = seg['y0']
-        th_d = _norm(seg['th0'] + seg['w_ff'] * tau)
-        v_d  = 0.0
-        w_d  = seg['w_ff']
-    else:   # 'tra'
+        return (seg['x0'], seg['y0'],
+                _norm(seg['th0'] + seg['w_ff'] * tau),
+                0.0, seg['w_ff'])
+    else:
         frac = tau / T
-        xd   = seg['x0'] + (seg['x1'] - seg['x0']) * frac
-        yd   = seg['y0'] + (seg['y1'] - seg['y0']) * frac
-        th_d = seg['th0']
-        v_d  = seg['v_ff']
-        w_d  = 0.0
-
-    return xd, yd, th_d, v_d, w_d
+        return (seg['x0'] + (seg['x1']-seg['x0'])*frac,
+                seg['y0'] + (seg['y1']-seg['y0'])*frac,
+                seg['th0'],
+                seg['v_ff'], 0.0)
 
 # ═════════════════════════════════════════════════════════════════════════════
 #  COORDINATOR
@@ -267,7 +281,7 @@ class Coordinator:
         self._lock       = threading.Lock()
         self._delay      = sync_delay
 
-    def report_ready(self, robot_name: str, now_sec: float):
+    def report_ready(self, robot_name, now_sec):
         with self._lock:
             self._ready.add(robot_name)
             if self._ready >= self._expected and self._start_time is None:
@@ -278,7 +292,7 @@ class Coordinator:
 #  ROBOT NODE
 # ═════════════════════════════════════════════════════════════════════════════
 class PathFollower(Node):
-    def __init__(self, robot_name: str, coordinator: Coordinator):
+    def __init__(self, robot_name, coordinator):
         super().__init__(f'{robot_name}_controller')
         self.robot = robot_name
         self.coord = coordinator
@@ -286,7 +300,6 @@ class PathFollower(Node):
 
         self.current_pose    = None
         self.segments        = []
-        self.traj_duration   = 0.0
         self.traj_created    = False
         self.start_time      = None
         self.last_debug_time = 0.0
@@ -294,10 +307,13 @@ class PathFollower(Node):
 
         csv_path = os.path.join(PATH_DIR, self.cfg.csv_file)
         try:
-            self.waypoints = load_waypoints(csv_path)
+            self.waypoints = load_waypoints(csv_path,
+                                            drop_duplicates=self.cfg.use_rsr)
             self.get_logger().info(
                 f"[CSV]  {self.robot}: {len(self.waypoints)} waypoints  "
-                f"total_time={self.waypoints[-1,0]:.2f}s  ({csv_path})"
+                f"total_time={self.waypoints[-1,0]:.2f}s  "
+                f"planner={'RSR' if self.cfg.use_rsr else 'SPLINE'}  "
+                f"({csv_path})"
             )
         except Exception as e:
             self.get_logger().error(f"[CSV]  {self.robot}: FAILED — {e}")
@@ -326,9 +342,11 @@ class PathFollower(Node):
         yaw = math.atan2(2.0*(q.w*q.z + q.x*q.y),
                          1.0 - 2.0*(q.y*q.y + q.z*q.z))
         self.current_pose = (pos.x, pos.y, yaw)
+        self.get_logger().debug(
+            f"[ODOM] {self.robot} x={pos.x:.3f} y={pos.y:.3f} yaw={yaw:.3f}")
 
     # ── Build trajectory ──────────────────────────────────────────────────────
-    def create_trajectory(self, shared_start_time: float):
+    def create_trajectory(self, shared_start_time):
         if self.waypoints is None:
             self.get_logger().error(f"[TRAJ] {self.robot}: no waypoints")
             self.traj_created = True
@@ -336,20 +354,26 @@ class PathFollower(Node):
         x0, y0, _ = self.current_pose
         dx = x0 - float(self.waypoints[0, 1])
         dy = y0 - float(self.waypoints[0, 2])
-        self.segments, self.traj_duration = build_trajectory(
-            self.waypoints, (dx, dy), self.cfg.v_max, self.cfg.w_max)
+
+        if self.cfg.use_rsr:
+            self.segments, dur = build_rsr_trajectory(
+                self.waypoints, (dx, dy), self.cfg.v_max, self.cfg.w_max)
+            n_seg = len(self.segments)
+            label = f"{len(self.waypoints)-1} waypoints → {n_seg} sub-segments"
+        else:
+            self.segments, dur = build_spline(self.waypoints, (dx, dy))
+            n_seg = len(self.segments)
+            label = f"{n_seg} cubic segments"
+
         self.start_time   = shared_start_time
         self.traj_created = True
-        n_wp  = len(self.waypoints) - 1
-        n_seg = len(self.segments)
         self.get_logger().info(
-            f"[TRAJ] {self.robot}: {n_wp} waypoints → {n_seg} sub-segments  "
-            f"total={self.traj_duration:.2f}s  "
+            f"[TRAJ] {self.robot}: {label}  total={dur:.2f}s  "
             f"offset=({dx:.3f},{dy:.3f})  start_at={shared_start_time:.3f}s"
         )
 
-    # ── Find active segment ───────────────────────────────────────────────────
-    def _active_segment(self, t: float):
+    # ── Active segment ────────────────────────────────────────────────────────
+    def _active_segment(self, t):
         for seg in self.segments:
             if seg['t0'] <= t <= seg['tf']:
                 return seg
@@ -359,32 +383,50 @@ class PathFollower(Node):
         return None
 
     # ── Waypoint crossing logger ──────────────────────────────────────────────
-    def _log_waypoint_crossings(self, t: float):
+    def _log_waypoint_crossings(self, t):
         x, y, yaw = self.current_pose
-        for seg in self.segments:
-            if not seg.get('is_wp_end', False):
-                continue
-            wi = seg['wp_idx']
-            if wi in self.logged_wps:
-                continue
-            if t < seg['tf']:
-                break
-            self.logged_wps.add(wi)
-            xd_end  = seg['x1']
-            yd_end  = seg['y1']
-            td_end  = _norm(seg['th1'])
-            pos_err = math.hypot(xd_end - x, yd_end - y)
-            ang_err = _norm(td_end - yaw)
-            self.get_logger().info(
-                f"\n========== [{self.robot}] WAYPOINT {wi+1}/"
-                f"{len(self.waypoints)-1} ==========\n"
-                f"  Time error    : {t - seg['tf']:+.4f} s\n"
-                f"  Desired pose  : ({xd_end:.3f}, {yd_end:.3f}, {td_end:.3f})\n"
-                f"  Actual  pose  : ({x:.3f}, {y:.3f}, {yaw:.3f})\n"
-                f"  Position error: {pos_err:.4f} m\n"
-                f"  Angular error : {ang_err:.4f} rad\n"
-                f"==========================================="
-            )
+
+        if self.cfg.use_rsr:
+            # RSR: log when is_wp_end segment's tf is passed
+            for seg in self.segments:
+                if not seg.get('is_wp_end', False):
+                    continue
+                wi = seg['wp_idx']
+                if wi in self.logged_wps or t < seg['tf']:
+                    continue
+                self.logged_wps.add(wi)
+                xd, yd = seg['x1'], seg['y1']
+                td = _norm(seg['th1'])
+                self.get_logger().info(
+                    f"\n========== [{self.robot}] WAYPOINT {wi+1}/"
+                    f"{len(self.waypoints)-1} ==========\n"
+                    f"  Time error    : {t-seg['tf']:+.4f} s\n"
+                    f"  Desired pose  : ({xd:.3f}, {yd:.3f}, {td:.3f})\n"
+                    f"  Actual  pose  : ({x:.3f}, {y:.3f}, {yaw:.3f})\n"
+                    f"  Position error: {math.hypot(xd-x, yd-y):.4f} m\n"
+                    f"  Angular error : {_norm(td-yaw):.4f} rad\n"
+                    f"==========================================="
+                )
+        else:
+            # Spline: log at end of each spline segment
+            for i, seg in enumerate(self.segments):
+                if i in self.logged_wps or t < seg['tf']:
+                    continue
+                self.logged_wps.add(i)
+                xd, _ = eval_cubic(seg['tf'], seg['cx'])
+                yd, _ = eval_cubic(seg['tf'], seg['cy'])
+                td, _ = eval_cubic(seg['tf'], seg['ct'])
+                td    = _norm(td)
+                self.get_logger().info(
+                    f"\n========== [{self.robot}] WAYPOINT {i+1}/"
+                    f"{len(self.segments)} ==========\n"
+                    f"  Time error    : {t-seg['tf']:+.4f} s\n"
+                    f"  Desired pose  : ({xd:.3f}, {yd:.3f}, {td:.3f})\n"
+                    f"  Actual  pose  : ({x:.3f}, {y:.3f}, {yaw:.3f})\n"
+                    f"  Position error: {math.hypot(xd-x, yd-y):.4f} m\n"
+                    f"  Angular error : {_norm(td-yaw):.4f} rad\n"
+                    f"==========================================="
+                )
 
     # ── Control loop (50 Hz) ──────────────────────────────────────────────────
     def control_loop(self):
@@ -393,7 +435,6 @@ class PathFollower(Node):
 
         now = self.get_clock().now().nanoseconds * 1e-9
 
-        # Phase 1 — wait for all robots
         if not self.traj_created:
             shared_start = self.coord.report_ready(self.robot, now)
             if shared_start is not None:
@@ -405,7 +446,6 @@ class PathFollower(Node):
 
         t = now - self.start_time
 
-        # Phase 2 — countdown
         if t < 0:
             if now - self.last_debug_time > 1.0:
                 self.last_debug_time = now
@@ -415,11 +455,16 @@ class PathFollower(Node):
         self._log_waypoint_crossings(t)
 
         # ── Phase 3 — SEEK after trajectory ends ─────────────────────────────
-        if t > self.segments[-1]['tf']:
-            last      = self.segments[-1]
-            xd_g, yd_g = last['x1'], last['y1']
-            x, y, yaw  = self.current_pose
-            pos_err    = math.hypot(xd_g - x, yd_g - y)
+        last = self.segments[-1]
+        if t > last['tf']:
+            if self.cfg.use_rsr:
+                xd_g, yd_g = last['x1'], last['y1']
+            else:
+                xd_g, _ = eval_cubic(last['tf'], last['cx'])
+                yd_g, _ = eval_cubic(last['tf'], last['cy'])
+
+            x, y, yaw = self.current_pose
+            pos_err   = math.hypot(xd_g - x, yd_g - y)
 
             if pos_err < GOAL_TOLERANCE:
                 self.cmd_pub.publish(Twist())
@@ -440,22 +485,26 @@ class PathFollower(Node):
                 self.last_debug_time = now
                 self.get_logger().info(
                     f"[SEEK] {self.robot}  pos_err={pos_err:.3f}m  "
-                    f"des=({xd_g:.2f},{yd_g:.2f})  act=({x:.2f},{y:.2f})"
-                )
+                    f"des=({xd_g:.2f},{yd_g:.2f})  act=({x:.2f},{y:.2f})")
             return
 
-        # ── Phase 4 — follow the 3-step trajectory ───────────────────────────
+        # ── Phase 4 — trajectory tracking ────────────────────────────────────
         seg = self._active_segment(t)
         if seg is None:
             return
 
-        xd, yd, th_d, v_d, w_d = eval_seg(t, seg)
+        if self.cfg.use_rsr:
+            self._control_rsr(t, seg, now)
+        else:
+            self._control_spline(t, seg, now)
 
+    # ── RSR controller ────────────────────────────────────────────────────────
+    def _control_rsr(self, t, seg, now):
+        xd, yd, th_d, v_d, w_d = eval_rsr_seg(t, seg)
         x, y, yaw = self.current_pose
         dx = xd - x
         dy = yd - y
 
-        # Errors in robot body frame
         ex      =  math.cos(yaw)*dx + math.sin(yaw)*dy
         ey      = -math.sin(yaw)*dx + math.cos(yaw)*dy
         e_theta =  _norm(th_d - yaw)
@@ -463,9 +512,7 @@ class PathFollower(Node):
         pos_error     = math.hypot(dx, dy)
         bearing_to_d  = math.atan2(dy, dx)
         heading_error = _norm(bearing_to_d - yaw)
-
-        # v_blend: 1 when moving (bearing correction), 0 when rotating (heading correction)
-        v_blend = min(1.0, abs(v_d) / 0.08)
+        v_blend       = min(1.0, abs(v_d) / 0.08)
 
         cfg = self.cfg
         lateral_correction = (
@@ -475,17 +522,11 @@ class PathFollower(Node):
         )
 
         if seg['type'] == 'rot':
-            # Strictly rotate in place — no forward/backward motion at all.
-            # kp_linear * ex would drive the robot off the spot; suppress it.
-            v_cmd = 0.0
+            v_cmd = 0.0   # strictly in-place — suppress kp_linear*ex
         else:
             v_cmd = v_d * math.cos(e_theta) + cfg.kp_linear * ex
-            # Never reverse on a forward segment. Position error behind the
-            # robot (ex < 0) at segment transitions causes kp_linear*ex to
-            # go negative, making the robot drive backward. Clamp it out.
             if seg['v_ff'] > 0:
-                v_cmd = max(v_cmd, 0.0)
-            # Velocity floor so robot doesn't stall near end of segment
+                v_cmd = max(v_cmd, 0.0)   # never reverse on a forward segment
             if pos_error > GOAL_TOLERANCE and math.cos(heading_error) > 0.5:
                 v_cmd = max(v_cmd, cfg.v_max * 0.12)
 
@@ -501,6 +542,56 @@ class PathFollower(Node):
                 f"[CTRL] {self.robot} | t={t:.2f}s "
                 f"seg=[{seg['t0']:.1f},{seg['tf']:.1f}]"
                 f"({'rot' if seg['type']=='rot' else 'tra'}) | "
+                f"des=({xd:.2f},{yd:.2f},{th_d:.2f}) "
+                f"act=({x:.2f},{y:.2f},{yaw:.2f}) | "
+                f"v={cmd.linear.x:.2f} w={cmd.angular.z:.2f}"
+            )
+
+    # ── Spline controller ─────────────────────────────────────────────────────
+    def _control_spline(self, t, seg, now):
+        xd,  xd_dot  = eval_cubic(t, seg['cx'])
+        yd,  yd_dot  = eval_cubic(t, seg['cy'])
+        th_d, th_dot = eval_cubic(t, seg['ct'])
+        th_d = _norm(th_d)
+
+        x, y, yaw = self.current_pose
+        dx = xd - x
+        dy = yd - y
+
+        ex      =  math.cos(yaw)*dx + math.sin(yaw)*dy
+        ey      = -math.sin(yaw)*dx + math.cos(yaw)*dy
+        e_theta =  _norm(th_d - yaw)
+
+        v_d = xd_dot * math.cos(th_d) + yd_dot * math.sin(th_d)
+        w_d = th_dot
+
+        pos_error     = math.hypot(dx, dy)
+        bearing_to_d  = math.atan2(dy, dx)
+        heading_error = _norm(bearing_to_d - yaw)
+        v_blend       = min(1.0, abs(v_d) / 0.08)
+
+        cfg = self.cfg
+        lateral_correction = (
+            cfg.ky          * v_d * ey
+            + v_blend       * cfg.kp_angular * pos_error * math.sin(heading_error)
+            + (1.0-v_blend) * cfg.kp_angular * math.sin(e_theta)
+        )
+
+        v_cmd = v_d * math.cos(e_theta) + cfg.kp_linear * ex
+        if pos_error > GOAL_TOLERANCE and math.cos(heading_error) > 0.5:
+            v_cmd = max(v_cmd, cfg.v_max * V_FLOOR_FRAC)
+
+        cmd = Twist()
+        cmd.linear.x  = float(np.clip(v_cmd, -cfg.v_max, cfg.v_max))
+        cmd.angular.z = float(np.clip(
+            w_d + lateral_correction, -cfg.w_max, cfg.w_max))
+        self.cmd_pub.publish(cmd)
+
+        if now - self.last_debug_time > 0.5:
+            self.last_debug_time = now
+            self.get_logger().info(
+                f"[CTRL] {self.robot} | t={t:.2f}s "
+                f"seg=[{seg['t0']:.1f},{seg['tf']:.1f}] | "
                 f"des=({xd:.2f},{yd:.2f},{th_d:.2f}) "
                 f"act=({x:.2f},{y:.2f},{yaw:.2f}) | "
                 f"v={cmd.linear.x:.2f} w={cmd.angular.z:.2f}"

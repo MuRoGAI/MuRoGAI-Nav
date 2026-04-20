@@ -14,7 +14,7 @@ from geometry_msgs.msg import Twist
 #  PATH DIRECTORY
 # ═════════════════════════════════════════════════════════════════════════════
 PATH_DIR = (
-"/home/multi-robot/murogai_nav/src/MuRoGAI-Nav/"
+"/home/suraj/murogai_nav/src/MuRoGAI-Nav/"
 "path_plan/path_planner/path_planner/trajectory_logs2"
 )
 # ═════════════════════════════════════════════════════════════════════════════
@@ -32,31 +32,31 @@ class RobotConfig:
     w_max: float = 2.84   # rad/s
 
 ROBOT_CONFIG: dict[str, RobotConfig] = {
-    # "burger1": RobotConfig(
-    #     csv_file="burger1.csv",
-    #     kp_linear=3.2, kp_angular=3.7, ky=4.2,
-    #     v_max=0.3, w_max=2.84,
-    # ),
-    # "burger2": RobotConfig(
-    #     csv_file="burger2.csv",
-    #     kp_linear=3.2, kp_angular=3.7, ky=4.2,
-    #     v_max=0.3, w_max=2.84,
-    # ),
-    # "burger3": RobotConfig(
-    #     csv_file="burger3.csv",
-    #     kp_linear=3.2, kp_angular=3.7, ky=4.2,
-    #     v_max=0.3, w_max=2.84,
-    # ),
+    "burger1": RobotConfig(
+        csv_file="burger1.csv",
+        kp_linear=3.2, kp_angular=3.7, ky=4.2,
+        v_max=0.22, w_max=2.84,
+    ),
+    "burger2": RobotConfig(
+        csv_file="burger2.csv",
+        kp_linear=3.2, kp_angular=3.7, ky=4.2,
+        v_max=0.22, w_max=2.84,
+    ),
+    "burger3": RobotConfig(
+        csv_file="burger3.csv",
+        kp_linear=3.2, kp_angular=3.7, ky=4.2,
+        v_max=0.22, w_max=2.84,
+    ),
     # "waffle": RobotConfig(
     #     csv_file="waffle.csv",
     #     kp_linear=1.5, kp_angular=2.5, ky=3.5,
     #     v_max=0.22, w_max=2.84,
     # ),
-    # "firebird": RobotConfig(
-    #     csv_file="firebird.csv",
-    #     kp_linear=1.5, kp_angular=1.5, ky=3.5,
-    #     v_max=0.26, w_max=2.84,
-    # ),
+    "firebird": RobotConfig(
+        csv_file="firebird.csv",
+        kp_linear=1.5, kp_angular=1.5, ky=3.5,
+        v_max=0.26, w_max=2.84,
+    ),
     # "tb4_1": RobotConfig(
     #     csv_file="tb4_1.csv",
     #     kp_linear=1.5, kp_angular=2.5, ky=3.5,

@@ -7,7 +7,8 @@ import numpy as np
 import rclpy
 from rclpy.node import Node
 from rclpy.executors import MultiThreadedExecutor
-from rclpy.qos import QoSProfile, ReliabilityPolicy
+from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy, HistoryPolicy
+from rclpy.qos import qos_profile_sensor_data
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
 
@@ -37,13 +38,13 @@ class RobotConfig:
 ROBOT_CONFIG: dict[str, RobotConfig] = {
     "burger1": RobotConfig(
         csv_file="burger1.csv",
-        kp_linear=3.0, kp_angular=3.5, ky=4.0,
-        v_max=0.3, w_max=2.84, use_rsr=False,
+        kp_linear=1.5, kp_angular=2.5, ky=3.5,
+        v_max=0.22, w_max=2.84, use_rsr=False,
     ),
     "burger2": RobotConfig(
         csv_file="burger2.csv",
         kp_linear=1.5, kp_angular=2.5, ky=3.5,
-        v_max=0.4, w_max=2.84, use_rsr=False,
+        v_max=0.22, w_max=2.84, use_rsr=False,
     ),
     "burger3": RobotConfig(
         csv_file="burger3.csv",
@@ -54,21 +55,30 @@ ROBOT_CONFIG: dict[str, RobotConfig] = {
         csv_file="waffle.csv",
         kp_linear=1.0, kp_angular=0.4, ky=1.5,
         v_max=0.26, w_max=1.82,
-        use_rsr=True,   # ← rot+tra 2-step planner
+        use_rsr=False,   # ← rot+tra 2-step planner
     ),
     "firebird": RobotConfig(
         csv_file="firebird.csv",
-        kp_linear=0.8, kp_angular=0.8, ky=1.0,
-        v_max=0.26, w_max=1.9, use_rsr=False,
+        kp_linear=0.5, kp_angular=0.3, ky=1.0,
+        v_max=0.5, w_max=1.9, use_rsr=False,
     ),
-    "tb4_1": RobotConfig(
-        csv_file="tb4_1.csv",
-        kp_linear=1.5, kp_angular=2.5, ky=3.5,
-        v_max=0.26, w_max=1.90, use_rsr=False,
-    ),
+    # "tb4_1": RobotConfig(
+    #     csv_file="tb4_1.csv",
+    #     kp_linear=1.5, kp_angular=2.5, ky=3.5,
+    #     v_max=0.3, w_max=1.90, use_rsr=False,
+    # ),
 }
 
-ROBOTS         = list(ROBOT_CONFIG.keys())
+# FIX #8 — explicit ordering instead of relying on dict insertion order
+ROBOTS = [
+    "burger1",
+    "burger2",
+    "burger3",
+    "waffle",
+    "firebird",
+    # "tb4_1"
+]
+
 SYNC_DELAY     = 1.0
 GOAL_TOLERANCE = 0.08   # m
 V_FLOOR_FRAC   = 0.12   # fraction of v_max minimum forward speed (spline robots)
@@ -81,6 +91,9 @@ ROT_TIME_FACTOR = 1.35   # robot achieves ~74% of w_max → give 35% extra time
 
 QOS_RELIABLE    = QoSProfile(reliability=ReliabilityPolicy.RELIABLE,    depth=10)
 QOS_BEST_EFFORT = QoSProfile(reliability=ReliabilityPolicy.BEST_EFFORT, depth=10)
+# qos_profile_sensor_data: BEST_EFFORT + VOLATILE + KEEP_LAST(10)
+# Compatible with both RELIABLE and BEST_EFFORT odom publishers (tb4, burger, waffle, etc.)
+QOS_ODOM_SUB    = qos_profile_sensor_data
 
 # ═════════════════════════════════════════════════════════════════════════════
 #  SHARED HELPERS
@@ -176,12 +189,13 @@ def build_spline(waypoints, pose_offset):
 def _make_rot(t0, dt, x, y, th0, th1, wp_idx):
     """
     Rotate-in-place sub-segment.
-    Clock is advanced by dt*ROT_TIME_FACTOR; w_ff is based on ideal dt
-    so feedforward ≈ achievable angular rate.
+    Clock is advanced by dt*ROT_TIME_FACTOR; w_ff is based on actual_dt
+    so feedforward matches the actual segment duration.
     """
     dth       = _norm(th1 - th0)
-    w_ff      = math.copysign(abs(dth) / max(dt, 1e-9), dth)
     actual_dt = dt * ROT_TIME_FACTOR
+    # FIX #7 — w_ff must match actual_dt, not ideal dt, to avoid overshoot
+    w_ff      = math.copysign(abs(dth) / max(actual_dt, 1e-9), dth)
     return {
         'type':      'rot',
         'wp_idx':    wp_idx,
@@ -205,10 +219,11 @@ def build_rsr_trajectory(waypoints, pose_offset, v_max, w_max):
 
     segments = []
     t = 0.0
-
     for i in range(len(poses) - 1):
         x0, y0, _ = poses[i]
         x1, y1, th1 = poses[i+1]
+
+        # FIX #5 — derive th0 from last segment's th1 to avoid stale heading
         th0 = segments[-1]['th1'] if segments else poses[0][2]
 
         ddx     = x1 - x0
@@ -223,7 +238,8 @@ def build_rsr_trajectory(waypoints, pose_offset, v_max, w_max):
             if abs(dth) > MIN_ROT_RAD:
                 dt = abs(dth) / w_max
                 wp_segs.append(_make_rot(t, dt, x0, y0, th0, th1, i))
-                t += dt * ROT_TIME_FACTOR
+                t  += dt * ROT_TIME_FACTOR
+                th0 = th1  # FIX #5 — update th0 after pure-rotation segment
         else:
             # STEP 1 — rotate to face next waypoint (shorter direction)
             turn = _norm(bearing - th0)
@@ -231,7 +247,7 @@ def build_rsr_trajectory(waypoints, pose_offset, v_max, w_max):
                 dt = abs(turn) / w_max
                 wp_segs.append(_make_rot(t, dt, x0, y0, th0, bearing, i))
                 t  += dt * ROT_TIME_FACTOR
-                th0 = bearing
+                th0 = bearing  # FIX #5 — update th0 after rotation segment
 
             # STEP 2 — drive straight; feedback corrects any lateral drift
             dt = dist / v_max
@@ -282,11 +298,12 @@ class Coordinator:
         self._delay      = sync_delay
 
     def report_ready(self, robot_name, now_sec):
+        # FIX #1 — return inside the lock to prevent race between check and return
         with self._lock:
             self._ready.add(robot_name)
             if self._ready >= self._expected and self._start_time is None:
                 self._start_time = now_sec + self._delay
-        return self._start_time
+            return self._start_time
 
 # ═════════════════════════════════════════════════════════════════════════════
 #  ROBOT NODE
@@ -301,9 +318,14 @@ class PathFollower(Node):
         self.current_pose    = None
         self.segments        = []
         self.traj_created    = False
+        # FIX #3 — separate flag to distinguish "created" from "failed"
+        self.traj_failed     = False
         self.start_time      = None
         self.last_debug_time = 0.0
         self.logged_wps      = set()
+
+        # FIX #4 — cached segment index for O(1) active-segment lookup
+        self._seg_idx        = 0
 
         csv_path = os.path.join(PATH_DIR, self.cfg.csv_file)
         try:
@@ -319,11 +341,15 @@ class PathFollower(Node):
             self.get_logger().error(f"[CSV]  {self.robot}: FAILED — {e}")
             self.waypoints = None
 
-        sub_qos = QOS_BEST_EFFORT if robot_name == "tb4_1" else QOS_RELIABLE
+        # All robots use qos_profile_sensor_data (BEST_EFFORT+VOLATILE+KEEP_LAST10)
+        # for odom subscription — compatible with both RELIABLE and BEST_EFFORT publishers.
+        # cmd_vel publisher stays RELIABLE for all robots.
+        sub_qos = QOS_ODOM_SUB
         pub_qos = QOS_RELIABLE
+
         self.get_logger().info(
             f"[INIT] {self.robot}  "
-            f"sub_qos={'BE' if sub_qos is QOS_BEST_EFFORT else 'RE'}  "
+            f"sub_qos=SENSOR_DATA  "
             f"pub_qos=RE  "
             f"kp_lin={self.cfg.kp_linear} kp_ang={self.cfg.kp_angular} "
             f"ky={self.cfg.ky}  v_max={self.cfg.v_max} w_max={self.cfg.w_max}"
@@ -349,8 +375,10 @@ class PathFollower(Node):
     def create_trajectory(self, shared_start_time):
         if self.waypoints is None:
             self.get_logger().error(f"[TRAJ] {self.robot}: no waypoints")
-            self.traj_created = True
+            # FIX #3 — mark as failed, NOT as created, so the node stays visible
+            self.traj_failed = True
             return
+
         x0, y0, _ = self.current_pose
         dx = x0 - float(self.waypoints[0, 1])
         dy = y0 - float(self.waypoints[0, 2])
@@ -372,14 +400,17 @@ class PathFollower(Node):
             f"offset=({dx:.3f},{dy:.3f})  start_at={shared_start_time:.3f}s"
         )
 
-    # ── Active segment ────────────────────────────────────────────────────────
+    # ── Active segment — O(1) via cached index ────────────────────────────────
     def _active_segment(self, t):
-        for seg in self.segments:
-            if seg['t0'] <= t <= seg['tf']:
-                return seg
-        last = self.segments[-1]
-        if t > last['tf'] and t - last['tf'] < 0.5:
-            return last
+        # FIX #4 — advance cached index instead of scanning from the start
+        segs = self.segments
+        while self._seg_idx < len(segs) - 1:
+            if t <= segs[self._seg_idx]['tf']:
+                break
+            self._seg_idx += 1
+        seg = segs[self._seg_idx]
+        if seg['t0'] <= t <= seg['tf'] + 0.5:
+            return seg
         return None
 
     # ── Waypoint crossing logger ──────────────────────────────────────────────
@@ -387,7 +418,10 @@ class PathFollower(Node):
         x, y, yaw = self.current_pose
 
         if self.cfg.use_rsr:
-            # RSR: log when is_wp_end segment's tf is passed
+            # FIX #6 — early exit once all RSR waypoints have been logged
+            expected = sum(1 for s in self.segments if s.get('is_wp_end', False))
+            if len(self.logged_wps) >= expected:
+                return
             for seg in self.segments:
                 if not seg.get('is_wp_end', False):
                     continue
@@ -408,7 +442,9 @@ class PathFollower(Node):
                     f"==========================================="
                 )
         else:
-            # Spline: log at end of each spline segment
+            # FIX #6 — early exit once all spline segments have been logged
+            if len(self.logged_wps) >= len(self.segments):
+                return
             for i, seg in enumerate(self.segments):
                 if i in self.logged_wps or t < seg['tf']:
                     continue
@@ -435,9 +471,14 @@ class PathFollower(Node):
 
         now = self.get_clock().now().nanoseconds * 1e-9
 
+        # FIX #3 — if trajectory build failed, stop here without busy-looping
+        if self.traj_failed:
+            return
+
         if not self.traj_created:
             shared_start = self.coord.report_ready(self.robot, now)
-            if shared_start is not None:
+            # FIX #2 — guard current_pose before calling create_trajectory
+            if shared_start is not None and self.current_pose is not None:
                 self.create_trajectory(shared_start)
             return
 
@@ -445,7 +486,6 @@ class PathFollower(Node):
             return
 
         t = now - self.start_time
-
         if t < 0:
             if now - self.last_debug_time > 1.0:
                 self.last_debug_time = now
@@ -454,7 +494,7 @@ class PathFollower(Node):
 
         self._log_waypoint_crossings(t)
 
-        # ── Phase 3 — SEEK after trajectory ends ─────────────────────────────
+        # ── Phase 3 — SEEK after trajectory ends ─────────────────────────
         last = self.segments[-1]
         if t > last['tf']:
             if self.cfg.use_rsr:
@@ -465,7 +505,6 @@ class PathFollower(Node):
 
             x, y, yaw = self.current_pose
             pos_err   = math.hypot(xd_g - x, yd_g - y)
-
             if pos_err < GOAL_TOLERANCE:
                 self.cmd_pub.publish(Twist())
                 self.get_logger().info(f"[DONE] {self.robot}  final_err={pos_err:.3f}m")
@@ -488,7 +527,7 @@ class PathFollower(Node):
                     f"des=({xd_g:.2f},{yd_g:.2f})  act=({x:.2f},{y:.2f})")
             return
 
-        # ── Phase 4 — trajectory tracking ────────────────────────────────────
+        # ── Phase 4 — trajectory tracking ────────────────────────────────
         seg = self._active_segment(t)
         if seg is None:
             return
@@ -502,9 +541,9 @@ class PathFollower(Node):
     def _control_rsr(self, t, seg, now):
         xd, yd, th_d, v_d, w_d = eval_rsr_seg(t, seg)
         x, y, yaw = self.current_pose
+
         dx = xd - x
         dy = yd - y
-
         ex      =  math.cos(yaw)*dx + math.sin(yaw)*dy
         ey      = -math.sin(yaw)*dx + math.cos(yaw)*dy
         e_theta =  _norm(th_d - yaw)
@@ -557,7 +596,6 @@ class PathFollower(Node):
         x, y, yaw = self.current_pose
         dx = xd - x
         dy = yd - y
-
         ex      =  math.cos(yaw)*dx + math.sin(yaw)*dy
         ey      = -math.sin(yaw)*dx + math.cos(yaw)*dy
         e_theta =  _norm(th_d - yaw)
