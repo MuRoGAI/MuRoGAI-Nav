@@ -69,7 +69,7 @@ INPUT_FILE   = os.environ.get("PLANNER_INPUT",
 
 MAP_PATH     = os.environ.get("PLANNER_MAP",
     "/home/multi-robot/murogai_nav/src/MuRoGAI-Nav/"
-    "path_plan/path_planner/path_planner/restaurant_5.npy")
+    "path_plan/path_planner/path_planner/restaurant_5_1.npy")
 
 CONFIG_PATH  = os.environ.get("PLANNER_CONFIG",
     "/home/multi-robot/murogai_nav/src/MuRoGAI-Nav/"

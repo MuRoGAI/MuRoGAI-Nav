@@ -1,9 +1,28 @@
-[Time: Hours: 00, Minutes: 00, Seconds: 45] Task Manager:
-[Time: Hours: 00, Minutes: 00, Seconds: 45] Human: cleaner bot goto sink2
-[Time: Hours: 00, Minutes: 00, Seconds: 47] Task Manager:
-[Time: Hours: 00, Minutes: 00, Seconds: 47] Task Manager:
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Task Manager:
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Human: serve cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Task Manager:
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Task Manager:
 Independent Tasks:
-Cleaning_bot tasks: go to sink2
+Delivery_bot3 tasks: pick up cold drink from stall 2, deliver cold drink to table 1
 multirobot_list: []
-singlerobot_list: [Cleaning_bot]
+singlerobot_list: [Delivery_bot3]
+Delivery_bot3 (status): ALL TASKS COMPLETED
+[Time: Hours: 00, Minutes: 02, Seconds: 58] Task Manager:
+[Time: Hours: 00, Minutes: 02, Seconds: 58] Human: celebrate birthday of the boy who is reading a book. clear the table which was served cold drink.
+[Time: Hours: 00, Minutes: 03, Seconds: 00] Task Manager:
+[Time: Hours: 00, Minutes: 03, Seconds: 00] Task Manager:
+Independent Tasks:
+Drone tasks: identify the location of the boy who is reading a book
+Cleaning_bot tasks: clear table 1
+multirobot_list: []
+singlerobot_list: [Drone, Cleaning_bot]
+[Time: Hours: 00, Minutes: 03, Seconds: 04] Task Manager:
+[Time: Hours: 00, Minutes: 03, Seconds: 04] Drone (msg): The boy who is reading a book is seated at table 2, stall 1.
+Drone (status): ALL TASKS COMPLETED
+[Time: Hours: 00, Minutes: 03, Seconds: 06] Task Manager:
+[Time: Hours: 00, Minutes: 03, Seconds: 06] Task Manager:
+Independent Tasks:
+Team 1: [Delivery_bot1, Delivery_bot2, Delivery_bot3]: pick and deliver gift, speaker, and cake to table 2
+multirobot_list: []
+singlerobot_list: [Team 1]
 Cleaning_bot (status): ALL TASKS COMPLETED

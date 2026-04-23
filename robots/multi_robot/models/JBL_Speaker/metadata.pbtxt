@@ -1,0 +1,35 @@
+model {
+  file: "model.sdf"
+}
+name: "JBL_Charge_Speaker_portable_wireless_wired_Green"
+description: "JBL Charge Speaker - portable - wireless, wired, Green"
+version: 1
+authors {
+  name: "Google"
+  email: "scanned-objects@google.com"
+}
+legal {
+  copyright: "Copyright 2020 Google LLC."
+  license: "Creative Commons Attribution 4.0 International"
+}
+annotations {
+  key: "brand"
+  value: "JBL"
+}
+annotations {
+  key: "gtin"
+  value: "00050036315982"
+}
+annotations {
+  key: "sku"
+  value: "00050036315982"
+}
+compatibilities {
+  name: "Gazebo"
+  version {
+    major: 11
+  }
+}
+categories {
+  first: "Consumer Goods"
+}

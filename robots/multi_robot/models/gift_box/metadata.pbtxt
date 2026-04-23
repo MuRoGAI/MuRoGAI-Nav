@@ -1,0 +1,35 @@
+model {
+  file: "model.sdf"
+}
+name: "KS_Chocolate_Cube_Box_Assortment_By_Neuhaus_2010_Ounces"
+description: "KS Chocolate Cube Box Assortment By Neuhaus 20.10 Ounces"
+version: 1
+authors {
+  name: "Google"
+  email: "scanned-objects@google.com"
+}
+legal {
+  copyright: "Copyright 2020 Google LLC."
+  license: "Creative Commons Attribution 4.0 International"
+}
+annotations {
+  key: "brand"
+  value: "KS"
+}
+annotations {
+  key: "gtin"
+  value: "00096619869350"
+}
+annotations {
+  key: "sku"
+  value: "00096619869350"
+}
+compatibilities {
+  name: "Gazebo"
+  version {
+    major: 11
+  }
+}
+categories {
+  first: "Consumer Goods"
+}

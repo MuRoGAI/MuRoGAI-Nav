@@ -17,6 +17,7 @@ from rclpy.callback_groups import (
 from ament_index_python.packages import get_package_share_directory
 
 from navigation_manager_interface.msg import NavigationRobotRequest, RobotGoalStatus, CancelNavigationRequest
+from object_mover_interface.srv import MoveObjects
 
 ROBOT_NAME   = 'delivery_bot1'
 ROBOT_TYPE   = 'Differential Drive'
@@ -25,6 +26,11 @@ PACKAGE_NAME = 'delivery_bot'
 
 MODEL = 'gpt-4o'
 
+HOME_POSES = {
+    'delivery_bot1': [5.0, 7.5],
+    'delivery_bot2': [5.0, 4.5],
+    'delivery_bot3': [7.0, 6.0],
+}
 
 class TaskCancelledException(Exception):
     """Custom exception to signal task cancellation"""
@@ -41,18 +47,23 @@ class TestOption:
 
 option_list = [
     TestOption(
-        name='Goto',
+        name='goto',
         id=0,
-        # description='Navigate to any location. when it is a team task, you must specify formation robots as a list.',
-        description='Navigate to any location.',
+        description='Navigate to any location. Navigate to home pose after completion of every task',
         example_code="node.goto(goal='fridge')"
     ),
-    # TestOption(
-    #     name='Find',
-    #     id=1,
-    #     description='Find and locate any object or person in the environment.',
-    #     example_code="node.find('chair')"
-    # )
+    TestOption(
+        name='pick_item',
+        id=1,
+        description='Pick any item into the robot',
+        example_code="node.pick_item(item='item_name')"
+    ),
+    TestOption(
+        name='place_item',
+        id=2,
+        description='Place any item from the robot to mentioned location',
+        example_code="node.place_item(item='item_name', location='stall1')"
+    )
 ]
 
 
@@ -109,6 +120,7 @@ class RobotLLMNode(Node):
         self.single_group = MutuallyExclusiveCallbackGroup()
         self.seq_group = MutuallyExclusiveCallbackGroup()
         self.multi_group = ReentrantCallbackGroup()
+        self.goal_status_group = ReentrantCallbackGroup()
 
         # ---- Publishers ----
         self.pub_task_status = self.create_publisher(String, '/chat/task_status', 10)
@@ -119,6 +131,11 @@ class RobotLLMNode(Node):
         # self._cancel_goto_pub = self.create_publisher(Bool, "/r1/cancel_goto_pose_goal", 10)
         self._request_goto_pub = self.create_publisher(NavigationRobotRequest, '/navigation/request', 10)
         self._cancel_goto_pub = self.create_publisher(CancelNavigationRequest, "/navigation/cancel", 10)
+
+        # ── MoveObjects service client ───────────────────────────────────
+        self._move_objects_client = self.create_client(
+            MoveObjects, "move_objects", callback_group=self.multi_group
+        )
 
         # ---- Subscriptions ----
         self.sub_robot_states = self.create_subscription(
@@ -146,7 +163,11 @@ class RobotLLMNode(Node):
         )
 
         self.goal_status_sub_ = self.create_subscription(
-            RobotGoalStatus, "/controller/goal_status", self.goal_status_callback, 10
+            RobotGoalStatus,
+            "/controller/goal_status",
+            self.goal_status_callback,
+            10,
+            callback_group=self.goal_status_group
         )
 
         # ---- Timer Callbacks ----
@@ -346,6 +367,8 @@ class RobotLLMNode(Node):
         robot_name = msg.robot_name
         goal_reached = msg.goal_reached
 
+        self.get_logger().info(f"Received status for {robot_name}")
+
         if robot_name == self.robot_name:
             self._goal_reached = goal_reached
             
@@ -515,13 +538,15 @@ class RobotLLMNode(Node):
         """Stop all robot tasks (stub function)."""
         self.get_logger().info("Stopping all robot tasks...")
 
-        msg = Bool()
-        msg.data = True
-        self._cancel_find_pub.publish(msg)
+        self._task_cancelled = True
+
+        msg = CancelNavigationRequest()
+        msg.robot_name = self.robot_name
+        msg.reason = "STOP command received"
+        msg.formation_robots = []
         self._cancel_goto_pub.publish(msg)
 
-        self.get_logger().info("Cancel request sent to /goto/cancel")
-        self.get_logger().info("Cancel request sent to /find/cancel")
+        self.get_logger().info("Cancel request sent to /navigation/cancel")
         self.get_logger().info("All tasks of the robot have been stopped.")
 
     # -------------------- Helper Methods --------------------
@@ -839,13 +864,11 @@ class RobotLLMNode(Node):
                 return False
             
             # Sleep briefly to avoid busy waiting
-            time.sleep(0.1)
+            rclpy.spin_once(self, timeout_sec=0.1)
         
         self.get_logger().error("ROS shutdown during navigation wait")
         return False
 
-    def Goto(self, goal: str, formation: list = None) -> bool:
-        self.goto(goal, formation)
 
     def goto(self, goal: str, formation: list = None) -> bool:
         """
@@ -863,7 +886,12 @@ class RobotLLMNode(Node):
         # ========================================
         
         self.get_logger().info(f"Requesting navigation to goal: {goal}")
-        
+
+        if goal.strip().lower() == "home":
+            home = HOME_POSES.get(self.robot_name, [19.0, 15.0])
+            goal = f"{home[0]} {home[1]}"
+            self.get_logger().info(f"{self.robot_name} home → resolved to {goal}")
+
         # Update robot state: Navigation requested
         self.update_robot_state({
             "current_task": "goto",
@@ -895,6 +923,8 @@ class RobotLLMNode(Node):
                 "formation_role": "leader"
             })
         
+        self._goal_reached = None
+
         # Publish navigation request
         self._request_goto_pub.publish(msg)
         
@@ -934,6 +964,94 @@ class RobotLLMNode(Node):
             })
             return False
 
+    def pick_item(self, item: str = None) -> bool:
+        self.check_cancelled()
+
+        if not item:
+            self.get_logger().warn("pick_item called with no item specified.")
+            return False
+
+        self.get_logger().info(f"Attempting to pick item: {item}")
+        self.update_robot_state({
+            "current_task": "pick_item",
+            "task_status": "picking",
+            "target_item": item,
+            "activity": f"Picking up {item}"
+        })
+
+        if not self._move_objects_client.wait_for_service(timeout_sec=5.0):
+            self.get_logger().error("move_objects service not available")
+            return False
+
+        req = MoveObjects.Request()
+        req.object_names = [item]
+        req.goal_names   = [self.robot_name]
+
+        future = self._move_objects_client.call_async(req)
+        rclpy.spin_until_future_complete(self, future, timeout_sec=10.0)
+
+        if future.result() is None or not future.result().success:
+            self.get_logger().error(f"pick_item failed — {future.result().message if future.result() else 'timeout'}")
+            return False
+
+        self.get_logger().info(f"Successfully picked item: {item}")
+        self.update_robot_state({
+            "task_status": "pick_completed",
+            "pick_result": "success",
+            "holding_item": item,
+            "picked_at": time.time(),
+            "activity": f"Holding {item}"
+        })
+        return True
+
+
+    def place_item(self, item: str = None, location: str = None) -> bool:
+        self.check_cancelled()
+
+        if not item:
+            self.get_logger().warn("place_item called with no item specified.")
+            return False
+
+        if not location:
+            self.get_logger().warn(f"place_item called with no location for item: {item}.")
+            return False
+
+        self.get_logger().info(f"Attempting to place item: {item} at location: {location}")
+        self.update_robot_state({
+            "current_task": "place_item",
+            "task_status": "placing",
+            "target_item": item,
+            "target_location": location,
+            "activity": f"Placing {item} at {location}"
+        })
+
+        if not self._move_objects_client.wait_for_service(timeout_sec=5.0):
+            self.get_logger().error("move_objects service not available")
+            return False
+
+        req = MoveObjects.Request()
+        req.object_names = [item]
+        req.goal_names   = [location]
+
+        future = self._move_objects_client.call_async(req)
+        rclpy.spin_until_future_complete(self, future, timeout_sec=10.0)
+
+        if future.result() is None or not future.result().success:
+            self.get_logger().error(f"place_item failed — {future.result().message if future.result() else 'timeout'}")
+            return False
+
+        self.get_logger().info(f"Successfully placed item: {item} at location: {location}")
+        self.update_robot_state({
+            "task_status": "place_completed",
+            "place_result": "success",
+            "holding_item": None,
+            "placed_item": item,
+            "placed_at_location": location,
+            "placed_at_time": time.time(),
+            "activity": f"Placed {item} at {location}"
+        })
+        return True
+
 def execute_python_code(code: str, node=None):
     """Execute generated Python code safely with cancellation support."""
     print("Inside the execute python code function")
@@ -967,7 +1085,7 @@ def main(args=None):
     rclpy.init(args=args)
     node = RobotLLMNode()
 
-    executor = rclpy.executors.MultiThreadedExecutor(num_threads=4)
+    executor = rclpy.executors.MultiThreadedExecutor(num_threads=8)
     executor.add_node(node)
 
     try:

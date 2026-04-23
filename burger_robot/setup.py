@@ -36,24 +36,9 @@ setup(
     entry_points={
         'console_scripts': [
             'burger_robot_llm = burger_robot.burger_robot_llm:main',
-
-            'diff_drive_controller = burger_robot.controller:main',
-            'diff_drive_controller1 = burger_robot.controller1:main',
             
-            'fleet_controller_node = burger_robot.fleet_controller_node:main',
+            'controller_sim = burger_robot.controller13:main',
 
-            'controller5_holo_pose = burger_robot.controller5_holo_pose:main',
-            'controller5_holo_pose1 = burger_robot.controller5_holo_pose1:main',
-            'controller5_holo_pose2 = burger_robot.controller5_holo_pose2:main',
-            'controller7_diff_drive_pose = burger_robot.controller7_diff_drive_pose:main',
-            'controller7_diff_drive_pose1 = burger_robot.controller7_diff_drive_pose1:main',
-            'controller7_diff_drive_pose2 = burger_robot.controller7_diff_drive_pose2:main',
-
-            'controller9 = burger_robot.controller9:main',
-            'controller9_pub = burger_robot.controller9_pub:main',
-            'controller9_pub1 = burger_robot.controller9_pub1:main',
-
-            'robot_test = burger_robot.robot_test:main',
         ],
     },
 )

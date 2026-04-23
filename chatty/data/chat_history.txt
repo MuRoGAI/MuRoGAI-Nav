@@ -5542,3 +5542,953 @@ Independent Tasks:
 Cleaning_bot tasks: go to sink2
 multirobot_list: []
 singlerobot_list: [Cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 07, Seconds: 07] Human: cleaner boto goto sink2\
+[Time: Hours: 00, Minutes: 07, Seconds: 10] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: go to sink2
+multirobot_list: []
+singlerobot_list: [Cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 22, Seconds: 08] Human: supplier guys serve salad to the child
+[Time: Hours: 00, Minutes: 22, Seconds: 11] Task Manager:
+Independent Tasks:
+Drone tasks: Identify the child's location and table number in the restaurant environment.
+
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 22, Seconds: 16] Drone (msg): The child is seated at table 2, which is the second table from the left.
+[Time: Hours: 00, Minutes: 22, Seconds: 18] Task Manager:
+Independent Tasks:
+Delivery Bot1 tasks: Serve salad to the child at table 2.
+
+multirobot_list: []
+singlerobot_list: [Delivery Bot1]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Human: delivery team goto stall 2
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Task Manager:
+Independent Tasks:
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to stall 2
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 26] Human: delivry team goto salad stall
+[Time: Hours: 00, Minutes: 00, Seconds: 28] Task Manager:
+Independent Tasks:
+Team 1:[delivery_bot1, delivery_bot2, delivery_bot3]: go to salad stall
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 23] Human: delivery team goto salad stall
+[Time: Hours: 00, Minutes: 00, Seconds: 25] Task Manager:
+Independent Tasks:
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to salad stall
+multirobot_list: []
+singlerobot_list: [Team 1]
+[Time: Hours: 00, Minutes: 03, Seconds: 09] Human: delivery team goto child stall
+[Time: Hours: 00, Minutes: 03, Seconds: 11] Task Manager:
+Independent Tasks:
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to child stall
+multirobot_list: []
+singlerobot_list: [Team 1]
+[Time: Hours: 00, Minutes: 05, Seconds: 04] Human: delivery team goto child table
+[Time: Hours: 00, Minutes: 05, Seconds: 06] Task Manager:
+Independent Tasks:
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to child table
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 06] Human: delivery team goto table2
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Task Manager:
+Independent Tasks:
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: Go to Table 2
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 29] Human: delivery bot team goto stall salad
+[Time: Hours: 00, Minutes: 00, Seconds: 30] Task Manager:
+Independent Tasks:
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to stall 1
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 27] Human: hey theres a birday party in the table2
+[Time: Hours: 00, Minutes: 00, Seconds: 31] Task Manager:
+Hello! How can I assist you with the birthday party at Table 2?
+[Time: Hours: 00, Minutes: 01, Seconds: 54] Human: take the speaker, gift, and cake to the table2 for celebration
+[Time: Hours: 00, Minutes: 01, Seconds: 56] Task Manager:
+Independent Tasks:
+Delivery Bot1 tasks: transport speaker to Table 2
+Delivery Bot2 tasks: transport gift to Table 2
+Delivery Bot3 tasks: transport cake to Table 2
+multirobot_list: []
+singlerobot_list: [Delivery Bot1, Delivery Bot2, Delivery Bot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 24] Human: celebrate birthday of customer at table2
+[Time: Hours: 00, Minutes: 00, Seconds: 26] Task Manager:
+Plan:
+1. Team 1: [Delivery Bot1, Delivery Bot2, Delivery Bot3]: Go to Stall 1, pick up gift, speaker, and cake
+2. Team 1: [Delivery Bot1, Delivery Bot2, Delivery Bot3]: Deliver gift, speaker, and cake to Table 2 for birthday celebration
+
+multirobot_list: [Team 1]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 49] Human: clean the table 1. Celebrate the birthday party at table 2
+[Time: Hours: 00, Minutes: 00, Seconds: 54] Task Manager:
+Independent Tasks:
+Cleaning_Bot tasks: clean the table 1
+Team 1: [Delivery_Bot1, Delivery_Bot2, Delivery_Bot3]: Celebrate the birthday party at table 2 with gift, speaker, and cake from stall 1
+multirobot_list: []
+singlerobot_list: [Cleaning_Bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Human: clean the table1
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Task Manager:
+Independent Tasks:
+Cleaning_bot tasks: clean table1
+multirobot_list: []
+singlerobot_list: [Cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 16, Seconds: 31] Human: clean the table2
+[Time: Hours: 00, Minutes: 16, Seconds: 33] Task Manager:
+Independent Tasks:
+Cleaning Bot tasks: clean table2
+multirobot_list: []
+singlerobot_list: [Cleaning Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 16] Human: serve the cold drink to table1
+[Time: Hours: 00, Minutes: 01, Seconds: 18] Task Manager:
+Independent Tasks:
+Delivery Bot3 tasks: go to Stall 2, pick up cold drink, deliver to Table 1
+singlerobot_list: [Delivery Bot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 32] Human: serve cold drink to the table1
+[Time: Hours: 00, Minutes: 00, Seconds: 35] Task Manager:
+Independent Tasks:
+Delivery Bot2 tasks: Retrieve cold drink from Stall 2, Deliver cold drink to Table 1
+singlerobot_list: [Delivery Bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Human: serve cold drink to the table1
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Task Manager:
+Independent Tasks:
+Delivery_Bot2 tasks: serve cold drink from Stall 2 to Table 1
+singlerobot_list: [Delivery_Bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Human: serve drink to the table1
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Task Manager:
+Independent Tasks:
+Delivery_Bot2 tasks: Pick up drink from Stall 2, Deliver drink to Table 1
+singlerobot_list: [Delivery_Bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Human: serve cold drink to table1
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+Delivery_Bot3 tasks: pick up cold drink from Stall 2, deliver cold drink to Table 1
+multirobot_list: []
+singlerobot_list: [Delivery_Bot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 38] Human: server drinks to table1
+[Time: Hours: 00, Minutes: 00, Seconds: 41] Task Manager:
+Independent Tasks:
+Delivery_bot1 tasks: pick up drinks from stall 2, deliver drinks to table 1
+multirobot_list: []
+singlerobot_list: [Delivery_bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Human: serve juice to table1
+[Time: Hours: 00, Minutes: 00, Seconds: 25] Task Manager:
+Independent Tasks:
+Delivery_bot1 tasks: collect juice from Stall 2, deliver juice to Table 1
+multirobot_list: []
+singlerobot_list: [Delivery_bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 57] Human: serve cold drinks to table1
+[Time: Hours: 00, Minutes: 00, Seconds: 59] Task Manager:
+Independent Tasks:
+Delivery Bot1 tasks: collect cold drinks from Stall 2, deliver to Table 1
+multirobot_list: []
+singlerobot_list: [Delivery Bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 37] Human: deliver the cold drink to table1
+[Time: Hours: 00, Minutes: 00, Seconds: 40] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: deliver the cold drink to table1
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Human: deliver the cold drink to table1
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: deliver the cold drink from Stall 2 to Table 1
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Human: delivr the dirnk ot table1
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Task Manager:
+Independent Tasks:
+Delivery Bot1 tasks: deliver the drink to Table 1
+multirobot_list: []
+singlerobot_list: [Delivery Bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 24] Human: deliver the juice to table1
+[Time: Hours: 00, Minutes: 00, Seconds: 26] Task Manager:
+Independent Tasks:
+Delivery_Bot1 tasks: deliver juice from Stall 2 to Table 1
+multirobot_list: []
+singlerobot_list: [Delivery_Bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Human: deliver the juice to table1
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: deliver the juice to table1
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Human: deliver juice to table1
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: pick up juice from Stall 2, deliver juice to Table 1
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Human: deliver cake to table1
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: deliver cake to table1
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 08] Human: server cakee to table1
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Task Manager:
+Independent Tasks:
+Delivery Bot1 tasks: serve cake to table1
+multirobot_list: []
+singlerobot_list: [Delivery Bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 24] Human: serve cake to table1
+[Time: Hours: 00, Minutes: 00, Seconds: 26] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: serve cake to table1
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Human: serve cake to sink2
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Task Manager:
+Independent Tasks:
+Drone tasks: Identify the location of the cake in the restaurant environment
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Drone (msg): The cake is located in the center of the restaurant environment.
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Task Manager:
+Independent Tasks:
+Delivery Bot3 tasks: Transport the cake from the center of the restaurant to sink2
+multirobot_list: []
+singlerobot_list: [Delivery Bot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Human: serve cake to sink2
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+Drone tasks: locate the cake in stall 1
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Drone (msg): The cake is located in front of stall 1, near the bottom left corner of the image.
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Task Manager:
+Independent Tasks:
+Delivery Bot3 tasks: transport cake from stall 1 to sink2
+multirobot_list: []
+singlerobot_list: [Delivery Bot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 28] Human: serve cake to table1
+[Time: Hours: 00, Minutes: 00, Seconds: 30] Task Manager:
+Independent Tasks:
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: serve cake to table1
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 24] Human: serve the cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 29] Task Manager:
+Independent Tasks:
+Delivery_Bot3 tasks: serve the cold drink to table 1
+multirobot_list: []
+singlerobot_list: [Delivery_Bot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Human: serve the juice to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Task Manager:
+Independent Tasks:
+Delivery_Bot1 tasks: pick up juice from stall 2, deliver to table 1
+multirobot_list: []
+singlerobot_list: [Delivery_Bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Human: serve the cold drink to table1
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Task Manager:
+Independent Tasks:
+Delivery_Bot2 tasks: Serve cold drink from stall 2 to table 1
+multirobot_list: []
+singlerobot_list: [Delivery_Bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Human: serve cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 22] Task Manager:
+Independent Tasks:
+Delivery_bot3 tasks: retrieve cold drink from Stall 2, deliver cold drink to Table 1
+singlerobot_list: [delivery_bot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Human: serve juice to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Task Manager:
+Independent Tasks:
+Delivery Bot2 tasks: go to Stall 2, pick up juice, deliver to Table 1
+singlerobot_list: [Delivery Bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Human: serve drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Task Manager:
+Independent Tasks:
+Delivery_Bot2 tasks: collect drink from stall 2, deliver to table 1
+singlerobot_list: [Delivery_Bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Human: deliver jjuice to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 17] Task Manager:
+Independent Tasks:
+Delivery Bot1 tasks: deliver juice to table 1
+multirobot_list: []
+singlerobot_list: [Delivery Bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Human: serve juice to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 23] Task Manager:
+Independent Tasks:
+Delivery_bot1 tasks: collect juice from stall 2, deliver juice to table 1
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Human: serve juice to tabl 1
+[Time: Hours: 00, Minutes: 00, Seconds: 16] Task Manager:
+Independent Tasks:
+Delivery Bot1 tasks: serve juice to table 1
+multirobot_list: []
+singlerobot_list: [Delivery Bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Human: serve juice to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Task Manager:
+Independent Tasks:
+Delivery_Bot2 tasks: retrieve juice from Stall 2, deliver juice to Table 1
+singlerobot_list: [Delivery_Bot2]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Human: serve juice t table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Task Manager:
+Independent Tasks:
+Delivery Bot3 tasks: Pick up juice from Stall 2, Deliver juice to Table 1
+multirobot_list: []
+singlerobot_list: [Delivery Bot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Human: serve juice to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 23] Task Manager:
+Independent Tasks:
+Delivery_bot3 tasks: serve juice to table 1
+multirobot_list: []
+singlerobot_list: [delivery_bot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 06, Seconds: 08] Human: deliver the cold drink to table 1
+[Time: Hours: 00, Minutes: 06, Seconds: 11] Task Manager:
+Independent Tasks:
+Delivery_bot2 tasks: deliver the cold drink to table 1
+multirobot_list: []
+singlerobot_list: [Delivery_bot2]
+[Time: Hours: 00, Minutes: 09, Seconds: 16] Human: celebrate the birthday of the child
+[Time: Hours: 00, Minutes: 09, Seconds: 18] Task Manager:
+Independent Tasks:
+Team 1: [Delivery_bot1, Delivery_bot2, Delivery_bot3]: celebrate the birthday of the child with gift, speaker, and cake from stall 1 to the table
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 37] Human: Go to the table where the child is sitting and celebrate his birthday.
+[Time: Hours: 00, Minutes: 00, Seconds: 40] Task Manager:
+Independent Tasks:
+Drone tasks: Identify the table where the child is sitting
+
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 43] Drone (msg): The child is sitting at table 3.
+[Time: Hours: 00, Minutes: 00, Seconds: 46] Task Manager:
+Plan:
+1. delivery_bot1: STOP
+2. delivery_bot2: STOP
+3. delivery_bot3: STOP
+4. cleaning_bot: STOP
+5. delivery_bot1: Go to stall 1 and pick up the gift
+6. delivery_bot2: Go to stall 1 and pick up the speaker
+7. delivery_bot3: Go to stall 1 and pick up the cake
+8. Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: Goto table 3 and celebrate the child's birthday
+
+multirobot_list: [Team 1, delivery_bot1, delivery_bot2, delivery_bot3]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 24] Human: Go to the table where the child is sitting. And celebrate his birthday.
+[Time: Hours: 00, Minutes: 01, Seconds: 26] Task Manager:
+Plan:
+1. Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: Go to Stall 1, pick up gift, speaker, and cake
+2. Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: Go to the table where the child is sitting
+3. Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: Celebrate the child's birthday with the gift, speaker, and cake
+
+multirobot_list: [Team 1]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 24] Human: Deliver the cake to table where child is sitting and celebrate his birthday
+[Time: Hours: 00, Minutes: 01, Seconds: 26] Task Manager:
+Independent Tasks:
+Drone tasks: Identify the table where the child is sitting
+
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 01, Seconds: 30] Drone (msg): The child is sitting at table 4.
+[Time: Hours: 00, Minutes: 01, Seconds: 33] Task Manager:
+Plan:
+1. Delivery_bot1: STOP
+2. Delivery_bot2: STOP
+3. Delivery_bot3: STOP
+4. Cleaning_bot: STOP
+5. Team 1: [Delivery_bot1, Delivery_bot2, Delivery_bot3]: Go to stall 1 and pick up the cake, gift, and speaker for the birthday celebration
+6. Team 1: [Delivery_bot1, Delivery_bot2, Delivery_bot3]: Deliver the cake, gift, and speaker to table 4
+7. Team 1: [Delivery_bot1, Delivery_bot2, Delivery_bot3]: Celebrate the child's birthday at table 4
+
+multirobot_list: [Team 1]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 45] Human: go to table where child is sitting and deliver cake
+[Time: Hours: 00, Minutes: 00, Seconds: 46] Task Manager:
+Independent Tasks:
+Drone tasks: Identify the table where the child is sitting
+
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 54] Drone (msg): The child is sitting at table 2.
+[Time: Hours: 00, Minutes: 00, Seconds: 56] Task Manager:
+Independent Tasks:
+Delivery Bot1 tasks: Deliver cake to table 2
+
+multirobot_list: []
+singlerobot_list: [Delivery Bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 24] Human: deliver the cake to child
+[Time: Hours: 00, Minutes: 00, Seconds: 26] Task Manager:
+Independent Tasks:
+Drone tasks: identify the location of the child for cake delivery
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 30] Drone (msg): The child is located at table 3.
+[Time: Hours: 00, Minutes: 00, Seconds: 32] Task Manager:
+Independent Tasks:
+Delivery_Bot1 tasks: deliver the cake to Table 3
+multirobot_list: []
+singlerobot_list: [Delivery_Bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 40] Human: celebrate the birthday of the child
+[Time: Hours: 00, Minutes: 00, Seconds: 42] Task Manager:
+Independent Tasks:
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: Go to Stall 1 to pick up the gift, speaker, and cake
+drone: Identify the location of the child's table
+
+multirobot_list: []
+singlerobot_list: [Team 1, drone]
+[Time: Hours: 00, Minutes: 01, Seconds: 01] Drone (msg): The child is sitting at table 2.
+[Time: Hours: 00, Minutes: 01, Seconds: 03] Task Manager:
+Independent Tasks:
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: Deliver the gift, speaker, and cake to table 2
+
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 27] Human: Deliver the cold drink to the child.
+[Time: Hours: 00, Minutes: 00, Seconds: 29] Task Manager:
+Independent Tasks:
+drone tasks: Identify the location of the child in the restaurant.
+singlerobot_list: [drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 33] Drone (msg): The child is sitting at table 2.
+[Time: Hours: 00, Minutes: 00, Seconds: 35] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: Deliver the cold drink to table 2.
+singlerobot_list: [delivery_bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 03, Seconds: 21] Human: Deliver the cold drink to table 1.
+[Time: Hours: 00, Minutes: 03, Seconds: 23] Task Manager:
+Independent Tasks:
+Drone tasks: Identify the location of table 1
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 03, Seconds: 28] Drone (msg): Table 1 is located at the bottom right side of the image, with two people seated around it.
+[Time: Hours: 00, Minutes: 03, Seconds: 37] Task Manager:
+Independent Tasks:
+Delivery_bot1 tasks: Deliver cold drink from Stall 2 to Table 1
+multirobot_list: []
+singlerobot_list: [Delivery_bot1]
+[Time: Hours: 00, Minutes: 07, Seconds: 06] Human: Celebrate the birthday of child.
+[Time: Hours: 00, Minutes: 07, Seconds: 09] Task Manager:
+Independent Tasks:
+Team 1: [Delivery_bot1, Delivery_bot2, Delivery_bot3]: Celebrate the birthday of child at the table with gift, speaker, and cake from Stall 1
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 17] Human: Deliver th cold drink to table 1.
+[Time: Hours: 00, Minutes: 01, Seconds: 19] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: Deliver cold drink to table 1
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+[Time: Hours: 00, Minutes: 04, Seconds: 24] Human: Celebrate the birthday of child.
+[Time: Hours: 00, Minutes: 04, Seconds: 26] Task Manager:
+Plan:
+1. delivery_bot2: STOP
+2. delivery_bot3: STOP
+3. cleaning_bot: STOP
+Independent Tasks:
+drone tasks: Identify the location of the child for the birthday celebration
+multirobot_list: []
+singlerobot_list: [drone]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 35] Human: Deliver cold drink to tabl
+[Time: Hours: 00, Minutes: 00, Seconds: 37] Task Manager:
+Independent Tasks:
+Drone tasks: Identify the location of the table for cold drink delivery
+multirobot_list: []
+singlerobot_list: [Drone]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 25] Human: deliver cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 26] Task Manager:
+Independent Tasks:
+Drone: Identify the location of Table 1
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 31] Drone (msg): Table 1 is located at the bottom right, where two people are seated around a round table.
+[Time: Hours: 00, Minutes: 00, Seconds: 32] Task Manager:
+Independent Tasks:
+Delivery Bot3 tasks: Deliver cold drink from Stall 2 to Table 1
+multirobot_list: []
+singlerobot_list: [Delivery Bot3]
+[Time: Hours: 00, Minutes: 05, Seconds: 32] Human: celebrate the birthday of child
+[Time: Hours: 00, Minutes: 05, Seconds: 35] Task Manager:
+Plan:
+1. Delivery Bot1: STOP
+2. Delivery Bot2: STOP
+3. Delivery Bot3: STOP
+4. Cleaning Bot: STOP
+5. Drone: STOP
+6. Team 1: [Delivery Bot1, Delivery Bot2, Delivery Bot3]: Go to Stall 1, pick up gift, speaker, and cake
+7. Team 1: [Delivery Bot1, Delivery Bot2, Delivery Bot3]: Deliver gift, speaker, and cake to Table 1
+multirobot_list: [Team 1]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 41] Human: deliver the cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 43] Task Manager:
+Independent Tasks:
+Drone tasks: identify the location of table 1
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 48] Drone (msg): Table 1 is located at the bottom center of the image.
+[Time: Hours: 00, Minutes: 00, Seconds: 49] Task Manager:
+Independent Tasks:
+Delivery Bot3 tasks: deliver the cold drink from stall 2 to table 1
+multirobot_list: []
+singlerobot_list: [Delivery Bot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 46] Human: deliver the cold drink to table1
+[Time: Hours: 00, Minutes: 00, Seconds: 47] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: retrieve cold drink from Stall 2, deliver to Table 1
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+[Time: Hours: 00, Minutes: 03, Seconds: 38] Human: lets celebrate the birthday of the child
+[Time: Hours: 00, Minutes: 03, Seconds: 40] Task Manager:
+Independent Tasks:
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: retrieve gift, speaker, and cake from Stall 1, deliver to the child's table
+Drone tasks: identify the location of the child
+multirobot_list: []
+singlerobot_list: [Team 1, Drone]
+[Time: Hours: 00, Minutes: 03, Seconds: 45] Drone (msg): The child is sitting at table 2.
+[Time: Hours: 00, Minutes: 03, Seconds: 46] Task Manager:
+Independent Tasks:
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: deliver gift, speaker, and cake to Table 2
+multirobot_list: []
+singlerobot_list: [Team 1]
+[Time: Hours: 00, Minutes: 05, Seconds: 09] Human: clear the table where u just delivered colddrink
+[Time: Hours: 00, Minutes: 05, Seconds: 12] Task Manager:
+Plan:
+1. Team 1: STOP
+2. delivery_bot1: STOP
+3. delivery_bot2: STOP
+4. delivery_bot3: STOP
+5. user: clear the table where the cold drink was just delivered
+multirobot_list: [Team 1, delivery_bot1, delivery_bot2, delivery_bot3]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 56] Human: deliver the cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 57] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: pick up cold drink from Stall 2, deliver to Table 1
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+[Time: Hours: 00, Minutes: 04, Seconds: 58] Human: lets celebrate the birthday of the boy and clear the table where you just served cold drink
+[Time: Hours: 00, Minutes: 05, Seconds: 01] Task Manager:
+Plan:
+1. delivery_bot1: STOP
+2. cleaning_bot: STOP
+3. drone: STOP
+4. Team 1: [delivery_bot1, cleaning_bot, drone]: Go to Table 1 with gift, speaker, and cake from Stall 1 to celebrate the birthday
+5. cleaning_bot: Clear the table at Table 1
+multirobot_list: [Team 1, cleaning_bot, drone]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 0, Minutes: 0, Seconds: 0] Human: deliver the cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Task Manager:
+Independent Tasks:
+Delivery_Bot1 tasks: deliver cold drink from Stall 2 to Table 1
+multirobot_list: []
+singlerobot_list: [Delivery_Bot1]
+[Time: Hours: 00, Minutes: 03, Seconds: 40] Human: lets celebrate the birthday of the boy. also clear the table where you just served cold drink
+[Time: Hours: 00, Minutes: 03, Seconds: 43] Task Manager:
+Plan:
+1. Delivery_Bot1: STOP
+2. Cleaning_Bot: STOP
+3. Delivery_Bot2: STOP
+4. Delivery_Bot3: STOP
+5. Drone: STOP
+6. Team 1: [Delivery_Bot1, Delivery_Bot2, Delivery_Bot3]: go to Stall 1, pick up gift, speaker, and cake
+7. Team 1: [Delivery_Bot1, Delivery_Bot2, Delivery_Bot3]: deliver gift, speaker, and cake to Table 1
+8. Cleaning_Bot: clear Table 1
+multirobot_list: [Team 1, Cleaning_Bot]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 24] Human: deliver the cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 27] Task Manager:
+Independent Tasks:
+Drone tasks: Identify the location of table 1
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 00, Seconds: 32] Drone (msg): Table 1 is located at the lower right side of the image, where two people are seated around a round table.
+[Time: Hours: 00, Minutes: 00, Seconds: 33] Task Manager:
+Independent Tasks:
+Delivery Bot3 tasks: Deliver the cold drink from Stall 2 to Table 1
+multirobot_list: []
+singlerobot_list: [Delivery Bot3]
+[Time: Hours: 00, Minutes: 03, Seconds: 13] Human: lets celebrate the birthday of the boy and clear the table where you just served cold drink
+[Time: Hours: 00, Minutes: 03, Seconds: 15] Task Manager:
+Plan:
+1. Delivery Bot1: STOP
+2. Delivery Bot2: STOP
+3. Delivery Bot3: STOP
+4. Cleaning Bot: STOP
+5. Drone: STOP
+6. Team 1: [Delivery Bot1, Delivery Bot2, Delivery Bot3]: Go to Stall 1, pick up the gift, speaker, and cake, and deliver them to Table 1 to celebrate the birthday.
+7. Cleaning Bot: Clear the table at Table 1 after the celebration.
+multirobot_list: [Team 1, Cleaning Bot]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Human: deliver the cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: go to Stall 2, pick up cold drink, deliver to Table 1
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Human: deliver the cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 26] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: go to Stall 2, pick up cold drink, deliver to Table 1
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+[Time: Hours: 00, Minutes: 05, Seconds: 18] Human: lets celebrate the birthday of the boy and clear the table where you just served cold drink
+[Time: Hours: 00, Minutes: 05, Seconds: 21] Task Manager:
+Independent Tasks:
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: go to Table 1 with gift, speaker, and cake from Stall 1
+cleaning_bot tasks: clear the table at Table 1
+multirobot_list: []
+singlerobot_list: [Team 1, cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Human: deliver the cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 23] Task Manager:
+Independent Tasks:
+Delivery_Bot3 tasks: deliver the cold drink to table 1
+multirobot_list: []
+singlerobot_list: [Delivery_Bot3]
+[Time: Hours: 00, Minutes: 03, Seconds: 07] Human: lets celebrate the birthday of the boy. clear the table where you just served cold drink
+[Time: Hours: 00, Minutes: 03, Seconds: 14] Task Manager:
+Plan:
+1. Cleaning_Bot: STOP
+2. Delivery_Bot1: STOP
+3. Delivery_Bot2: STOP
+4. Drone: STOP
+5. Delivery_Bot3: STOP
+6. Drone: Identify the location of the customer whose birthday is being celebrated.
+7. Delivery_Bot1: Go to Stall 1 and pick up the cake.
+8. Delivery_Bot2: Go to Stall 1 and pick up the gift.
+9. Delivery_Bot3: Go to Stall 1 and pick up the speaker.
+10. Team 1: [Delivery_Bot1, Delivery_Bot2, Delivery_Bot3]: Deliver the cake, gift, and speaker to the birthday table together.
+11. Cleaning_Bot: Clear the table where the cold drink was served.
+
+multirobot_list: [Cleaning_Bot, Delivery_Bot1, Delivery_Bot2, Delivery_Bot3, Drone, Team 1]
+singlerobot_list: []
+[Time: Hours: 00, Minutes: 06, Seconds: 27] Drone (msg): The customer whose birthday is being celebrated is at table 2, stall 1 (top right), where there is a cake on the table.
+[Time: Hours: 00, Minutes: 06, Seconds: 32] Task Manager:
+Plan:
+1. Delivery_Bot1: Resume Go to Stall 1 and pick up the cake.
+2. Delivery_Bot2: Resume Go to Stall 1 and pick up the gift.
+3. Delivery_Bot3: Resume Go to Stall 1 and pick up the speaker.
+4. Team 1: [Delivery_Bot1, Delivery_Bot2, Delivery_Bot3]: Deliver the cake, gift, and speaker to table 2 together.
+5. Cleaning_Bot: Resume Clear the table where the cold drink was served.
+
+multirobot_list: [Delivery_Bot1, Delivery_Bot2, Delivery_Bot3, Team 1, Cleaning_Bot]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Human: deliver the cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: pick up cold drink from stall 2, deliver to table 1
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+[Time: Hours: 00, Minutes: 02, Seconds: 50] Human: lets celebrate the birthday of the boy. clear the table where you just served cold drink
+[Time: Hours: 00, Minutes: 02, Seconds: 53] Task Manager:
+Independent Tasks:
+cleaning_bot tasks: clear the table at table 1
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: deliver gift, speaker, and cake from stall 1 to table 1
+multirobot_list: []
+singlerobot_list: [cleaning_bot, Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 43] Human: deliver cold drink to table 1
+[Time: Hours: 00, Minutes: 01, Seconds: 45] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: go to Stall 2, pick up cold drink, deliver cold drink to Table 1
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+[Time: Hours: 00, Minutes: 05, Seconds: 01] Human: celebrate birthday of the boy who is reading a book. clear the table which was served cold drink.
+[Time: Hours: 00, Minutes: 05, Seconds: 03] Task Manager:
+Independent Tasks:
+drone tasks: identify location of the boy who is reading a book
+cleaning_bot tasks: clear the table which was served cold drink
+multirobot_list: []
+singlerobot_list: [drone, cleaning_bot]
+[Time: Hours: 00, Minutes: 05, Seconds: 07] Drone (msg): The boy who is reading a book is at table 2, stall 1.
+[Time: Hours: 00, Minutes: 05, Seconds: 10] Task Manager:
+Plan:
+1. delivery_bot2: go to Stall 1, pick up gift
+2. delivery_bot3: go to Stall 1, pick up speaker
+3. delivery_bot1: go to Stall 1, pick up cake
+4. Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: deliver gift, speaker, and cake to Table 2 together
+5. cleaning_bot: resume clear the table which was served cold drink
+multirobot_list: [delivery_bot2, delivery_bot3, delivery_bot1, Team 1]
+singlerobot_list: [cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Human: serve cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Task Manager:
+Independent Tasks:
+Delivery_Bot3 tasks: pick cold drink from Stall 2, deliver to Table 1
+singlerobot_list: [Delivery_Bot3]
+[Time: Hours: 00, Minutes: 02, Seconds: 20] Human: celebrate birthday of the boy who is reading a book. clear the table which was served cold drink.
+[Time: Hours: 00, Minutes: 02, Seconds: 21] Task Manager:
+Independent Tasks:
+Drone tasks: locate the boy who is reading a book
+Cleaning_Bot tasks: clear the table which was served cold drink
+singlerobot_list: [Drone, Cleaning_Bot]
+[Time: Hours: 00, Minutes: 02, Seconds: 25] Drone (msg): The boy who is reading a book is seated at the upper-right table (Table 2, Stall 2).
+[Time: Hours: 00, Minutes: 02, Seconds: 27] Task Manager:
+Plan:
+1. Delivery_Bot3: STOP
+2. Cleaning_Bot: STOP
+3. Delivery_Bot3: pick and deliver gift, speaker, and cake from Stall 1 to Table 2
+4. Cleaning_Bot: Resume clearing the table which was served cold drink
+multirobot_list: [Delivery_Bot3, Cleaning_Bot]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 24] Human: serve cold drink to table 1
+[Time: Hours: 00, Minutes: 01, Seconds: 25] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: go to Stall 2, pick cold drink, deliver to Table 1
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+[Time: Hours: 00, Minutes: 04, Seconds: 32] Human: celebrate birthday of the boy who is reading a book. clear the table which was served cold drink.
+[Time: Hours: 00, Minutes: 04, Seconds: 33] Task Manager:
+Independent Tasks:
+drone tasks: identify the location of the boy who is reading a book
+cleaning_bot tasks: clear the table which was served cold drink
+multirobot_list: []
+singlerobot_list: [drone, cleaning_bot]
+[Time: Hours: 00, Minutes: 04, Seconds: 37] Drone (msg): The boy who is reading a book is seated at table 2, on the right side of the image.
+[Time: Hours: 00, Minutes: 04, Seconds: 39] Task Manager:
+Independent Tasks:
+delivery_bot3 tasks: go to Stall 1, pick gift, pick speaker, pick cake, deliver to Table 2
+multirobot_list: []
+singlerobot_list: [delivery_bot3]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 23] Human: serve cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 25] Task Manager:
+Independent Tasks:
+Delivery_bot1 tasks: pick up cold drink from stall 2, deliver cold drink to table 1
+multirobot_list: []
+singlerobot_list: [Delivery_bot1]
+[Time: Hours: 00, Minutes: 03, Seconds: 29] Human: celebrate birthday of the boy who is reading a book. clear the table which was served cold drink.
+[Time: Hours: 00, Minutes: 03, Seconds: 33] Task Manager:
+Independent Tasks:
+Drone tasks: identify the location of the boy who is reading a book
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 03, Seconds: 37] Drone (msg): The boy reading a book is located at table 2, stall 1 (top right).
+[Time: Hours: 00, Minutes: 03, Seconds: 41] Task Manager:
+Plan:
+1. Delivery_bot1: STOP
+2. Cleaning_bot: STOP
+3. Delivery_bot2: STOP
+4. Team 1: [Delivery_bot1, Delivery_bot2, Delivery_bot3]: Pick and deliver gift, speaker, and cake from stall 1 to table 2 for birthday celebration
+5. Cleaning_bot: Clear the table which was served cold drink
+multirobot_list: [Team 1, Cleaning_bot]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Human: serve cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 21] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: go to Stall 2, pick cold drink, deliver to Table 1
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+[Time: Hours: 00, Minutes: 03, Seconds: 32] Human: celebrate birthday of the boy who is reading a book. clear the table which was served cold drink.
+[Time: Hours: 00, Minutes: 03, Seconds: 33] Task Manager:
+Independent Tasks:
+Drone tasks: identify the table where the boy who is reading a book is sitting
+Cleaning Bot tasks: clear the table which was served cold drink
+multirobot_list: []
+singlerobot_list: [Drone, Cleaning Bot]
+[Time: Hours: 00, Minutes: 03, Seconds: 37] Drone (msg): The boy who is reading a book is sitting at table 2.
+[Time: Hours: 00, Minutes: 03, Seconds: 39] Task Manager:
+Independent Tasks:
+Team 1: [Delivery Bot1, Delivery Bot2, Delivery Bot3]: pick and deliver gift, speaker, and cake to table 2
+Cleaning Bot tasks: resume clear the table which was served cold drink
+multirobot_list: []
+singlerobot_list: [Team 1, Cleaning Bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 09] Human: serve cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: go to Stall 2, pick cold drink, deliver to Table 1
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+[Time: Hours: 00, Minutes: 03, Seconds: 38] Human: celebrate birthday of the boy who is reading a book. clear the table which was served cold drink.
+[Time: Hours: 00, Minutes: 03, Seconds: 40] Task Manager:
+Independent Tasks:
+Drone tasks: Identify the location of the boy who is reading a book
+Cleaning Bot tasks: Clear the table which was served cold drink
+multirobot_list: []
+singlerobot_list: [Drone, Cleaning Bot]
+[Time: Hours: 00, Minutes: 03, Seconds: 44] Drone (msg): The boy who is reading a book is sitting at table 2, which is the upper table on the right side of the image.
+[Time: Hours: 00, Minutes: 03, Seconds: 45] Task Manager:
+Independent Tasks:
+Team 1: [Delivery Bot1, Delivery Bot2, Delivery Bot3]: Pick and deliver gift, speaker, and cake to Table 2
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Human: serve cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 12] Task Manager:
+Independent Tasks:
+Drone tasks: identify the location of table 1
+multirobot_list: []
+singlerobot_list: [Drone]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 07] Human: serve cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 10] Task Manager:
+Independent Tasks:
+delivery_bot1 tasks: go to Stall 2, pick cold drink, deliver to table 1
+multirobot_list: []
+singlerobot_list: [delivery_bot1]
+[Time: Hours: 00, Minutes: 03, Seconds: 26] Human: celebrate birthday of the boy who is reading a book. clear the table which was served cold drink.
+[Time: Hours: 00, Minutes: 03, Seconds: 28] Task Manager:
+Independent Tasks:
+drone tasks: locate the boy who is reading a book
+multirobot_list: []
+singlerobot_list: [drone]
+[Time: Hours: 00, Minutes: 04, Seconds: 08] Drone (msg): The boy who is reading a book is sitting at the right side, at table 2, stall 2.
+[Time: Hours: 00, Minutes: 04, Seconds: 10] Task Manager:
+Independent Tasks:
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: pick and deliver gift, speaker, and cake to table 2 for birthday celebration
+cleaning_bot tasks: clear table 1
+multirobot_list: []
+singlerobot_list: [Team 1, cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Human: serve cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 19] Task Manager:
+Independent Tasks:
+Delivery_Bot3 tasks: go to Stall 2, pick up cold drink, deliver to Table 1
+multirobot_list: []
+singlerobot_list: [Delivery_Bot3]
+[Time: Hours: 00, Minutes: 03, Seconds: 00] Human: celebrate birthday of the boy who is reading a book. clear the table which was served cold drink.
+[Time: Hours: 00, Minutes: 03, Seconds: 01] Task Manager:
+Independent Tasks:
+Drone tasks: identify the location of the boy who is reading a book
+multirobot_list: []
+singlerobot_list: [Drone]
+[Time: Hours: 00, Minutes: 03, Seconds: 10] Drone (msg): The boy reading a book is located at Table 2, Stall 1.
+[Time: Hours: 00, Minutes: 03, Seconds: 12] Task Manager:
+Plan:
+1. Team 1: [Delivery_Bot1, Delivery_Bot2, Delivery_Bot3]: go to Stall 1, pick up gift, speaker, and cake, deliver to Table 2
+2. Cleaning_Bot: clear the table at Table 1
+multirobot_list: [Team 1, Cleaning_Bot]
+singlerobot_list: []
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Human: serve cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Task Manager:
+Independent Tasks:
+Delivery_Bot1 tasks: go to Stall 2, pick up cold drink, deliver to Table 1
+multirobot_list: []
+singlerobot_list: [Delivery_Bot1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 13] Human: serve cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 14] Task Manager:
+Independent Tasks:
+Delivery_bot3 tasks: pick up cold drink from Stall 2, deliver to Table 1
+multirobot_list: []
+singlerobot_list: [Delivery_bot3]
+[Time: Hours: 00, Minutes: 02, Seconds: 57] Human: celebrate birthday of the boy who is reading a book. clear the table which was served cold drink.
+[Time: Hours: 00, Minutes: 02, Seconds: 59] Task Manager:
+Independent Tasks:
+Drone tasks: identify the location of the boy who is reading a book
+Cleaning_bot tasks: clear the table which was served cold drink
+multirobot_list: []
+singlerobot_list: [Drone, Cleaning_bot]
+[Time: Hours: 00, Minutes: 03, Seconds: 03] Drone (msg): The boy reading a book is at table 2, stall 1.
+[Time: Hours: 00, Minutes: 03, Seconds: 04] Task Manager:
+Independent Tasks:
+Team 1: [Delivery_bot1, Delivery_bot2, Delivery_bot3]: pick up gift, speaker, and cake from Stall 1, deliver to Table 2
+Cleaning_bot tasks: resume clear the table which was served cold drink
+multirobot_list: []
+singlerobot_list: [Team 1, Cleaning_bot]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 11] Human: serve cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 15] Task Manager:
+Independent Tasks:
+Delivery_bot1 tasks: go to Stall 2, pick cold drink, deliver cold drink to Table 1
+multirobot_list: []
+singlerobot_list: [Delivery_bot1]
+[Time: Hours: 00, Minutes: 03, Seconds: 13] Human: celebrate birthday of the boy who is reading a book. clear the table which was served cold drink.
+[Time: Hours: 00, Minutes: 03, Seconds: 17] Task Manager:
+Independent Tasks:
+Drone tasks: identify the location of the boy who is reading a book
+Cleaning_bot tasks: clear the table which was served cold drink
+multirobot_list: []
+singlerobot_list: [Drone, Cleaning_bot]
+[Time: Hours: 00, Minutes: 03, Seconds: 21] Drone (msg): The boy who is reading a book is seated at table 2, stall 1 (counting from the bottom).
+[Time: Hours: 00, Minutes: 03, Seconds: 24] Task Manager:
+Independent Tasks:
+Team 1: [Delivery_bot1, Delivery_bot2, Delivery_bot3]: pick and deliver gift, speaker, and cake to Table 2 for birthday celebration
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 18] Human: serve cold drink to table 1
+[Time: Hours: 00, Minutes: 00, Seconds: 20] Task Manager:
+Independent Tasks:
+Delivery_bot3 tasks: pick up cold drink from stall 2, deliver cold drink to table 1
+multirobot_list: []
+singlerobot_list: [Delivery_bot3]
+[Time: Hours: 00, Minutes: 02, Seconds: 58] Human: celebrate birthday of the boy who is reading a book. clear the table which was served cold drink.
+[Time: Hours: 00, Minutes: 03, Seconds: 00] Task Manager:
+Independent Tasks:
+Drone tasks: identify the location of the boy who is reading a book
+Cleaning_bot tasks: clear table 1
+multirobot_list: []
+singlerobot_list: [Drone, Cleaning_bot]
+[Time: Hours: 00, Minutes: 03, Seconds: 04] Drone (msg): The boy who is reading a book is seated at table 2, stall 1.
+[Time: Hours: 00, Minutes: 03, Seconds: 06] Task Manager:
+Independent Tasks:
+Team 1: [Delivery_bot1, Delivery_bot2, Delivery_bot3]: pick and deliver gift, speaker, and cake to table 2
+multirobot_list: []
+singlerobot_list: [Team 1]

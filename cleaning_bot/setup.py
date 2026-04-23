@@ -30,10 +30,10 @@ setup(
 
             'cleaning_bot_llm = cleaning_bot.cleaning_bot_llm:main',
 
-            'holonomic_position_controller_service = cleaning_bot.holonomic_position_controller_service:main',
-
-            'spawn_waste = cleaning_bot.spawn_waste:spawn_ground_plane',
+            'move_objects_service = cleaning_bot.move_objects_service:main',
+            'move_objects_client = cleaning_bot.move_objects_client:main',
 
         ],
     },
 )
+

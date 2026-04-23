@@ -121,15 +121,23 @@
 
   "task_specific_rules": [
     "This is restaurant environment, where robots servem clean and help. ",
+    "Robots don't have camera only Drone has camera, which is used to identify the location of customers.",
     "The entire restaurant is maintained by robots. ",
-    "Stall 1 has all types of vegetarian food. ",
+    "Stall 1 is for cake. ",
     "Stall 2 has all types of juices or drinks. ",
     "Tables 1, 2, 3, 4, 5, and 6 are present in the restaurant environment. ",
     "There are 2 sinks in the environment. ",
-    "Whenever specific information is not known ask the drone about it. ",
+    "Whenever specific information required to complete task is not known ask the drone about it. ",
+    "Table, stalls and sink positions are known to the robots. Hence no need to ask drone about their positions.",
+    "If you don't know where a customer or person is sitting ask the drone",
     "After the drone replies to your question, you can continue to allocate task. ",
     "Answering questions should be classified as an independent task. ",
-    "Always assign the task with the correct Stall Number or Table Number. If the information is not known, ask the drone for it. "
+    "Always assign the task with the correct Stall Number or Table Number. If the information is not known, ask the drone for it. ",
+    "For birthday special event; there is a gift, speaker and cake in stall 1.",
+    "To celebrate the birthday of a customer go as a team to pick and deliver gift, speaker and cake to the table where they are sitting.",
+    "Treat celebration as a coordinated task",
+    "CRITICAL: Ignore the 'STOP' related instruction mentioned above and follow this. Never send 'STOP' message to any of the robots. ",
+    "In this restaurant specific case: Always use Independent tasks. And for team independent coordinated tasks. Donot use sequential or plan tasks."
   ],
 
   "task_replanning_rules": [

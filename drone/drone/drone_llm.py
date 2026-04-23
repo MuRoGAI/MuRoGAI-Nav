@@ -667,8 +667,8 @@ class RobotLLMNode(Node):
         self.get_logger().info("Sending image to VLM...")
 
         self.system_prompt = (
-            "The table numbers are from left to right 1 to 4. "
-            "The stall numbers are from left to right 1 to 3. "
+            "The table numbers are from bottom to top 1 to 2. "
+            "The stall numbers are from bottom to top 1 to 2. "
             "You are a vision-based event detection assistant for a Drone. "
             "Your job is to analyze the image from the drone's bottom camera and answer the user's questions based on the visual content. IN SHORT, CONCISE ANSWERS ONLY. "
         )

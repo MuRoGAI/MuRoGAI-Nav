@@ -1,0 +1,7 @@
+# MoveObjects.srv
+
+string[] object_names
+string[] goal_names
+---
+bool    success
+string  message

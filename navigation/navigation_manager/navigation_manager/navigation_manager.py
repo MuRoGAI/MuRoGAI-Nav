@@ -62,10 +62,10 @@ class NavigationManager(Node):
             "config_file", "chatty", "config/robot_config_restaurant2.json"
         )
         self.map_metadata_path = self.resolve_file(
-            "map_metadata_file", "navigation_manager", "data/restaurant_5.json"
+            "map_metadata_file", "navigation_manager", "data/restaurant_5_1.json"
         )
         self.map_image_path = self.resolve_file(
-            "map_image_file", "navigation_manager", "data/restaurant_5.png"
+            "map_image_file", "navigation_manager", "data/restaurant_5_1.png"
         )
 
         self.config_data = self.load_json(self.config_file_path)

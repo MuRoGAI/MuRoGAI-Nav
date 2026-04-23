@@ -155,4 +155,11 @@
     <child link="${frame_prefix}caster_wheel"/>
   </joint>
 
+  <!-- ====================== TOP PLATE FIXED JOINT ====================== -->
+  <joint name="${frame_prefix}top_plate_joint" type="fixed">
+    <parent link="${frame_prefix}base_link"/>
+    <child  link="${frame_prefix}top_plate_link"/>
+    <origin xyz="0 0 0.125" rpy="0 0 0"/>
+  </joint>
+
 </robot>
