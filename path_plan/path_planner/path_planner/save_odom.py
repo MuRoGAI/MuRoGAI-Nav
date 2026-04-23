@@ -45,6 +45,7 @@ class MultiRobotLogger(Node):
 
         save_dir = Path("outside_hard_exp_1")
         save_dir.mkdir(exist_ok=True)
+        self.get_logger().info(f"Saving odom logs to {save_dir.resolve()}")
 
         for robot in self.robots:
 

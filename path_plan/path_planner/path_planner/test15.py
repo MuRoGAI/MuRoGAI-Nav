@@ -28,46 +28,46 @@ class RobotConfig:
     use_rsr:    bool  = False
 
 ROBOT_CONFIG: dict[str, RobotConfig] = {
-    "burger1": RobotConfig(
-        csv_file="burger1.csv",
-        kp_linear=1.5, kp_angular=2.5, ky=4.0,
-        v_max=0.22, w_max=2.84, use_rsr=False,
-    ),
-    "burger2": RobotConfig(
-        csv_file="burger2.csv",
-        kp_linear=1.5, kp_angular=2.5, ky=4.0,
-        v_max=0.22, w_max=2.84, use_rsr=False,
-    ),
+    # "burger1": RobotConfig(
+    #     csv_file="burger1.csv",
+    #     kp_linear=1.5, kp_angular=2.5, ky=4.0,
+    #     v_max=0.22, w_max=2.84, use_rsr=False,
+    # ),
+    # "burger2": RobotConfig(
+    #     csv_file="burger2.csv",
+    #     kp_linear=1.5, kp_angular=2.5, ky=4.0,
+    #     v_max=0.22, w_max=2.84, use_rsr=False,
+    # ),
     "burger3": RobotConfig(
         csv_file="burger3.csv",
         kp_linear=1.5, kp_angular=2.5, ky=4.0,
         v_max=0.22, w_max=2.84, use_rsr=False,
     ),
-    "waffle": RobotConfig(
-        csv_file="waffle.csv",
-        kp_linear=1.0, kp_angular=0.4, ky=1.5,
-        v_max=0.26, w_max=1.82,
-        use_rsr=False,
-    ),
-    "firebird": RobotConfig(
-        csv_file="firebird.csv",
-        kp_linear=0.2, kp_angular=0.1, ky=1.2,
-        v_max=0.3, w_max=1.9, use_rsr=False,
-    ),
-    "tb4_1": RobotConfig(
-        csv_file="tb4_1.csv",
-        kp_linear=1.5, kp_angular=2.5, ky=3.5,
-        v_max=0.3, w_max=1.90, use_rsr=False,
-    ),
+    # "waffle": RobotConfig(
+    #     csv_file="waffle.csv",
+    #     kp_linear=1.0, kp_angular=0.4, ky=1.5,
+    #     v_max=0.26, w_max=1.82,
+    #     use_rsr=False,
+    # ),
+    # "firebird": RobotConfig(
+    #     csv_file="firebird.csv",
+    #     kp_linear=0.2, kp_angular=0.1, ky=1.2,
+    #     v_max=0.3, w_max=1.9, use_rsr=False,
+    # ),
+    # "tb4_1": RobotConfig(
+    #     csv_file="tb4_1.csv",
+    #     kp_linear=1.5, kp_angular=2.5, ky=3.5,
+    #     v_max=0.3, w_max=1.90, use_rsr=False,
+    # ),
 }
 
 ROBOTS = [
-    "burger1",
-    "burger2",
+    # "burger1",
+    # "burger2",
     "burger3",
-    "waffle",
-    "firebird",
-    "tb4_1"
+    # "waffle",
+    # "firebird",
+    # "tb4_1"
 ]
 
 SYNC_DELAY     = 1.0

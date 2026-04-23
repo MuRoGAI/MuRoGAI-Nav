@@ -62,11 +62,11 @@ ROBOT_CONFIG: dict[str, RobotConfig] = {
         kp_linear=0.5, kp_angular=0.3, ky=1.0,
         v_max=0.5, w_max=1.9, use_rsr=False,
     ),
-    # "tb4_1": RobotConfig(
-    #     csv_file="tb4_1.csv",
-    #     kp_linear=1.5, kp_angular=2.5, ky=3.5,
-    #     v_max=0.3, w_max=1.90, use_rsr=False,
-    # ),
+    "tb4_1": RobotConfig(
+        csv_file="tb4_1.csv",
+        kp_linear=1.5, kp_angular=2.5, ky=3.5,
+        v_max=0.3, w_max=1.90, use_rsr=False,
+    ),
 }
 
 # FIX #8 — explicit ordering instead of relying on dict insertion order
@@ -76,7 +76,7 @@ ROBOTS = [
     "burger3",
     "waffle",
     "firebird",
-    # "tb4_1"
+    "tb4_1",
 ]
 
 SYNC_DELAY     = 1.0

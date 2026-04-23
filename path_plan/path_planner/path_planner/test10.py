@@ -52,11 +52,11 @@ ROBOT_CONFIG: dict[str, RobotConfig] = {
     #     kp_linear=1.5, kp_angular=2.5, ky=3.5,
     #     v_max=0.22, w_max=2.84,
     # ),
-    "firebird": RobotConfig(
-        csv_file="firebird.csv",
-        kp_linear=1.5, kp_angular=1.5, ky=3.5,
-        v_max=0.26, w_max=2.84,
-    ),
+    # "firebird": RobotConfig(
+    #     csv_file="firebird.csv",
+    #     kp_linear=1.5, kp_angular=1.5, ky=3.5,
+    #     v_max=0.26, w_max=2.84,
+    # ),
     # "tb4_1": RobotConfig(
     #     csv_file="tb4_1.csv",
     #     kp_linear=1.5, kp_angular=2.5, ky=3.5,
