@@ -63,28 +63,30 @@ except ImportError:
 # CONFIGURATION  (override with env vars)
 # ================================================================
 
+USER = os.environ.get("USER")
+
 INPUT_FILE   = os.environ.get("PLANNER_INPUT",
-    "/home/multi-robot/murogai_nav/src/MuRoGAI-Nav/"
+    f"/home/{USER}/murogai_nav/src/MuRoGAI-Nav/"
     "path_plan/path_planner/data/formation_input.json")
 
 MAP_PATH     = os.environ.get("PLANNER_MAP",
-    "/home/multi-robot/murogai_nav/src/MuRoGAI-Nav/"
+    f"/home/{USER}/murogai_nav/src/MuRoGAI-Nav/"
     "path_plan/path_planner/path_planner/restaurant_5_1.npy")
 
 CONFIG_PATH  = os.environ.get("PLANNER_CONFIG",
-    "/home/multi-robot/murogai_nav/src/MuRoGAI-Nav/"
+    f"/home/{USER}/murogai_nav/src/MuRoGAI-Nav/"
     "chatty/config/robot_config_restaurant2.json")
 
 OUTPUT_DIR   = os.environ.get("PLANNER_OUTPUT",
-    "/home/multi-robot/murogai_nav/src/MuRoGAI-Nav/"
+    f"/home/{USER}/murogai_nav/src/MuRoGAI-Nav/"
     "path_plan/path_planner/trajectory_logs")
 
 CONTROL_DIR  = os.environ.get("PLANNER_CONTROL",
-    "/home/multi-robot/murogai_nav/src/MuRoGAI-Nav/"
+    f"/home/{USER}/murogai_nav/src/MuRoGAI-Nav/"
     "path_plan/path_planner/control_logs")
 
 IMAGE_DIR    = os.environ.get("PLANNER_IMAGES",
-    "/home/multi-robot/murogai_nav/src/MuRoGAI-Nav/"
+    f"/home/{USER}/murogai_nav/src/MuRoGAI-Nav/"
     "path_plan/path_planner/path_images")
 
 POLL_INTERVAL = float(os.environ.get("PLANNER_POLL", "1.0"))   # seconds

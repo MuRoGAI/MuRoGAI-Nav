@@ -1,20 +1,7 @@
 *********     NEW EXPERIMNET           ********* 
-[Time: Hours: 00, Minutes: 00, Seconds: 18] Human: serve cold drink to table 1
-[Time: Hours: 00, Minutes: 00, Seconds: 20] Task Manager:
+[Time: Hours: 00, Minutes: 00, Seconds: 35] Human: hey lets celebrate birthday of that 2nd table child
+[Time: Hours: 00, Minutes: 00, Seconds: 40] Task Manager:
 Independent Tasks:
-Delivery_bot3 tasks: pick up cold drink from stall 2, deliver cold drink to table 1
-multirobot_list: []
-singlerobot_list: [Delivery_bot3]
-[Time: Hours: 00, Minutes: 02, Seconds: 58] Human: celebrate birthday of the boy who is reading a book. clear the table which was served cold drink.
-[Time: Hours: 00, Minutes: 03, Seconds: 00] Task Manager:
-Independent Tasks:
-Drone tasks: identify the location of the boy who is reading a book
-Cleaning_bot tasks: clear table 1
-multirobot_list: []
-singlerobot_list: [Drone, Cleaning_bot]
-[Time: Hours: 00, Minutes: 03, Seconds: 04] Drone (msg): The boy who is reading a book is seated at table 2, stall 1.
-[Time: Hours: 00, Minutes: 03, Seconds: 06] Task Manager:
-Independent Tasks:
-Team 1: [Delivery_bot1, Delivery_bot2, Delivery_bot3]: pick and deliver gift, speaker, and cake to table 2
+Team 1: [Delivery Bot1, Delivery Bot2, Delivery Bot3, Cleaning Bot]: Coordinate to pick and deliver gift, speaker, and cake from Stall 1 to Table 2
 multirobot_list: []
 singlerobot_list: [Team 1]

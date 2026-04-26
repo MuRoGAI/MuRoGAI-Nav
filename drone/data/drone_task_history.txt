@@ -1,4 +1,1 @@
 Drone (status) :  : NO CURRENT TASK
-Drone (status) : identify the location of the boy who is reading a book : TASK IN PROGRESS
-Drone (status) : describe scene with prompt: identify the location of the boy who is reading a book : TASK COMPLETED
-Drone (status) : identify the location of the boy who is reading a book : TASK COMPLETED

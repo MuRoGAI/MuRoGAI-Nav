@@ -1,3 +1,1 @@
 Cleaning_bot (status) :  : NO CURRENT TASK
-Cleaning_bot (status) : clear table 1 : TASK IN PROGRESS
-Cleaning_bot (status) : clear table 1 : TASK COMPLETED

@@ -11,14 +11,15 @@ from path_planner_interface.msg import (
     HoloTrajectory,
 )
 
+USER  = os.environ.get("USER")
+
 DIR = os.environ.get(
     "PLANNER_OUTPUT",
-    "/home/multi-robot/murogai_nav/src/MuRoGAI-Nav/"
+    f"/home/{USER}/murogai_nav/src/MuRoGAI-Nav/"
     "path_plan/path_planner/trajectory_logs"
 )
 
 PUBLISHED_ROOT = os.path.join(DIR, "published_paths")
-
 
 # ─────────────────────────────────────────────
 # Helpers

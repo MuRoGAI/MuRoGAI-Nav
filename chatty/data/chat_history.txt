@@ -6492,3 +6492,37 @@ Independent Tasks:
 Team 1: [Delivery_bot1, Delivery_bot2, Delivery_bot3]: pick and deliver gift, speaker, and cake to table 2
 multirobot_list: []
 singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 16, Seconds: 22] Human: its 2nd table child birday, lets celebrate it
+[Time: Hours: 00, Minutes: 16, Seconds: 26] Task Manager:
+Independent Tasks:
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3]: Coordinate to pick and deliver gift, speaker, and cake from Stall 1 to Table 2.
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 40] Human: hey its birthday of that 2nd table child lets celebrate it
+[Time: Hours: 00, Minutes: 00, Seconds: 44] Task Manager:
+Independent Tasks:
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3, cleaning_bot]: Coordinate to pick and deliver gift, speaker, and cake from Stall 1 to Table 2 for the birthday celebration.
+multirobot_list: []
+singlerobot_list: [Team 1]
+****************   NEW EXPERIMENT   ********************** 
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 01, Seconds: 05] Human: hey its birthdya of that 2nd table child, lets celebrate it
+[Time: Hours: 00, Minutes: 01, Seconds: 09] Task Manager:
+Independent Tasks:
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3, cleaning_bot]: Coordinate to pick and deliver gift, speaker, and cake from stall 1 to table 2 for the birthday celebration
+drone tasks: locate the child at table 2
+
+multirobot_list: []
+singlerobot_list: [Team 1, drone]
+****************   NEW EXPERIMENT   ********************** 
+[Time: Hours: 00, Minutes: 00, Seconds: 32] Human: hey its birthday of that 2nd table child , lets celebrate it
+[Time: Hours: 00, Minutes: 00, Seconds: 36] Task Manager:
+Independent Tasks:
+Team 1: [delivery_bot1, delivery_bot2, delivery_bot3, cleaning_bot]: Celebrate the birthday by picking and delivering gift, speaker, and cake from stall 1 to table 2
+
+multirobot_list: []
+singlerobot_list: [Team 1]

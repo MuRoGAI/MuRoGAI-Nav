@@ -11,9 +11,9 @@ from queue import Queue
 # import requests
 import openai
 from openai import OpenAI
-from google.genai import types
+# from google.genai import types
 # from ollama import chat, ChatResponse
-from google import genai
+# from google import genai
 
 
 openai.api_key = os.environ.get("OPENAI_API_KEY", "")

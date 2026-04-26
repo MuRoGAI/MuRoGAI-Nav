@@ -8,12 +8,13 @@ from nav_msgs.msg import Odometry
 import math
 from ament_index_python.packages import get_package_share_directory
 
+USER  = os.environ.get("USER")
+
 INPUT_FILE = os.environ.get(
     "PLANNER_INPUT",
-    "/home/multi-robot/murogai_nav/src/MuRoGAI-Nav/"
+    f"/home/{USER}/murogai_nav/src/MuRoGAI-Nav/"
     "path_plan/path_planner/data/formation_input.json"
 )
-
 
 def quaternion_to_yaw(qx: float, qy: float, qz: float, qw: float) -> float:
     """Convert quaternion to yaw (rotation around Z)."""
