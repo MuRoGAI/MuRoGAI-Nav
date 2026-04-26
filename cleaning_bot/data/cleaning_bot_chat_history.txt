@@ -1,17 +1,18 @@
-[Time: Hours: 00, Minutes: 00, Seconds: 32] Task Manager:
-[Time: Hours: 00, Minutes: 00, Seconds: 32] Human: hey its birthday of that 2nd table child , lets celebrate it
-[Time: Hours: 00, Minutes: 00, Seconds: 36] Task Manager:
-[Time: Hours: 00, Minutes: 00, Seconds: 36] Task Manager:
+[Time: Hours: 00, Minutes: 02, Seconds: 23] Task Manager:
+[Time: Hours: 00, Minutes: 02, Seconds: 23] Human: serve cold drink to the table 1
+[Time: Hours: 00, Minutes: 02, Seconds: 26] Task Manager:
+[Time: Hours: 00, Minutes: 02, Seconds: 26] Task Manager:
 Independent Tasks:
-Team 1: [delivery_bot1, delivery_bot2, delivery_bot3, cleaning_bot]: Celebrate the birthday by picking and delivering gift, speaker, and cake from stall 1 to table 2
-
+Delivery_bot1 tasks: pick cold drink from Stall 2, deliver to Table 1
+multirobot_list: []
+singlerobot_list: [Delivery_bot1]
+Delivery_bot1 (status): ALL TASKS COMPLETED
+[Time: Hours: 00, Minutes: 05, Seconds: 42] Task Manager:
+[Time: Hours: 00, Minutes: 05, Seconds: 42] Human: its birthday of that boy lets celebrate it
+[Time: Hours: 00, Minutes: 05, Seconds: 44] Task Manager:
+[Time: Hours: 00, Minutes: 05, Seconds: 44] Task Manager:
+Independent Tasks:
+Team 1: [Delivery_bot1, Delivery_bot2, Delivery_bot3]: pick and deliver gift, speaker, and cake to the table where the birthday boy is sitting
 multirobot_list: []
 singlerobot_list: [Team 1]
-[Time: Hours: 00, Minutes: 00, Seconds: 35] Task Manager:
-[Time: Hours: 00, Minutes: 00, Seconds: 35] Human: hey lets celebrate birthday of that 2nd table child
-[Time: Hours: 00, Minutes: 00, Seconds: 40] Task Manager:
-[Time: Hours: 00, Minutes: 00, Seconds: 40] Task Manager:
-Independent Tasks:
-Team 1: [Delivery Bot1, Delivery Bot2, Delivery Bot3, Cleaning Bot]: Coordinate to pick and deliver gift, speaker, and cake from Stall 1 to Table 2
-multirobot_list: []
-singlerobot_list: [Team 1]
+Team1 [delivery_bot1, delivery_bot2, delivery_bot3] (status): ALL TASKS COMPLETED

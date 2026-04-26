@@ -120,6 +120,7 @@ class RobotLLMNode(Node):
 
         # ========== GOAL STATUS FLAG ==========
         self._goal_reached = None  # None=waiting, True=success, False=failed
+        self._formation_goal_status = {}
         # ======================================
 
         # GROUPS
@@ -439,21 +440,54 @@ class RobotLLMNode(Node):
 
         self.get_logger().info(f"Received status for {robot_name}")
 
-        if robot_name == self.robot_name:
-            self._goal_reached = goal_reached
-            
-            if goal_reached:
-                self.get_logger().info(f'{self.robot_name}: Navigation goal reached successfully')
+        # Only track robots that are part of this team
+        if robot_name not in self.robot_names:
+            return
+
+        # Record this robot's result
+        self._formation_goal_status[robot_name] = goal_reached
+        self.get_logger().info(f"Formation status so far: {self._formation_goal_status}")
+
+        # Check if ALL team robots have reported in
+        if not all(r in self._formation_goal_status for r in self.robot_names):
+            self.get_logger().info(
+                f"Waiting for remaining robots: "
+                f"{[r for r in self.robot_names if r not in self._formation_goal_status]}"
+            )
+            return
+
+        # All reported — set overall result
+        self._goal_reached = all(self._formation_goal_status.values())
+
+        if self._goal_reached:
+            self.get_logger().info(f'{self.robot_name}: All formation robots reached goal successfully')
+            self.update_robot_state({
+                "last_goal_status": "reached",
+                "last_goal_timestamp": time.time(),
+                "formation_goal_status": dict(self._formation_goal_status)
+            })
+            for robot in self.robot_names:
                 self.update_robot_state({
                     "last_goal_status": "reached",
                     "last_goal_timestamp": time.time()
-                })
-            else:
-                self.get_logger().warn(f'{self.robot_name}: Navigation goal failed')
+                }, robot_name=robot)
+        else:
+            failed = [r for r, v in self._formation_goal_status.items() if not v]
+            self.get_logger().warn(f'{self.robot_name}: Navigation goal failed for robots: {failed}')
+            self.update_robot_state({
+                "last_goal_status": "failed",
+                "last_goal_timestamp": time.time(),
+                "formation_goal_status": dict(self._formation_goal_status),
+                "failed_robots": failed
+            })
+            for robot in failed:
                 self.update_robot_state({
                     "last_goal_status": "failed",
                     "last_goal_timestamp": time.time()
-                })
+                }, robot_name=robot)
+
+        # Reset for next goto call
+        self._formation_goal_status = {}
 
 
     # -------------------- Helpers (optional) --------------------
@@ -987,6 +1021,7 @@ class RobotLLMNode(Node):
         })
 
         self._goal_reached = None
+        self._formation_goal_status = {}
 
         self._request_goto_pub.publish(msg)
 

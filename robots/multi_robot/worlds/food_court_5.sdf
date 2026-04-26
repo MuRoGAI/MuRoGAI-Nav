@@ -68,7 +68,12 @@
                 <scene>scene</scene>
                 <ambient_light>0.4 0.4 0.4</ambient_light>
                 <background_color>0.8 0.8 0.8</background_color>
-                <camera_pose>10.0 1.1 5.0 0.0 0.6 1.6</camera_pose>
+                <camera_pose>2.0 -1.0 4.5 0.0 0.25 0.85</camera_pose>
+                <horizontal_fov>1.57</horizontal_fov> 
+                <camera_clip>
+                    <near>0.01</near>
+                    <far>1000</far>
+                </camera_clip>
             </plugin>
 
             <plugin filename="WorldControl" name="World control">
@@ -125,17 +130,22 @@
                 </ignition-gui>
             </plugin>
 
-            <plugin filename="CameraTracking" name="Camera Tracking">
+            <plugin filename="ViewAngle" name="View Angle">
                 <ignition-gui>
-                    <title>Camera Tracking</title>
+                    <title>View Angle</title>
                     <property type="string" key="state">docked</property>
-                    <property type="double" key="width">200</property>
+                    <property type="double" key="width">300</property>
+                    <property type="double" key="height">900</property>
+                    <anchors target="3D View">
+                        <line own="right" target="right"/>
+                        <line own="top" target="top"/>
+                    </anchors>
                 </ignition-gui>
             </plugin>
 
-            <plugin filename="TransformControl" name="Transform Control">
+            <plugin filename="CameraTracking" name="Camera Tracking">
                 <ignition-gui>
-                    <title>Transform Control</title>
+                    <title>Camera Tracking</title>
                     <property type="string" key="state">docked</property>
                     <property type="double" key="width">200</property>
                 </ignition-gui>
@@ -157,34 +167,29 @@
                 </insert>
             </plugin>
 
-            <plugin filename="ViewAngle" name="View Angle">
+            <!-- <plugin filename="TransformControl" name="Transform Control">
                 <ignition-gui>
-                    <title>View Angle</title>
+                    <title>Transform Control</title>
                     <property type="string" key="state">docked</property>
-                    <property type="double" key="width">150</property>
-                    <property type="double" key="height">200</property>
-                    <anchors target="3D View">
-                        <line own="right" target="right"/>
-                        <line own="top" target="top"/>
-                    </anchors>
+                    <property type="double" key="width">200</property>
                 </ignition-gui>
-            </plugin>
+            </plugin> -->
 
-            <plugin filename="Shapes" name="Shapes">
+            <!-- <plugin filename="Shapes" name="Shapes">
                 <ignition-gui>
                     <property type="string" key="state">docked</property>
                     <property type="double" key="width">200</property>
                 </ignition-gui>
-            </plugin>
+            </plugin> -->
 
-            <plugin filename="Lights" name="Lights">
+            <!-- <plugin filename="Lights" name="Lights">
                 <ignition-gui>
                     <property type="string" key="state">docked</property>
                     <property type="double" key="width">200</property>
                 </ignition-gui>
-            </plugin>
+            </plugin> -->
 
-            <plugin filename="Screenshot" name="Screenshot">
+            <!-- <plugin filename="Screenshot" name="Screenshot">
                 <ignition-gui>
                     <property type="string" key="state">floating</property>
                     <property type="bool" key="showTitleBar">false</property>
@@ -195,9 +200,9 @@
                         <line own="top" target="top"/>
                     </anchors>
                 </ignition-gui>
-            </plugin>
+            </plugin> -->
 
-            <plugin filename="VideoRecorder" name="Video Recorder">
+            <!-- <plugin filename="VideoRecorder" name="Video Recorder">
                 <ignition-gui>
                     <property type="string" key="state">floating</property>
                     <property type="bool" key="showTitleBar">false</property>
@@ -213,36 +218,36 @@
                     <lockstep>false</lockstep>
                     <bitrate>4000000</bitrate>
                 </record_video>
-            </plugin>
+            </plugin> -->
 
-            <plugin filename="Teleop" name="Teleop">
+            <!-- <plugin filename="Teleop" name="Teleop">
                 <ignition-gui>
                     <property type="string" key="state">docked</property>
                     <property type="double" key="width">200</property>
                 </ignition-gui>
                 <topic>/cmd_vel</topic>
-            </plugin>
+            </plugin> -->
 
-            <plugin filename="Plot" name="Plot">
+            <!-- <plugin filename="Plot" name="Plot">
                 <ignition-gui>
                     <property type="string" key="state">docked</property>
                     <property type="double" key="width">250</property>
                 </ignition-gui>
-            </plugin>
+            </plugin> -->
 
-            <plugin filename="TopicEcho" name="Topic Echo">
+            <!-- <plugin filename="TopicEcho" name="Topic Echo">
                 <ignition-gui>
                     <property type="string" key="state">docked</property>
                     <property type="double" key="width">250</property>
                 </ignition-gui>
-            </plugin>
+            </plugin> -->
 
-            <plugin filename="TopicViewer" name="Topic Viewer">
+            <!-- <plugin filename="TopicViewer" name="Topic Viewer">
                 <ignition-gui>
                     <property type="string" key="state">docked</property>
                     <property type="double" key="width">250</property>
                 </ignition-gui>
-            </plugin>
+            </plugin> -->
 
         </gui>
 

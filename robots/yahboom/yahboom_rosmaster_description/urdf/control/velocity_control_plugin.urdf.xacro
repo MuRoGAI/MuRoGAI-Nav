@@ -7,12 +7,30 @@
             <plugin
                 filename="ignition-gazebo-velocity-control-system"
                 name="ignition::gazebo::systems::VelocityControl">
-                <!-- <topic>/${frame_prefix}cmd_vel</topic> -->
                 <namespace>${frame_prefix}</namespace>
+                <!-- <link_name>${frame_prefix}base_footprint</link_name> -->
                 <topic>${frame_prefix}cmd_vel</topic>
                 <initial_linear>0 0 0</initial_linear>
                 <initial_angular>0 0 0</initial_angular>
             </plugin>
+
+            <!-- <plugin
+                filename="libignition-gazebo-mecanum-drive-system.so"
+                name="ignition::gazebo::systems::MecanumDrive">
+                <front_left_joint>${frame_prefix}front_left_wheel_joint</front_left_joint>
+                <front_right_joint>${frame_prefix}front_right_wheel_joint</front_right_joint>
+                <back_left_joint>${frame_prefix}back_left_wheel_joint</back_left_joint>
+                <back_right_joint>${frame_prefix}back_right_wheel_joint</back_right_joint>
+                <wheel_separation>0.169</wheel_separation>
+                <wheelbase>0.16</wheelbase>
+                <wheel_radius>0.0325</wheel_radius>
+                <topic>${frame_prefix}cmd_vel</topic> -->
+                <!-- <odom_topic>${frame_prefix}odom</odom_topic> -->
+                <!-- <tf_topic>/tf</tf_topic> -->
+                <!-- <frame_id>${frame_prefix}odom</frame_id> -->
+                <!-- <child_frame_id>${frame_prefix}base_footprint</child_frame_id> -->
+                <!-- <odom_publish_frequency>50</odom_publish_frequency> -->
+            <!-- </plugin> -->
 
             <!-- Fortress odom publisher -->
             <plugin
