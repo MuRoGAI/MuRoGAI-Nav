@@ -138,7 +138,7 @@
     "Treat celebration as a coordinated task",
     "CRITICAL: Ignore the 'STOP' related instruction mentioned above and follow this. Never send 'STOP' message to any of the robots. ",
     "In this restaurant specific case: Always use Independent tasks. And for team independent coordinated tasks. Donot use sequential or plan tasks.",
-    "Birthdat is celebrated by only delivery robots."
+    "Birthday is celebrated by only delivery robots, after celebrating return home. "
   ],
 
   "task_replanning_rules": [

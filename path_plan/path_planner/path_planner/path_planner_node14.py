@@ -637,7 +637,7 @@ def run_plan(eg_formation: dict, run_tag: str,
             neighbor_radius    = NEIGHBOR_RADIUS,
             precision          = PRECISION,
             seed               = SEED,
-            debug              = True,
+            debug              = False,
             use_kinodynamic    = use_kino,
             kinodynamic_params = kino_params,
         )

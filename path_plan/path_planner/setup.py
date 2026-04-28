@@ -40,6 +40,8 @@ setup(
 
             'test6 = path_planner.test6:main',
 
+            'save_data = path_planner.save_odom:main',
+
         ],
     },
 )

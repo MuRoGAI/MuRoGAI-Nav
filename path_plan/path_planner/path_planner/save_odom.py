@@ -23,13 +23,21 @@ class MultiRobotLogger(Node):
     def __init__(self):
         super().__init__('multi_robot_logger')
 
+        # self.robots = [
+        #     "burger1",
+        #     "burger2",
+        #     "burger3",
+        #     "waffle",
+        #     "tb4_1",
+        #     "firebird",
+        # ]
+
+
         self.robots = [
-            "burger1",
-            "burger2",
-            "burger3",
-            "waffle",
-            "tb4_1",
-            "firebird",
+            "delivery_bot1",
+            "delivery_bot2",
+            "delivery_bot3",
+            "cleaning_bot"
         ]
 
         qos_profile = QoSProfile(
@@ -43,7 +51,7 @@ class MultiRobotLogger(Node):
         self.files = {}
         self.writers = {}
 
-        save_dir = Path("outside_hard_exp_1")
+        save_dir = Path("simulation_exp_birthday")
         save_dir.mkdir(exist_ok=True)
         self.get_logger().info(f"Saving odom logs to {save_dir.resolve()}")
 
@@ -71,7 +79,7 @@ class MultiRobotLogger(Node):
             if robot == 'tb4_1':
                 self.create_subscription(
                     Odometry,
-                    f"/{robot}/odom_world",
+                    f"/{robot}/odom",
                     lambda msg, r=robot: self.odom_callback(msg, r),
                     qos_profile
                 )
@@ -85,7 +93,7 @@ class MultiRobotLogger(Node):
             else:
                 self.create_subscription(
                     Odometry,
-                    f"/{robot}/odom_world",
+                    f"/{robot}/odom",
                     lambda msg, r=robot: self.odom_callback(msg, r),
                     10
                 )

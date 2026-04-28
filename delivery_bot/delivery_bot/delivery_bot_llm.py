@@ -55,13 +55,13 @@ option_list = [
     TestOption(
         name='pick_item',
         id=1,
-        description='Pick any item into the robot',
+        description='Pick any item into the robot. Before picking any item, the robot should navigate to where the object will be picked. ',
         example_code="node.pick_item(item='item_name')"
     ),
     TestOption(
         name='place_item',
         id=2,
-        description='Place any item from the robot to mentioned location',
+        description='Place any item from the robot to mentioned location. Before placing any item, the robot should navigate to location where object will be kept. ',
         example_code="node.place_item(item='item_name', location='stall1')"
     )
 ]
@@ -245,15 +245,15 @@ class RobotLLMNode(Node):
             return "Unknown"
         
     # -------------------- Callbacks --------------------
-
-
+    
     def on_robot_states(self, msg: String) -> None:
         """Handle robot state updates (expects JSON string in msg.data)."""
         try:
             data = json.loads(msg.data)
             rs = data.get("robot_states")
             if isinstance(rs, dict):
-                self.robot_states = rs
+                # self.robot_states = rs
+                self.robot_states = data
                 self.get_logger().debug(f"robot_states keys: {list(self.robot_states.keys())}")
             else:
                 self.get_logger().warning("/robot_states missing or not a dict; ignoring payload.")

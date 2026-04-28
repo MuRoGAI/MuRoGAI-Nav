@@ -35,6 +35,8 @@
 
 
 ,
+
+
 "b":
 
 {
@@ -74,6 +76,543 @@
             "formation_yaw": 0.0,
             "desired_radius": 1.0,
             "robots": ["delivery_bot1", "delivery_bot2", "delivery_bot3"]
+        }
+    }
+}
+
+,
+
+
+"c":
+
+{
+    "current_pose": {
+        "delivery_bot1": [
+            5.0,
+            7.5,
+            0.0
+        ],
+        "delivery_bot2": [
+            5.0,
+            4.5,
+            0.0
+        ],
+        "delivery_bot3": [
+            7.0,
+            6.0,
+            0.0
+        ],
+        "cleaning_bot": [
+            12.0,
+            10.0,
+            0.0
+        ]
+    },
+    "goal_pose": {
+        "R1": {
+            "robot": "delivery_bot1",
+            "x": 17.8,
+            "y": 10.0,
+            "yaw": 0.0
+        }
+    }
+}
+
+,
+
+
+"d":
+
+{
+    "current_pose": {
+        "delivery_bot1": [
+            17.8,
+            10.0,
+            0.0
+        ],
+        "delivery_bot2": [
+            5.0,
+            4.5,
+            0.0
+        ],
+        "delivery_bot3": [
+            7.0,
+            6.0,
+            0.0
+        ],
+        "cleaning_bot": [
+            12.0,
+            10.0,
+            0.0
+        ]
+    },
+    "goal_pose": {
+        "R1": {
+            "robot": "delivery_bot1",
+            "x": 6.0,
+            "y": 2.9,
+            "yaw": 1.57
+        }
+    }
+}
+
+,
+
+
+"e":
+
+{
+    "current_pose": {
+        "delivery_bot1": [
+            6.0,
+            2.9,
+            1.57
+        ],
+        "delivery_bot2": [
+            5.0,
+            4.5,
+            0.0
+        ],
+        "delivery_bot3": [
+            7.0,
+            6.0,
+            0.0
+        ],
+        "cleaning_bot": [
+            12.0,
+            10.0,
+            0.0
+        ]
+    },
+    "goal_pose": {
+        "R1": {
+            "robot": "delivery_bot1",
+            "x": 5.0,
+            "y": 7.5,
+            "yaw": 1.57
+        }
+    }
+}
+
+
+,
+
+
+"f":
+
+{
+    "current_pose": {
+        "delivery_bot1": [
+            6.0,
+            2.9,
+            1.57
+        ],
+        "delivery_bot2": [
+            5.0,
+            4.5,
+            0.0
+        ],
+        "delivery_bot3": [
+            7.0,
+            6.0,
+            0.0
+        ],
+        "cleaning_bot": [
+            12.0,
+            10.0,
+            0.0
+        ]
+    },
+    "goal_pose": {
+        "R1": {
+            "robot": "delivery_bot1",
+            "x": 5.0,
+            "y": 7.5,
+            "yaw": 1.57
+        }
+    }
+}
+
+
+,
+
+
+"g":
+{
+    "current_pose": {
+        "delivery_bot1": [
+            6.09433770587317,
+            11.40820142836734,
+            -1.9970730324561874
+        ],
+        "delivery_bot2": [
+            6.259980883533146,
+            8.229574571963804,
+            0.9663742899295715
+        ],
+        "delivery_bot3": [
+            8.3324352093802,
+            9.987881975373387,
+            2.713635428757009e-06
+        ],
+        "cleaning_bot": [
+            6.558560407571856,
+            4.0880010579631945,
+            -7.765859544870806e-17
+        ],
+        "drone": [
+            0.0,
+            0.0,
+            0.0
+        ]
+    },
+    "goal_pose": {
+        "F1": {
+            "centroid_x": 12.0,
+            "centroid_y": 2.0,
+            "formation_yaw": 1.57,
+            "desired_radius": 1.0,
+            "robots": [
+                "delivery_bot1",
+                "delivery_bot2",
+                "delivery_bot3"
+            ]
+        },
+        "R1": {
+            "robot": "cleaning_bot",
+            "x": 6.0,
+            "y": 3.0,
+            "yaw": 0.0
+        }
+    }
+}
+
+
+
+,
+
+
+"h":
+
+{
+    "current_pose": {
+        "delivery_bot1": [
+            5.428200132683042,
+            10.640880360269557,
+            1.5353157999408418
+        ],
+        "delivery_bot2": [
+            8.206057328550942,
+            9.856745908690298,
+            1.0092283029696114
+        ],
+        "delivery_bot3": [
+            7.020869179188592,
+            12.231811166780274,
+            1.5639253520715866e-06
+        ],
+        "cleaning_bot": [
+            6.0001747252165485,
+            3.000345289113088,
+            -6.206666706738902e-17
+        ],
+        "drone": [
+            0.0,
+            0.0,
+            0.0
+        ]
+    },
+    "goal_pose": {
+        "F1": {
+            "centroid_x": 12.0,
+            "centroid_y": 2.0,
+            "formation_yaw": 1.57,
+            "desired_radius": 0.9,
+            "robots": [
+                "delivery_bot1",
+                "delivery_bot2",
+                "delivery_bot3"
+            ]
+        },
+        "R1": {
+            "robot": "cleaning_bot",
+            "x": 21.25,
+            "y": 6.0,
+            "yaw": 0.0
+        }
+    }
+}
+
+
+
+,
+
+"i":
+
+{
+    "current_pose": {
+        "delivery_bot1": [
+            10.622735952763579,
+            1.566381971109845,
+            1.496982887704299
+        ],
+        "delivery_bot2": [
+            13.635870517417239,
+            1.0928769931943954,
+            -2.953880042319377
+        ],
+        "delivery_bot3": [
+            11.742574469379527,
+            3.3036170962034888,
+            1.41737680273743e-06
+        ],
+        "cleaning_bot": [
+            21.177652255920396,
+            5.999751118093348,
+            5.6668384822334074e-08
+        ],
+        "drone": [
+            0.0,
+            0.0,
+            0.0
+        ]
+    },
+    "goal_pose": {
+        "F1": {
+            "centroid_x": 22.0,
+            "centroid_y": 6.0,
+            "formation_yaw": 0.0,
+            "desired_radius": 0.4,
+            "robots": [
+                "delivery_bot1",
+                "delivery_bot2",
+                "delivery_bot3"            ]
+        },
+        "R1": {
+            "robot": "cleaning_bot",
+            "x": 12.0,
+            "y": 10.7,
+            "yaw": 0.0
+        }
+    }
+}
+
+,
+
+
+"j":
+
+
+{
+    "current_pose": {
+        "delivery_bot1": [
+            4.96575576584799,
+            10.53719699583033,
+            1.6301349422698155
+        ],
+        "delivery_bot2": [
+            8.09123629087644,
+            9.694855276854824,
+            1.0573439184504334
+        ],
+        "delivery_bot3": [
+            7.082402684561629,
+            12.230261210224977,
+            1.8315644600524707e-06
+        ],
+        "cleaning_bot": [
+            6.00038461984493,
+            3.1010740395609115,
+            -6.02603949576084e-17
+        ],
+        "drone": [
+            0.0,
+            0.0,
+            0.0
+        ]
+    },
+    "goal_pose": {
+        "F1": {
+                "centroid_x": 12.0,
+                "centroid_y": 2.0,
+                "formation_yaw": 1.57,
+                "desired_radius": 1.0,
+                "robots": [
+                    "delivery_bot1",
+                    "delivery_bot2",
+                    "delivery_bot3"
+                ]
+        },
+        "R1": {
+            "robot": "cleaning_bot",
+            "x": 21.2,
+            "y": 6.0,
+            "yaw": 0.0
+        }
+    }
+}
+
+
+,
+
+"k":
+
+{
+    "current_pose": {
+        "delivery_bot1": [
+            7.33120105613178,
+            11.831008508569765,
+            -2.4583985359720475
+        ],
+        "delivery_bot2": [
+            5.580590347895028,
+            9.09418915547349,
+            1.4950915850205047
+        ],
+        "delivery_bot3": [
+            7.9869866371247,
+            9.14345203660875,
+            1.125252610173369e-17
+        ],
+        "cleaning_bot": [
+            6.128413080582809,
+            3.444298946350931,
+            -6.396361443039643e-18
+        ],
+        "drone": [
+            0.0,
+            0.0,
+            0.0
+        ]
+    },
+    "goal_pose": {
+        "F1": {
+            "centroid_x": 12.0,
+            "centroid_y": 2.9,
+            "formation_yaw": 0.0,
+            "desired_radius": 1.1,
+            "robots": [
+                "delivery_bot1",
+                "delivery_bot2",
+                "delivery_bot3"
+            ]
+        },
+        "R1": {
+            "robot": "cleaning_bot",
+            "x": 6.0,
+            "y": 3.0,
+            "yaw": 1.5708
+        }
+    }
+}
+
+
+,
+
+"l":
+
+
+{
+    "current_pose": {
+        "delivery_bot1": [
+            8.057077330871394,
+            10.087293637541743,
+            -1.2309716750306399
+        ],
+        "delivery_bot2": [
+            5.704554472678381,
+            7.332328772521233,
+            -0.8196681166888733
+        ],
+        "delivery_bot3": [
+            10.6256961814559,
+            6.7814834111038795,
+            0.00015211665682949636
+        ],
+        "cleaning_bot": [
+            5.998442795943604,
+            2.996033727573662,
+            -1.2724875710166213e-17
+        ],
+        "drone": [
+            0.0,
+            0.0,
+            0.0
+        ]
+    },
+    "goal_pose": {
+        "F1": {
+            "centroid_x": 12.0,
+            "centroid_y": 2.0,
+            "formation_yaw": 1.57,
+            "desired_radius": 1.0,
+            "robots": [
+                "delivery_bot1",
+                "delivery_bot2",
+                "delivery_bot3"
+            ]
+        },
+        "R1": {
+            "robot": "cleaning_bot",
+            "x": 21.2,
+            "y": 6.0,
+            "yaw": 0.0
+        }
+    }
+}
+
+
+,
+
+
+"m":
+
+
+{
+    "current_pose": {
+        "delivery_bot1": [
+            7.54,
+            10.534988367045544,
+            -0.21716049316743138
+        ],
+        "delivery_bot2": [
+            6.2,
+            9.638857106356042,
+            -0.6940148050368093
+        ],
+        "delivery_bot3": [
+            9.374889188975247,
+            8.233654634395588,
+            0.00010680126611261962
+        ],
+        "cleaning_bot": [
+            5.9992202235641185,
+            2.965480809049325,
+            3.742194079418157e-18
+        ],
+        "drone": [
+            0.0,
+            0.0,
+            0.0
+        ]
+    },
+    "goal_pose": {
+        "F1": {
+            "centroid_x": 12.0,
+            "centroid_y": 2.0,
+            "formation_yaw": 0.0,
+            "desired_radius": 0.9,
+            "robots": [
+                "delivery_bot1",
+                "delivery_bot2",
+                "delivery_bot3"
+            ]
+        },
+        "R1": {
+            "robot": "cleaning_bot",
+            "x": 21.2,
+            "y": 6.0,
+            "yaw": 3.14
         }
     }
 }

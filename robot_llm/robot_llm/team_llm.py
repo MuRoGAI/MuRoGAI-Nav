@@ -53,14 +53,14 @@ option_list = [
     TestOption(
         name='pick_item',
         id=1,
-        description='Pick any item into the robot. Donot mention robot names in the argument.',
+        description='Pick any item into the robot. Do not mention robot names in the argument. Before picking any item, the robot should navigate to where the object will be picked.',
         example_code="node.pick_item(items=['item_name1', 'item_name2', 'item_name3'])"
     ),
 
     TestOption(
         name='place_item',
         id=2,
-        description='Place any item from the robot to mentioned location. Donot mention robot names in the argument.',
+        description='Place any item from the robot to mentioned location. Do not mention robot names in the argument. Before placing any item, the team should navigate to location where object will be kept.',
         example_code="node.place_item(items=['item_name1', 'item_name2', 'item_name3'], locations=['chair', 'stall1', 'stall2'])"
     )
 ]
@@ -292,14 +292,34 @@ class RobotLLMNode(Node):
 
     # -------------------- Callbacks --------------------
 
+    # def on_robot_states(self, msg: String) -> None:
+    #     """Handle robot state updates (expects JSON string in msg.data)."""
+    #     try:
+    #         data = json.loads(msg.data)
+    #         rs = data.get("robot_states")
+    #         if isinstance(rs, dict):
+    #             # self.robot_states = rs
+    #             self.robot_states = data
+    #             self.get_logger().debug(f"robot_states keys: {list(self.robot_states.keys())}")
+    #         else:
+    #             self.get_logger().warning("/robot_states missing or not a dict; ignoring payload.")
+    #     except json.JSONDecodeError:
+    #         self.get_logger().error(f"/robot_states not JSON: {msg.data}")
+
     def on_robot_states(self, msg: String) -> None:
-        """Handle robot state updates (expects JSON string in msg.data)."""
         try:
             data = json.loads(msg.data)
             rs = data.get("robot_states")
             if isinstance(rs, dict):
-                self.robot_states = rs
-                self.get_logger().debug(f"robot_states keys: {list(self.robot_states.keys())}")
+                # Ensure our local robot_states has the wrapper
+                if "robot_states" not in self.robot_states:
+                    self.robot_states["robot_states"] = {}
+                # MERGE incoming robot entries, don't replace everything
+                for robot_name, robot_state in rs.items():
+                    if isinstance(robot_state, dict):
+                        if robot_name not in self.robot_states["robot_states"]:
+                            self.robot_states["robot_states"][robot_name] = {}
+                        self.robot_states["robot_states"][robot_name].update(robot_state)
             else:
                 self.get_logger().warning("/robot_states missing or not a dict; ignoring payload.")
         except json.JSONDecodeError:

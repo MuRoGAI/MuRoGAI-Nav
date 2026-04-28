@@ -26,7 +26,7 @@ PACKAGE_NAME = 'cleaning_bot'
 
 MODEL = 'gpt-4o'
 
-HOME_POSE = [19.0, 15.0]
+HOME_POSE = [12.0, 10.0]
 
 class TaskCancelledException(Exception):
     """Custom exception to signal task cancellation"""
@@ -45,7 +45,7 @@ option_list = [
     TestOption(
         name='goto',
         id=0,
-        description='Navigate to any location. Navigate to home pose after completion of every task',
+        description='Navigate to any location. Navigate to home pose after completion of every task. To work with any object the roobt needs to be physically present there, to reach there this function could be used. ',
         example_code="node.goto(goal='fridge')"
     ),
     TestOption(
@@ -63,13 +63,13 @@ option_list = [
     TestOption(
         name='CleanTable',
         id=3,
-        description='Collect used plates from the table. Refer to previous conversation history to find item which was kept earlier there clear it from the place, if not mentioned. the argument should never be empty here',
+        description='Collect used plates from the table. Refer to previous conversation history to find item which was kept earlier there clear it from the place, if not mentioned. the argument should never be empty here. Note that after CleanTable DumpInto must be called. Refer DumpInto example code.',
         example_code="node.pick_item(item='item_name')"
     ),
     TestOption(
-        name='DumpIntoSink',
+        name='DumpInto',
         id=4,
-        description='Throw spoiled plats into sink; after collecting dumping is must.',
+        description='Dump spoiled plats into sink; after collecting object to clean, it must be dumped. argument location is the place where the object must be dumped value can be sink1 or sink2, item is the object that needs to dumped. Before dumping the object the robot must goto the sink. Note that this option must be called compulsorily after CleanTable option is called.',
         example_code="node.place_item(item='item_name', location='sink2')"
     ),
 ]
@@ -260,7 +260,8 @@ class RobotLLMNode(Node):
             data = json.loads(msg.data)
             rs = data.get("robot_states")
             if isinstance(rs, dict):
-                self.robot_states = rs
+                # self.robot_states = rs
+                self.robot_states = data
                 self.get_logger().debug(f"robot_states keys: {list(self.robot_states.keys())}")
             else:
                 self.get_logger().warning("/robot_states missing or not a dict; ignoring payload.")
@@ -879,7 +880,7 @@ class RobotLLMNode(Node):
     def CleanTable(self, item='item_name'):
         self.pick_item(item=item)
 
-    def DumpIntoSink(self, item='item_name', location='sink2'):
+    def DumpInto(self, item='item_name', location='sink2'):
         self.place_item(item=item, location=location)
 
     def goto(self, goal: str, formation: list = None) -> bool:
