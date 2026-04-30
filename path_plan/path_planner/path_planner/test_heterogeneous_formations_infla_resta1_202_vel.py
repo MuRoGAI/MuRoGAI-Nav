@@ -278,7 +278,7 @@ class HeterogeneousFormationAgent:
 # Workspace + Map
 # ===========================================================
 
-grid = np.load('10_103_a_outside_1.npy')
+grid = np.load('10_103_a_outside.npy')
 res = 0.1
 height, width = grid.shape
 height, width = height * res, width * res
@@ -392,6 +392,9 @@ colors = {
     "HeteroForm3": "tab:brown",
     "Holo2": "tab:red",
     "waffle": "tab:red",
+    "burger1": "tab:blue",
+    "burger2": "tab:cyan",
+    "burger3": "tab:brown",    
 }
 
 
@@ -627,8 +630,8 @@ for name, agent, start, goal, agent_type in agents:
         goal_sample_rate=0.35,
         neighbor_radius=2.0,
         precision=2,
-        # seed=395, #354 # 361 2F #371 #375 #395
-        seed=481, #422 433 449 459 475 481
+        seed=452, #354 # 361 2F #371 #375 #413 #395 #407 #414 #429
+        # seed=481, #422 433 449 459 475 481
         debug=True,
         use_kinodynamic=use_kino,
         kinodynamic_params=kino_params,

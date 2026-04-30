@@ -392,6 +392,9 @@ colors = {
     "HeteroForm3": "tab:brown",
     "Holo2": "tab:red",
     "waffle": "tab:red",
+    "burger1": "tab:blue",
+    "burger2": "tab:cyan",
+    "burger3": "tab:brown",
 }
 
 

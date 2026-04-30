@@ -1,3 +1,2 @@
 Delivery_bot1 (status) :  : NO CURRENT TASK
-Delivery_bot1 (status) : go to stall 2, pick up cold drink, deliver to table 1 : TASK IN PROGRESS
-Delivery_bot1 (status) : go to stall 2, pick up cold drink, deliver to table 1 : TASK COMPLETED
+Delivery_bot1 (status) : pick cold drink from Stall 2, deliver to Table 1 : TASK IN PROGRESS

@@ -120,7 +120,7 @@
     "waffle":{
       "radius":0.25,
       "max_linear_velocity_x": 0.25,
-      "max_linear_velocity_y": 0.25,
+      "max_linear_velocity_y": 0.0,
       "max_angular_velocity_z": 0.4,
       "max_acceleration": 0.4,
       "max_angular_acceleration": 3.5,
@@ -130,7 +130,7 @@
     "tb4_1":{
       "radius":0.25,
       "max_linear_velocity_x": 0.25,
-      "max_linear_velocity_y": 0.25,
+      "max_linear_velocity_y": 0.0,
       "max_angular_velocity_z": 0.4,
       "max_acceleration": 0.4,
       "max_angular_acceleration": 3.5,

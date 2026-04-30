@@ -177,7 +177,7 @@ class NavigationManager(Node):
             "   If robots must move in formation, group them using a key starting with 'F' followed by a formation id such as F1,F2,F3. "
             "   If there is any Formation or single Robot in the assigned id, then that id can not be replacable, for that also goal pose must be found. "
             "   For any formation group key starting with 'F', the value must be an object containing the fields centroid_x, centroid_y, formation_yaw, desired_radius, and robots. "
-            "   The centroid_x and centroid_y fields must be floating point values representing the formation center position in meters. "
+            "   The centroid_x and centroid_y fields must be floating poin ters. "
             "   For formation groups, formation_yaw represents the global orientation of the entire formation in radians and applies to all robots inside that formation. "
             "   The formation_yaw field must be a floating point value expressed in radians and must not be expressed in degrees. "
             "   The desired_radius field must be a floating point value representing the desired formation radius in meters and must be greater than zero. "

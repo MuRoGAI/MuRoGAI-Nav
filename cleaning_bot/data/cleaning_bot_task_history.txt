@@ -1,2 +1,1 @@
 Cleaning_bot (status) :  : NO CURRENT TASK
-Cleaning_bot (status) : clear the table at which cold drink was served : TASK IN PROGRESS

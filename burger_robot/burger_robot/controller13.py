@@ -50,8 +50,8 @@ ROBOT_CONFIG: dict[str, RobotConfig] = {
     "delivery_bot1": RobotConfig(
         robot_name  = "delivery_bot1",
         robot_type  = "diff-drive",
-        kp_linear   = 7.2,
-        kp_angular  = 2.3,
+        kp_linear   = 7.65,
+        kp_angular  = 3.48,
         kd_linear   = 0.5,
         kd_angular  = 0.3,
         ky          = 4.4,
@@ -65,8 +65,8 @@ ROBOT_CONFIG: dict[str, RobotConfig] = {
     "delivery_bot2": RobotConfig(
         robot_name  = "delivery_bot2",
         robot_type  = "diff-drive",
-        kp_linear   = 7.2,
-        kp_angular  = 2.3,
+        kp_linear   = 7.65,
+        kp_angular  = 3.48,
         kd_linear   = 0.5,
         kd_angular  = 0.3,
         ky          = 4.4,

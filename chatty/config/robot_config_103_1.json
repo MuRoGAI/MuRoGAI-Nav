@@ -1,0 +1,105 @@
+{
+  "robot_names": [
+    "burger1",
+    "waffle",
+    "firebird",
+    "go2"
+  ],
+
+  "robot_capabilities": {
+    "burger1": "Differential drive carry robot for indoor transport and cooperative item delivery.",
+    "waffle": "Differential drive carry robot for indoor transport and cooperative item delivery.",
+    "firebird": "Differential drive carry robot for indoor transport and cooperative item delivery.",
+    "go2": "Holonomic Robotic Dog carry robot capable of omnidirectional movement for precise transport and cooperative delivery."
+  },
+
+  "robot_morphology": {
+    "burger1": "Drive Type: Differential Drive, Radius: 0.25 m, Payload: 5 kg, Mobility: Non-holonomic",
+    "waffle": "Drive Type: Holonomic, Radius: 0.25 m, Payload: 10 kg, Mobility: Omnidirectional",
+    "firebird": "Drive Type: Holonomic, Radius: 0.25 m, Payload: 10 kg, Mobility: Omnidirectional",
+    "go2": "Type: Robotic Dog, Radius: 0.25 m, Payload: 10 kg, Mobility: Omnidirectional"
+  },
+
+  "robot_states": {
+    "burger1": {
+      "relative_position": "Free",
+      "relative_orientation": "Facing direction of travel",
+      "carry_state": "Empty",
+      "battery_state": "Full",
+      "mode": "Idle"
+    },
+
+    "waffle": {
+      "relative_position": "Free",
+      "relative_orientation": "Fully maneuverable",
+      "carry_state": "Empty",
+      "battery_state": "Full",
+      "mode": "Idle"
+    },
+
+    "firebird": {
+      "relative_position": "Free",
+      "relative_orientation": "Fully maneuverable",
+      "carry_state": "Empty",
+      "battery_state": "Full",
+      "mode": "Idle"
+    },
+
+    "go2": {
+      "relative_position": "Free",
+      "relative_orientation": "Fully maneuverable",
+      "carry_state": "Empty",
+      "battery_state": "Full",
+      "mode": "Idle"
+    }
+  },
+  "path_planner": {
+    "burger1":{
+      "radius":0.25,
+      "max_linear_velocity_x": 0.20,
+      "max_linear_velocity_y": 0.0,
+      "max_angular_velocity_z": 2.00,
+      "max_acceleration": 2.0,
+      "max_angular_acceleration": 3.0,
+      "colour": "green",
+      "type": "Differential Drive Robot"
+    },
+    "waffle":{
+      "radius":0.25,
+      "max_linear_velocity_x": 0.25,
+      "max_linear_velocity_y": 0.25,
+      "max_angular_velocity_z": 0.4,
+      "max_acceleration": 0.4,
+      "max_angular_acceleration": 3.5,
+      "colour": "brown",
+      "type": "Differential Drive Robot"
+    },
+    "firebird":{
+      "radius":0.25,
+      "max_linear_velocity_x": 0.25,
+      "max_linear_velocity_y": 0.25,
+      "max_angular_velocity_z": 0.4,
+      "max_acceleration": 0.4,
+      "max_angular_acceleration": 3.5,
+      "colour": "purple",
+      "type": "Differential Drive Robot"
+    },
+    "go2":{
+      "radius":0.25,
+      "max_linear_velocity_x": 0.25,
+      "max_linear_velocity_y": 0.25,
+      "max_angular_velocity_z": 0.4,
+      "max_acceleration": 0.4,
+      "max_angular_acceleration": 3.5,
+      "colour": "purple",
+      "type": "Holonomic Drive Robot"
+    }
+  },
+
+  "task_specific_rules": [
+    "An empty Space"  
+  ],
+
+  "task_replanning_rules": [
+  ]
+}

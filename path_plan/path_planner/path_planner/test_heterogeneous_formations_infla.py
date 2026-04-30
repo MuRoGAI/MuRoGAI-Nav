@@ -310,18 +310,7 @@ H = W = int(20 / res)
 
 grid = np.zeros((H, W), dtype=np.uint8)
 
-def draw_circle(center, radius):
-    cx, cy = center
-    r2 = radius ** 2
-    for i in range(H):
-        for j in range(W):
-            x = (j + 0.5) * res
-            y = (i + 0.5) * res
-            if (x - cx)**2 + (y - cy)**2 <= r2:
-                grid[i, j] = 1
 
-draw_circle((8.0, 10.0), 1.2)
-draw_circle((12.0, 10.0), 1.2)
 
 static_grid = OccupancyGrid(grid, res)
 
